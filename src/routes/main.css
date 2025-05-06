@@ -1,0 +1,48 @@
+/* Existing styles */
+body,
+html,
+a,
+p,
+button,
+#main {
+	font-family: 'Poppins', sans-serif !important;
+	overflow: hidden;
+}
+
+html {
+	scroll-behavior: auto;
+	overflow-y: unset;
+}
+
+body,
+#main {
+	margin: 0;
+	color: white;
+	min-height: 100lvh;
+	min-width: 100lvw;
+}
+
+:root {
+	overflow-y: hidden;
+}
+
+/* width */
+.custom-scrollbar ::-webkit-scrollbar {
+	width: 2px;
+}
+
+/* Handle */
+.custom-scrollbar ::-webkit-scrollbar-thumb {
+	background: #bdc4de;
+	border-radius: 10px;
+}
+
+.hide-scrollbar {
+	-ms-overflow-style: none; /* IE 11 */
+	scrollbar-width: none; /* Firefox 64 */
+	overflow: -moz-scrollbars-none;
+}
+
+svg {
+	fill: currentColor;
+}
