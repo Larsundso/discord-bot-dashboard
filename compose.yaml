@@ -1,0 +1,26 @@
+services:
+ redis:
+  image: redis:7.4
+  restart: unless-stopped
+  ports:
+   - "127.0.0.1:6379:6379"
+  command: redis-server /usr/local/etc/redis/redis.conf
+   - ./redis:/usr/local/etc/redis
+  ulimits:
+   nproc: 65535
+   nofile:
+    soft: 65535
+    hard: 65535
+  deploy:
+   resources:
+    limits:
+     cpus: "4"
+     memory: 25G
+    reservations:
+     cpus: "2"
+     memory: 4G
+
+networks:
+ internal_network:
+  driver: bridge
+  internal: true
