@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@discord-bot-dashboard/cache": "link:packages/cache"
+	}
+}

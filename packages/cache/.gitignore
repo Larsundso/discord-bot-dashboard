@@ -1,0 +1,13 @@
+node_modules
+.vscode
+.idea
+/dist
+.env
+/rust/target
+/logs
+./start.sh
+report.*
+Heap.*
+isolate-*
+.clinic
+/patches

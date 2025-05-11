@@ -1,0 +1,1561 @@
+{
+ "annotations": {
+   "list": [
+     {
+       "builtIn": 1,
+       "datasource": {
+         "type": "datasource",
+         "uid": "grafana"
+       },
+       "enable": true,
+       "hide": true,
+       "iconColor": "rgba(0, 211, 255, 1)",
+       "name": "Annotations & Alerts",
+       "target": {
+         "limit": 100,
+         "matchAny": false,
+         "tags": [],
+         "type": "dashboard"
+       },
+       "type": "dashboard"
+     }
+   ]
+ },
+ "editable": true,
+ "fiscalYearStartMonth": 0,
+ "graphTooltip": 1,
+ "links": [],
+ "liveNow": false,
+ "panels": [
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "thresholds"
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             }
+           ]
+         }
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 4,
+       "x": 0,
+       "y": 0
+     },
+     "id": 14,
+     "options": {
+       "colorMode": "value",
+       "graphMode": "area",
+       "justifyMode": "auto",
+       "orientation": "auto",
+       "percentChangeColorMode": "standard",
+       "reduceOptions": {
+         "calcs": [
+           "lastNotNull"
+         ],
+         "fields": "",
+         "values": false
+       },
+       "showPercentChange": false,
+       "text": {},
+       "textMode": "auto",
+       "wideLayout": true
+     },
+     "pluginVersion": "11.2.0",
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "exemplar": true,
+         "expr": "sum(increase(nirn_proxy_requests_count{status=~\"401 Unauthorized|403 Forbidden|429 Too Many Requests\",clientId=~\"$clientId\"}[1h]))",
+         "interval": "",
+         "legendFormat": "",
+         "queryType": "randomWalk",
+         "range": true,
+         "refId": "A"
+       }
+     ],
+     "timeFrom": "1h",
+     "title": "Invalid Reqs (1h)",
+     "type": "stat"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "thresholds"
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         }
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 4,
+       "x": 4,
+       "y": 0
+     },
+     "id": 26,
+     "options": {
+       "colorMode": "value",
+       "graphMode": "area",
+       "justifyMode": "auto",
+       "orientation": "auto",
+       "percentChangeColorMode": "standard",
+       "reduceOptions": {
+         "calcs": [
+           "lastNotNull"
+         ],
+         "fields": "",
+         "values": false
+       },
+       "showPercentChange": false,
+       "textMode": "auto",
+       "wideLayout": true
+     },
+     "pluginVersion": "11.2.0",
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "expr": "sum(increase(nirn_proxy_requests_count{status=\"429 Too Many Requests\",clientId=~\"$clientId\"}[1h]))",
+         "hide": false,
+         "instant": false,
+         "legendFormat": "",
+         "range": true,
+         "refId": "B"
+       }
+     ],
+     "timeFrom": "1h",
+     "title": "429s (1h)",
+     "type": "stat"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "thresholds"
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             }
+           ]
+         }
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 3,
+       "x": 8,
+       "y": 0
+     },
+     "id": 17,
+     "options": {
+       "colorMode": "value",
+       "graphMode": "none",
+       "justifyMode": "auto",
+       "orientation": "auto",
+       "percentChangeColorMode": "standard",
+       "reduceOptions": {
+         "calcs": [
+           "lastNotNull"
+         ],
+         "fields": "",
+         "values": false
+       },
+       "showPercentChange": false,
+       "text": {},
+       "textMode": "auto",
+       "wideLayout": true
+     },
+     "pluginVersion": "11.2.0",
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum (rate(nirn_proxy_requests_count{clientId=~\"$clientId\"}[$__rate_interval]))",
+         "interval": "",
+         "legendFormat": "",
+         "refId": "A"
+       }
+     ],
+     "title": "Reqs /s (curr)",
+     "type": "stat"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 13,
+       "x": 11,
+       "y": 0
+     },
+     "id": 10,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum(rate(nirn_proxy_requests_count{clientId=~\"$clientId\"}[$__rate_interval])) by (clientId)",
+         "interval": "",
+         "legendFormat": "{{clientId}}",
+         "queryType": "randomWalk",
+         "refId": "A"
+       },
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum(rate(nirn_proxy_requests_count{clientId=~\"$clientId\"}[1m]))",
+         "hide": false,
+         "interval": "",
+         "legendFormat": "Total",
+         "refId": "B"
+       }
+     ],
+     "title": "Reqs/s",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 6,
+       "x": 0,
+       "y": 7
+     },
+     "id": 24,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "a9228c46-f720-4d98-bd7f-9e9ad951a395"
+         },
+         "editorMode": "code",
+         "expr": "sum by(method, status, route) (rate(nirn_proxy_requests_count{status=\"401 Unauthorized\",clientId=~\"$clientId\"}[$__rate_interval]))",
+         "instant": false,
+         "legendFormat": "{{method}} {{route}}",
+         "range": true,
+         "refId": "A"
+       }
+     ],
+     "title": "401",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 6,
+       "x": 6,
+       "y": 7
+     },
+     "id": 25,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "expr": "sum by(method, status, route) (rate(nirn_proxy_requests_count{status=\"403 Forbidden\",clientId=~\"$clientId\"}[$__rate_interval]))",
+         "hide": false,
+         "instant": false,
+         "legendFormat": "{{method}} {{route}} ",
+         "range": true,
+         "refId": "B"
+       }
+     ],
+     "title": "403",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 6,
+       "x": 12,
+       "y": 7
+     },
+     "id": 15,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "exemplar": true,
+         "expr": "sum by(method, status, route) (rate(nirn_proxy_requests_count{status=\"429 Too Many Requests\",clientId=~\"$clientId\"}[$__rate_interval]))",
+         "interval": "",
+         "legendFormat": "{{method}} {{route}}",
+         "queryType": "randomWalk",
+         "range": true,
+         "refId": "A"
+       }
+     ],
+     "title": "429",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "noValue": "0",
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 7,
+       "w": 6,
+       "x": 18,
+       "y": 7
+     },
+     "id": 2,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum by(method, status, route) (rate(nirn_proxy_requests_count{status=~\"500 Internal Server Error|501 Not Implemented|502 Bad Gateway|503 Service Unavailable|504 Gateway Timeout|505 HTTP Version Not Supported|506 Variant Also Negotiates|507 Insufficient Storage|508 Loop Detected|510 Not Extended|511 Network Authentication Required\", clientId=~\"$clientId\"}[$__rate_interval]))",
+         "interval": "",
+         "legendFormat": "{{method}} {{route}} ({{status}})",
+         "queryType": "randomWalk",
+         "refId": "A"
+       }
+     ],
+     "title": "5XX",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 8,
+       "w": 24,
+       "x": 0,
+       "y": 14
+     },
+     "id": 8,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum by (status) (rate(nirn_proxy_requests_count{clientId=~\"$clientId\"}[$__rate_interval]))",
+         "interval": "",
+         "legendFormat": "{{status}}",
+         "queryType": "randomWalk",
+         "refId": "A"
+       }
+     ],
+     "title": "Status codes",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "barWidthFactor": 0.6,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green",
+               "value": null
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "reqps"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 10,
+       "w": 24,
+       "x": 0,
+       "y": 22
+     },
+     "id": 6,
+     "options": {
+       "legend": {
+         "calcs": [
+           "mean"
+         ],
+         "displayMode": "table",
+         "placement": "right",
+         "showLegend": true,
+         "sortBy": "Mean",
+         "sortDesc": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "exemplar": true,
+         "expr": "sum by (method, route) (rate(nirn_proxy_requests_count{clientId=~\"$clientId\"}[$__rate_interval]))",
+         "interval": "",
+         "legendFormat": "{{method}} {{route}}",
+         "queryType": "randomWalk",
+         "range": true,
+         "refId": "A"
+       }
+     ],
+     "title": "Reqs by path",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 4,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green"
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "s"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 9,
+       "w": 12,
+       "x": 0,
+       "y": 32
+     },
+     "id": 11,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "histogram_quantile(0.9, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le))",
+         "interval": "",
+         "legendFormat": "90th",
+         "queryType": "randomWalk",
+         "refId": "A"
+       },
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "histogram_quantile(0.95, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le))",
+         "hide": false,
+         "interval": "",
+         "legendFormat": "95th",
+         "refId": "B"
+       },
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "histogram_quantile(0.99, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le))",
+         "hide": false,
+         "interval": "",
+         "legendFormat": "99th",
+         "refId": "C"
+       }
+     ],
+     "title": "Latency",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green"
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         }
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 9,
+       "w": 12,
+       "x": 12,
+       "y": 32
+     },
+     "id": 22,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "sum(nirn_proxy_open_connections)",
+         "interval": "",
+         "legendFormat": "Connections Open",
+         "refId": "A"
+       }
+     ],
+     "title": "Open connections",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green"
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "s"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 8,
+       "w": 8,
+       "x": 0,
+       "y": 41
+     },
+     "id": 12,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "histogram_quantile(0.99, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le, method, route))",
+         "interval": "",
+         "legendFormat": "{{method}} {{route}}",
+         "queryType": "randomWalk",
+         "refId": "A"
+       }
+     ],
+     "title": "Latency 99th",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "noValue": "0",
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green"
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "s"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 8,
+       "w": 8,
+       "x": 8,
+       "y": 41
+     },
+     "id": 27,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "editorMode": "code",
+         "exemplar": true,
+         "expr": "histogram_quantile(0.95, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le, method, route))",
+         "instant": false,
+         "interval": "1m",
+         "intervalFactor": 1,
+         "legendFormat": "{{method}} {{route}}",
+         "queryType": "randomWalk",
+         "refId": "A"
+       }
+     ],
+     "title": "Latency 95th",
+     "type": "timeseries"
+   },
+   {
+     "datasource": {
+       "type": "prometheus",
+       "uid": "${datasource}"
+     },
+     "fieldConfig": {
+       "defaults": {
+         "color": {
+           "mode": "palette-classic"
+         },
+         "custom": {
+           "axisBorderShow": false,
+           "axisCenteredZero": false,
+           "axisColorMode": "text",
+           "axisLabel": "",
+           "axisPlacement": "auto",
+           "barAlignment": 0,
+           "drawStyle": "line",
+           "fillOpacity": 0,
+           "gradientMode": "none",
+           "hideFrom": {
+             "legend": false,
+             "tooltip": false,
+             "viz": false
+           },
+           "insertNulls": false,
+           "lineInterpolation": "linear",
+           "lineWidth": 1,
+           "pointSize": 5,
+           "scaleDistribution": {
+             "type": "linear"
+           },
+           "showPoints": "auto",
+           "spanNulls": false,
+           "stacking": {
+             "group": "A",
+             "mode": "none"
+           },
+           "thresholdsStyle": {
+             "mode": "off"
+           }
+         },
+         "mappings": [],
+         "noValue": "0",
+         "thresholds": {
+           "mode": "absolute",
+           "steps": [
+             {
+               "color": "green"
+             },
+             {
+               "color": "red",
+               "value": 80
+             }
+           ]
+         },
+         "unit": "s"
+       },
+       "overrides": []
+     },
+     "gridPos": {
+       "h": 8,
+       "w": 8,
+       "x": 16,
+       "y": 41
+     },
+     "id": 4,
+     "options": {
+       "legend": {
+         "calcs": [],
+         "displayMode": "list",
+         "placement": "bottom",
+         "showLegend": true
+       },
+       "tooltip": {
+         "mode": "single",
+         "sort": "none"
+       }
+     },
+     "targets": [
+       {
+         "datasource": {
+           "type": "prometheus",
+           "uid": "${datasource}"
+         },
+         "exemplar": true,
+         "expr": "histogram_quantile(0.90, sum(rate(nirn_proxy_requests_bucket{clientId=~\"$clientId\"}[5m])) by (le, method, route))",
+         "instant": false,
+         "interval": "1m",
+         "intervalFactor": 1,
+         "legendFormat": "{{method}} {{route}}",
+         "queryType": "randomWalk",
+         "refId": "A"
+       }
+     ],
+     "title": "Latency 90th",
+     "type": "timeseries"
+   }
+ ],
+ "refresh": "10s",
+ "schemaVersion": 39,
+ "tags": [],
+ "templating": {
+   "list": [
+     {
+       "current": {
+         "selected": false,
+         "text": "prometheus",
+         "value": "cdpj6ma4mq7swb"
+       },
+       "hide": 0,
+       "includeAll": false,
+       "label": "Datasource",
+       "multi": false,
+       "name": "datasource",
+       "options": [],
+       "query": "prometheus",
+       "queryValue": "",
+       "refresh": 1,
+       "regex": "",
+       "skipUrlSync": false,
+       "type": "datasource"
+     },
+     {
+       "current": {
+         "selected": true,
+         "text": [
+           "Admin#9103",
+           "Animekos#7047",
+           "Assassin Bot#2085",
+           "Ayako Dev Version#4231",
+           "شيخ الشيوخ#8752",
+           "☆𝑳𝒖𝒏𝒂☆#9021",
+           "𝑮𝒐𝒅#4956",
+           "WillBot#2486",
+           "demonorchid#8227",
+           "Wana#3824",
+           "WWPA#4588",
+           "TowlieBot#3086",
+           "Test#1135",
+           "Sylva, Guildhouse#1931",
+           "Staff#8357",
+           "Spheal#3403",
+           "Seal Cove 🤍#4856",
+           "Seal Cove 🤍#3429",
+           "Rika 🤍#1452",
+           "Pinkie#1677",
+           "NoAuth",
+           "Mythril Goddess Kimi#8795",
+           "Jennie#9914",
+           "Internal",
+           "Fih#3568",
+           "Brasil Poké Drink#6625",
+           "Bearer",
+           "Ayako#6768"
+         ],
+         "value": [
+           "Admin#9103",
+           "Animekos#7047",
+           "Assassin Bot#2085",
+           "Ayako Dev Version#4231",
+           "شيخ الشيوخ#8752",
+           "☆𝑳𝒖𝒏𝒂☆#9021",
+           "𝑮𝒐𝒅#4956",
+           "WillBot#2486",
+           "demonorchid#8227",
+           "Wana#3824",
+           "WWPA#4588",
+           "TowlieBot#3086",
+           "Test#1135",
+           "Sylva, Guildhouse#1931",
+           "Staff#8357",
+           "Spheal#3403",
+           "Seal Cove 🤍#4856",
+           "Seal Cove 🤍#3429",
+           "Rika 🤍#1452",
+           "Pinkie#1677",
+           "NoAuth",
+           "Mythril Goddess Kimi#8795",
+           "Jennie#9914",
+           "Internal",
+           "Fih#3568",
+           "Brasil Poké Drink#6625",
+           "Bearer",
+           "Ayako#6768"
+         ]
+       },
+       "datasource": {
+         "type": "prometheus",
+         "uid": "${datasource}"
+       },
+       "definition": "label_values(nirn_proxy_requests_count, clientId)",
+       "hide": 0,
+       "includeAll": true,
+       "multi": true,
+       "name": "clientId",
+       "options": [],
+       "query": {
+         "query": "label_values(nirn_proxy_requests_count, clientId)",
+         "refId": "StandardVariableQuery"
+       },
+       "refresh": 1,
+       "regex": "",
+       "skipUrlSync": false,
+       "sort": 0,
+       "type": "query"
+     }
+   ]
+ },
+ "time": {
+   "from": "now-1h",
+   "to": "now"
+ },
+ "timepicker": {},
+ "timezone": "",
+ "title": "Ayako Webserver Nirn",
+ "uid": "LFGoppS7k",
+ "version": 1,
+ "weekStart": ""
+}

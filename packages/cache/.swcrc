@@ -1,0 +1,24 @@
+{
+ "$schema": "https://swc.rs/schema.json",
+ "jsc": {
+  "parser": {
+   "syntax": "typescript",
+   "tsx": false,
+   "decorators": true,
+   "dynamicImport": true,
+   "preserveAllComments": false,
+   "topLevelAwait": true,
+   "resolveFully": true
+  },
+  "target": "esnext",
+  "experimental": {
+   "keepImportAttributes": true
+  }
+ },
+ "module": {
+  "type": "nodenext"
+ },
+ "minify": false,
+ "sourceMaps": true,
+ "isModule": true
+}

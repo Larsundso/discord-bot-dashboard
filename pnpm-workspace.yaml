@@ -1,3 +1,5 @@
 packages:
- - 'packages/*'
- - 'apps/*'
+  - packages/*
+  - apps/*
+overrides:
+  '@discord-bot-dashboard/cache': link:packages/cache

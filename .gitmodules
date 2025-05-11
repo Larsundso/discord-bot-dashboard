@@ -1,4 +1,4 @@
-[submodule "apps/Dashboard"]
+[submodule "apps/Website"]
 	path = apps/Dashboard
 [submodule "packages/Cache"]
 	path = packages/Cache

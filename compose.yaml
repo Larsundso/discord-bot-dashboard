@@ -5,6 +5,7 @@ services:
   ports:
    - "127.0.0.1:6379:6379"
   command: redis-server /usr/local/etc/redis/redis.conf
+  volumes:
    - ./redis:/usr/local/etc/redis
   ulimits:
    nproc: 65535
@@ -19,6 +20,56 @@ services:
     reservations:
      cpus: "2"
      memory: 4G
+
+ nirn:
+  image: ghcr.io/germanoeich/nirn-proxy:v1.3.3
+  restart: unless-stopped
+  environment:
+   REQUEST_TIMEOUT: 15000
+  ports:
+   - "127.0.0.1:8080:8080"
+
+ grafana:
+  image: grafana/grafana:latest
+  restart: unless-stopped
+  volumes:
+   - grafana:/var/lib/grafana
+   - ./configs/dashboards:/etc/grafana/provisioning/dashboards
+   - ./configs/datasources:/etc/grafana/provisioning/datasources
+  environment:
+   - GF_SECURITY_ADMIN_PASSWORD=admin
+   - GF_SECURITY_ADMIN_USER=admin
+  ports:
+   - "127.0.0.1:3000:3000"
+
+ prometheus:
+  image: prom/prometheus
+  restart: unless-stopped
+  command:
+   - "--config.file=/etc/prometheus/prometheus.yml"
+   - "--storage.tsdb.path=/prometheus"
+   - "--web.enable-admin-api"
+   - "--web.enable-lifecycle"
+   - "--web.enable-remote-write-receiver"
+  ports:
+   - "127.0.0.1:9090:9090"
+  volumes:
+   - prometheus:/prometheus
+   - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+
+ redis-exporter:
+  image: oliver006/redis_exporter:latest
+  restart: unless-stopped
+  environment:
+   REDIS_ADDR: redis://redis:6379
+  ports:
+   - "127.0.0.1:9121:9121"
+  depends_on:
+   - redis
+
+volumes:
+ grafana:
+ prometheus:
 
 networks:
  internal_network:
