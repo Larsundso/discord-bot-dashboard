@@ -21,7 +21,7 @@
 		onUnhover: (v: string) => void;
 	} = $props();
 
-	let self: HTMLElement | null = null;
+	let self: HTMLElement | null = $state(null);
 	let barContainer: HTMLDivElement | null = $state(null);
 	let img: HTMLImageElement | null = $state(null);
 	let oldActive = false;
@@ -42,9 +42,9 @@
 	const hovered = (state: boolean) => {
 		if (!self) return;
 
-		if (src?.startsWith('a_') && img && state && id !== '@me' && id !== 'guilds') {
+		if (src?.startsWith('a_') && img && state && !['@me', 'guilds', 'add'].includes(id)) {
 			img.src = `https://cdn.discordapp.com/icons/${id}/${src}.gif?size=64&ver=${Date.now()}`;
-		} else if (!state && img && src && id !== 'guilds' && id !== '@me') {
+		} else if (!state && img && src && !['@me', 'guilds', 'add'].includes(id)) {
 			img.src = `https://cdn.discordapp.com/icons/${id}/${src}.webp?size=64`;
 		}
 
@@ -70,7 +70,7 @@
 		active =
 			page.params?.guildId === id ||
 			(String(page.url?.pathname).startsWith('/@me') && id === '@me') ||
-			(String(page.url?.pathname).startsWith('/guilds') && id === 'guilds');
+			(String(page.url?.pathname) === '/guilds' && id === 'guilds');
 
 		if (!barContainer) return returnFN;
 		if (!active) return returnFN;
@@ -97,17 +97,26 @@
 	role="button"
 	tabindex="0"
 	data-sveltekit-preload-data="hover"
-	href={id === '@me' ? '/@me' : id === 'guilds' ? '/guilds' : `/guilds/${id}`}
+	href={id === '@me'
+		? '/@me'
+		: id === 'guilds'
+			? '/guilds'
+			: id === 'add'
+				? `https://discord.com/oauth2/authorize?client_id=${self?.id}&permissions=8&integration_type=0&scope=bot`
+				: `/guilds/${id}`}
+	target={id === 'add' ? '_blank' : undefined}
 >
 	<div
 		class="hover:rounded-[20px] flex justify-center items-center of-hidden min-w-15 min-h-15 ease-in-out transition-all duration-300 box-shadow-main w-full aspect-square of-hidden transition-all duration-100 ease-in-out"
-		class:bg-main={bg || id === '@me' || id === 'guilds'}
+		class:bg-main={bg || ['@me', 'guilds'].includes(id)}
 		class:rounded-[20px]={active}
 		class:rounded-[30px]={!active}
-		class:hover:bg-blurple={id === '@me' || id === 'guilds'}
-		class:transition-all={id === '@me' || id === 'guilds'}
-		class:duration-300={id === '@me' || id === 'guilds'}
-		class:ease-in-out={id === '@me' || id === 'guilds'}
+		class:bg-blurple={id === 'add'}
+		class:hover:bg-success={id === 'add'}
+		class:hover:bg-blurple={['@me', 'guilds'].includes(id)}
+		class:transition-all={['@me', 'guilds', 'add'].includes(id)}
+		class:duration-300={['@me', 'guilds', 'add'].includes(id)}
+		class:ease-in-out={['@me', 'guilds', 'add'].includes(id)}
 	>
 		{#if src}
 			<img
@@ -115,7 +124,9 @@
 					? '/favicon.webp'
 					: id === 'guilds'
 						? '/images/search.svg'
-						: `https://cdn.discordapp.com/icons/${id}/${src}.webp?size=128`}
+						: id === 'add'
+							? '/images/add.svg'
+							: `https://cdn.discordapp.com/icons/${id}/${src}.webp?size=128`}
 				width={size}
 				height={size}
 				{alt}

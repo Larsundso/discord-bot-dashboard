@@ -72,6 +72,7 @@
 			<SideBarIcon
 				src={guild.icon ?? undefined}
 				id={guild.id}
+				bg={!guild.icon}
 				name={guild.name}
 				onHover={(e) => {
 					showName(e, dotContainer!, nameContainer!);
@@ -80,6 +81,21 @@
 				onUnhover={() => (currentName = null)}
 			/>
 		{/each}
+
+		<div class="mt-3">
+			<SideBarIcon
+				src="add.svg"
+				name="Add Guild"
+				size={40}
+				bg
+				id="add"
+				onHover={(e) => {
+					showName(e, dotContainer!, nameContainer!);
+					currentName = e.name;
+				}}
+				onUnhover={() => (currentName = null)}
+			/>
+		</div>
 
 		<div class="content-empty h-19"></div>
 	</div>
