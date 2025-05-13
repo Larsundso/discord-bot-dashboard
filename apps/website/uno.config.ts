@@ -52,7 +52,6 @@ export default defineConfig({
 		[/^column-width-(\d+)$/, ([, d]) => ({ 'column-width': `${Number(d) / 4}rem` })],
 	],
 	shortcuts: {
-		btn: 'border-none bg-transparent text-sm decoration-none color-fake-white',
 		tooltiptext:
 			'w-fit bg-main-lighter color-main-text text-center p-1 rounded-md absolute group-hover:block hidden bottom-105% box-shadow-main border-main-darkest z-1 select-none hover:hidden',
 		mention: 'bg-[rgba(88,101,242,0.3)] px-1 rounded-md',

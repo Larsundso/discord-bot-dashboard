@@ -4,7 +4,7 @@ import Cache from './base.js';
 
 export type RGuild = Omit<
  APIGuild,
- 'roles' | 'emojis' | 'stickers' | 'icon_hash' | 'discovery_splash' | 'banner'
+ 'roles' | 'emojis' | 'stickers' | 'icon_hash' | 'discovery_splash' | 'banner' | 'region' | 'icon'
 > & {
  roles: string[];
  emojis: string[];
@@ -26,7 +26,6 @@ export const RGuildKeys = [
  'explicit_content_filter',
  'features',
  'hub_type',
- 'icon',
  'id',
  'incidents_data',
  'max_members',
@@ -44,7 +43,6 @@ export const RGuildKeys = [
  'premium_subscription_count',
  'premium_tier',
  'public_updates_channel_id',
- 'region',
  'roles',
  'rules_channel_id',
  'safety_alerts_channel_id',

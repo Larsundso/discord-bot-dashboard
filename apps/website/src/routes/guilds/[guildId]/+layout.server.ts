@@ -10,6 +10,18 @@ export const load: LayoutServerLoad = async (event) => {
 	const guild = await cache.guilds.get(guildId);
 	if (!guild) throw redirect(302, '/@me');
 
+	const fetched = event.cookies.get('fetched');
+	if (!fetched) {
+		event.fetch(`/api/guilds/${guildId}/members`);
+
+		event.cookies.set('fetched', guildId, {
+			path: `/guilds/${guildId}`,
+			expires: new Date(Date.now() + 60 * 60 * 1000),
+			httpOnly: true,
+			sameSite: 'strict',
+		});
+	}
+
 	return { guild, channels: await getChannels(guildId) };
 };
 

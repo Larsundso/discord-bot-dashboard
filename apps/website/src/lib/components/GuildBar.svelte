@@ -70,9 +70,9 @@
 			{/if}
 
 			<SideBarIcon
-				src={guild.icon ?? undefined}
+				src={guild.icon_url ?? undefined}
 				id={guild.id}
-				bg={!guild.icon}
+				bg={!guild.icon_url}
 				name={guild.name}
 				onHover={(e) => {
 					showName(e, dotContainer!, nameContainer!);

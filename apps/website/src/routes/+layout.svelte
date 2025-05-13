@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './main.css';
+	import '$lib/scripts/index';
 
 	import { page } from '$app/state';
 	import GuildBar from '$lib/components/GuildBar.svelte';

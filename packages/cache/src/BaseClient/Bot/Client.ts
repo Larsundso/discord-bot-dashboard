@@ -42,12 +42,27 @@ const gateway = new WebSocketManager({
 
 gateway.connect();
 
-const client = new Client({ rest, gateway });
-
-export const cluster = new ClusterClient(client);
-export const cache = RedisCache;
 export const API = new DAPI(rest);
 export const clientUser = await API.users.getCurrent();
+
+class CustomClient extends Client {
+ cluster: ClusterClient<CustomClient> | null = null;
+ cache: typeof RedisCache = RedisCache;
+ clientUser: typeof clientUser = clientUser;
+
+ constructor() {
+  super({ rest, gateway });
+ }
+
+ addCluster(cluster: ClusterClient<CustomClient>) {
+  this.cluster = cluster;
+ }
+}
+
+const client = new CustomClient();
+export const cluster = new ClusterClient(client);
+export const cache = RedisCache;
+client.addCluster(cluster);
 
 export default client;
 

@@ -53,6 +53,8 @@ export enum CacheEvents {
 
 export enum WebsiteEvents {
  LOGIN = 'login',
+ FETCH_GUILD_MEMBERS = 'fetchGuildMembers',
+ FETCH_COUNTS = 'fetchCounts',
 }
 
 export type Message<T extends CacheEvents> = T extends CacheEvents.channelCreate

@@ -15,7 +15,7 @@
 
 		<div class="flex flex-row justify-center items-center gap-2">
 			<a
-				class="btn before:relative after:relative hover:bg-main-light p-1 rounded-md"
+				class="before:relative after:relative hover:bg-main-light p-1 rounded-md"
 				aria-label="Settings"
 				onfocus={() => (currentName = 'Settings')}
 				onmouseover={() => (currentName = 'Settings')}
@@ -31,7 +31,7 @@
 			</a>
 
 			<a
-				class="btn before:relative after:relative hover:bg-main-light p-1 rounded-md"
+				class="before:relative after:relative hover:bg-main-light p-1 rounded-md"
 				aria-label="Logout"
 				onfocus={() => (currentName = 'Logout')}
 				onmouseover={() => (currentName = 'Logout')}

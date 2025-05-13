@@ -13,7 +13,7 @@
 </script>
 
 <section
-	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden w-70 relative"
+	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden w-65 relative"
 >
 	<div
 		class="flex flex-row justify-between items-start w-full flex-shrink-0"
@@ -39,7 +39,7 @@
 	{#if guild.premium_progress_bar_enabled}
 		<hr class="content-empty w-full h-0.1 border-0px border-t-1px border-solid border-main-dark" />
 
-		<div class="flex flex-col w-66 m-2">
+		<div class="flex flex-col w-61 m-2">
 			<div class="flex flex-row justify-between">
 				<span class="color-alt-text text-xs">Lvl {guild.premium_tier}</span>
 				<span class="color-alt-text text-xs">{guild.premium_subscription_count} Boosts</span>

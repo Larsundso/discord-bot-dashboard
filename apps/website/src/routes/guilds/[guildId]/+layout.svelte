@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { LayoutServerData, LayoutServerParentData } from './$types';
+	import { afterNavigate } from '$app/navigation';
 	import ChannelBar from '$lib/components/ChannelBar.svelte';
+	import { type Snippet } from 'svelte';
+	import type { LayoutServerData, LayoutServerParentData } from './$types';
 
 	const { children, data }: { children: Snippet; data: LayoutServerData & LayoutServerParentData } =
 		$props();

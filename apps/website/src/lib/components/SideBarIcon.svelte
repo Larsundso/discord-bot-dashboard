@@ -42,10 +42,10 @@
 	const hovered = (state: boolean) => {
 		if (!self) return;
 
-		if (src?.startsWith('a_') && img && state && !['@me', 'guilds', 'add'].includes(id)) {
-			img.src = `https://cdn.discordapp.com/icons/${id}/${src}.gif?size=64&ver=${Date.now()}`;
+		if (src?.includes('a_') && img && state && !['@me', 'guilds', 'add'].includes(id)) {
+			img.src = `${src.split('.').slice(0, -1).join('.')}.gif?size=64&ver=${Date.now()}`;
 		} else if (!state && img && src && !['@me', 'guilds', 'add'].includes(id)) {
-			img.src = `https://cdn.discordapp.com/icons/${id}/${src}.webp?size=64`;
+			img.src = `${src.split('.').slice(0, -1).join('.')}.webp?size=64`;
 		}
 
 		if (state) onHover({ y: self.getBoundingClientRect().y, name });
@@ -126,7 +126,7 @@
 						? '/images/search.svg'
 						: id === 'add'
 							? '/images/add.svg'
-							: `https://cdn.discordapp.com/icons/${id}/${src}.webp?size=128`}
+							: src}
 				width={size}
 				height={size}
 				{alt}

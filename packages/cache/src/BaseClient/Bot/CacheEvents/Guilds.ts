@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { GuildMemberFlagsBitField } from 'discord.js';
 import {
  GatewayDispatchEvents,
  type APIGuildMember,
@@ -27,9 +26,10 @@ import {
  type GatewayGuildStickersUpdateDispatchData,
  type GatewayGuildUpdateDispatchData,
 } from 'discord-api-types/v10';
-import RedisClient, { cache as redis } from '../Redis.js';
-import { publisher } from '../../Cluster/Redis.js';
+import { GuildMemberFlagsBitField } from 'discord.js';
 import { CacheEvents, type Message } from '../../Cluster/Events.js';
+import { publisher } from '../../Cluster/Redis.js';
+import RedisClient, { cache as redis } from '../Redis.js';
 
 export default {
  [GatewayDispatchEvents.GuildAuditLogEntryCreate]: async (
@@ -224,8 +224,12 @@ export default {
   );
  },
 
- [GatewayDispatchEvents.GuildMembersChunk]: async (data: GatewayGuildMembersChunkDispatchData) =>
-  data.members.forEach((member) => redis.members.set(member, data.guild_id)),
+ [GatewayDispatchEvents.GuildMembersChunk]: async (data: GatewayGuildMembersChunkDispatchData) => {
+  data.members.forEach((member) => {
+   redis.members.set(member, data.guild_id);
+   redis.users.set(member.user);
+  });
+ },
 
  [GatewayDispatchEvents.GuildMemberUpdate]: async (data: GatewayGuildMemberUpdateDispatchData) => {
   if (data.joined_at && data.deaf && data.mute) {

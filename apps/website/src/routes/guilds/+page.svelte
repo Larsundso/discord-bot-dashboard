@@ -14,7 +14,7 @@
 			class="mt-5 p-2 border-none rounded-xl text-lg w-120"
 		/>
 		<button
-			class="btn absolute top-7 right-2 hover:bg-main-light p-1 rounded-lg"
+			class="absolute top-7 right-2 hover:bg-main-light p-1 rounded-lg"
 			aria-label="Clear query"
 			onclick={() => (query = '')}
 			onkeydown={(e) => (e.key === 'Enter' ? (query = '') : null)}
@@ -25,7 +25,7 @@
 	<div class="flex flex-row justify-center items-center gap-4 w-full flex-wrap mt-5">
 		{#each data.guilds.filter((g) => g.name.toLowerCase().includes(query.toLowerCase())) as guild}
 			<a
-				class="btn w-15% flex flex-col justify-center items-center gap-2 p-2 relative of-hidden
+				class="w-15% flex flex-col justify-center items-center gap-2 p-2 relative of-hidden
     hover:scale-105 transition-all duration-100 ease-in-out"
 				href={`/guilds/${guild.id}`}
 			>
