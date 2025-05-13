@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { afterNavigate, beforeNavigate, invalidateAll } from '$app/navigation';
 	import type { RUser } from '$lib/scripts/RTypes';
-	import { onMount } from 'svelte';
 
 	const { id }: { id: string } = $props();
 	let user: RUser | null = $derived(null);
@@ -15,7 +13,7 @@
 		user = res;
 	};
 
-	onMount(() => {
+	$effect(() => {
 		get();
 		if (user) return;
 
@@ -26,7 +24,6 @@
 
 		return () => {
 			if (interval) clearInterval(interval);
-			invalidateAll();
 		};
 	});
 </script>

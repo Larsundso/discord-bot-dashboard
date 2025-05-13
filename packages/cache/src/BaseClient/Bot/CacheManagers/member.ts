@@ -1,6 +1,7 @@
-import type { APIGuildMember } from 'discord-api-types/v10';
+import type { APIGuildMember, APIRole } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import RoleCache from './role.js';
 
 export type RMember = Omit<APIGuildMember, 'user' | 'avatar' | 'banner'> & {
  user_id: string;
@@ -28,9 +29,11 @@ export const RMemberKeys = [
 
 export default class MemberCache extends Cache<APIGuildMember> {
  public keys = RMemberKeys;
+ public rolesCache: Cache<APIRole>;
 
  constructor(redis: Redis) {
   super(redis, 'members');
+  this.rolesCache = new RoleCache(redis);
  }
 
  public static bannerUrl(banner: string, userId: string, guildId: string) {
@@ -41,10 +44,29 @@ export default class MemberCache extends Cache<APIGuildMember> {
   return `https://cdn.discordapp.com/guilds/${guildId}/users/${userId}/avatars/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
+ public async addToList(guildId: string, member: APIGuildMember) {
+  const roles = await Promise.all(member.roles.map((r) => this.rolesCache.get(r))).then((r) =>
+   r.filter((role) => !!role),
+  );
+
+  const highestHoisted =
+   roles
+    .sort((a, b) => a.position - b.position)
+    .filter((r) => r.hoist)
+    .at(-1)?.position || 0;
+
+  this.redis.zadd(
+   `lists:members:${guildId}`,
+   Math.abs(Number(highestHoisted) - 250),
+   member.user.id,
+  );
+ }
+
  async set(data: APIGuildMember, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
+  await this.addToList(guildId, data);
   await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.user_id]);
   return true;
  }

@@ -3,17 +3,15 @@
 	import Mention from '$lib/components/Mention.svelte';
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import splitByThousand from '$lib/scripts/util/splitByThousands';
-	import { onMount } from 'svelte';
-	import type { LayoutParentData, LayoutServerData, PageData } from './$types';
-	import { afterNavigate, invalidate, invalidateAll } from '$app/navigation';
+	import type { LayoutData, PageData } from './$types';
 
-	const { data }: { data: LayoutServerData & LayoutParentData & PageData } = $props();
+	const { data }: { data: LayoutData & PageData } = $props();
 
 	let presences: number | undefined = $derived(data.guild.approximate_presence_count);
 	let members: number | undefined = $derived(data.guild.approximate_member_count);
 	let interval: null | NodeJS.Timeout = null;
 
-	onMount(() => {
+	$effect(() => {
 		if (members && presences) return;
 
 		interval = setInterval(async () => {

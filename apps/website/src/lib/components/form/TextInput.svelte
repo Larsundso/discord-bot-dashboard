@@ -1,16 +1,17 @@
 <script lang="ts">
 	import Input from './Input.svelte';
 
-	const {
+	let {
 		required = false,
 		type = 'text',
 		size = 'short',
 		maxLen,
 		minLen,
-		val,
+		val = $bindable(''),
 		label,
 		id,
 		onupdate,
+		onkeydown,
 	}: {
 		required: boolean;
 		type?: 'text' | 'number' | 'email' | 'password';
@@ -21,6 +22,7 @@
 		label: string;
 		id?: string;
 		onupdate?: (v: string | null) => void;
+		onkeydown?: (e: KeyboardEvent) => void;
 	} = $props();
 </script>
 
@@ -33,5 +35,7 @@
 	{val}
 	{id}
 	onupdate={(val) => onupdate?.(val ? String(val) : null)}
+	onkeydown={(e) => onkeydown?.(e)}
 	{size}
+	bind:value={val}
 />

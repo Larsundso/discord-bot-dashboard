@@ -1,5 +1,8 @@
 import { VALIDATOR_TOKEN } from '$env/static/private';
-import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events.js';
+import {
+	CacheEvents,
+	type Message,
+} from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events.js';
 import { API } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { Redis } from 'ioredis';
@@ -27,6 +30,7 @@ import ThreadMemberCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/C
 import UserCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/user';
 import VoiceCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/voice';
 import WebhookCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/webhook';
+import messageCreate from './Events/messageCreate';
 
 export const api = new API(
 	new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(VALIDATOR_TOKEN),
@@ -41,8 +45,15 @@ subscriber.subscribe(...Object.values(CacheEvents), (err, count) => {
 	console.log(`Available Cache: ${Object.values(CacheEvents).length}`);
 });
 
-subscriber.on('message', (channel, message) => {
+subscriber.on('message', (channel: CacheEvents, message) => {
 	console.log(channel, message);
+
+	switch (channel) {
+		case CacheEvents.messageCreate:
+			messageCreate(cache, message);
+		default:
+			break;
+	}
 });
 
 export const cache = {

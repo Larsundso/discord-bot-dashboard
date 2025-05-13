@@ -14,6 +14,7 @@ export type RChannelTypes =
 
 export type RChannel = Omit<APIGuildChannel<RChannelTypes>, 'guild'> & {
  guild_id: string;
+ topic: string;
 };
 
 export const RChannelKeys = [

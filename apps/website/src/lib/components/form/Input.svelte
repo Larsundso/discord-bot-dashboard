@@ -12,6 +12,7 @@
 		onupdate,
 		class: className,
 		value = $bindable(''),
+  onkeydown,
 	}: {
 		required: boolean;
 		type?: 'text' | 'number' | 'email' | 'password';
@@ -26,6 +27,7 @@
 		onupdate?: (v: string | number | null) => void;
 		class?: string;
 		value?: string;
+  onkeydown?: (e: KeyboardEvent) => void;
 	} = $props();
 
 	let queued = false;
@@ -46,6 +48,7 @@
 		<div class="w-full relative text-left">
 			{#if size === 'paragraph'}
 				<textarea
+					onkeydown={(e) => onkeydown?.(e)}
 					name={id}
 					maxlength={maxLen}
 					minlength={minLen}
@@ -58,6 +61,7 @@
 				></textarea>
 			{:else}
 				<input
+					onkeydown={(e) => onkeydown?.(e)}
 					name={id}
 					{type}
 					maxlength={maxLen}

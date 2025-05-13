@@ -10,7 +10,7 @@
 	class="flex flex-row justify-start items-center gap-1 color-alt-text py-0.5 rounded-lg px-0.5 mr-2
  transition-all duration-100 ease-in-out hover:bg-main-dark"
 	class:mt-4={channel.type === ChannelType.GuildCategory}
-	href={`/guilds/${guild.id}/channels/${channel.id}`}
+	href={`/guilds/${guild.id}/${channel.id}`}
 >
 	<ChannelIcon {channel} {guild} />
 
