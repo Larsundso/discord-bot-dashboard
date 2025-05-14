@@ -6,6 +6,7 @@
 	let interval: null | NodeJS.Timeout = null;
 
 	const get = async () => {
+		if (user) return;
 		const res = await fetch(`/api/users/${id}`)
 			.then((r) => (r.status === 200 ? (r.json() as Promise<RUser>) : null))
 			.catch(() => Promise.resolve(null));

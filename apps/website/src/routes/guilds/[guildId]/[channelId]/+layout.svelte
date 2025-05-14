@@ -43,7 +43,7 @@
 		</div>
 
 		<div
-			class="overflow-y-auto overflow-x-hidden px-2 w-[calc(100%-6.35cm)]"
+			class="overflow-y-auto overflow-x-hidden px-2 w-[calc(100%-6.35cm)] min-h-[calc(100%-2.5cm)]"
 		>
 			{@render children()}
 		</div>

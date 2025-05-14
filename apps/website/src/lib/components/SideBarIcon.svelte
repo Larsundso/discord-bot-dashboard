@@ -131,6 +131,7 @@
 				height={size}
 				{alt}
 				loading="lazy"
+				decoding="async"
 				bind:this={img}
 			/>
 		{:else}

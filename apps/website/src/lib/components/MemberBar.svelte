@@ -30,12 +30,24 @@
 
 <div
 	class="flex flex-col justify-start items-start w-60 h-100vh bg-main-darker of-y-auto of-x-hidden"
->	<div class="h-10"></div>
+>
+	<div class="h-10"></div>
 	{#each rolesMap as role}
-		<span class="color-alt-text text-xs pl-3 sm:pl-4 md:pl-5 mt-3 sm:mt-4 md:mt-5">{role.role?.name || 'Unknown role'}</span>
-		{#each role.members.sort((a, b) => getName(a).localeCompare(getName(b))) as member}			<div class="flex flex-row justify-start items-center p-1 pl-3 sm:pl-4 md:pl-5 gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm" id={member.user_id}>
-				<img src={member.avatar_url || member.user?.avatar_url} alt="" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full" />				<span
-					class="truncate max-w-30 sm:max-w-36 md:max-w-42 xl:max-w-full"
+		<span class="color-alt-text text-xs pl-3 sm:pl-4 md:pl-5 mt-3 sm:mt-4 md:mt-5"
+			>{role.role?.name || 'Unknown role'}</span
+		>
+		{#each role.members.sort((a, b) => getName(a).localeCompare(getName(b))) as member}
+			<div
+				class="flex flex-row justify-start items-center p-1 pl-3 sm:pl-4 md:pl-5 gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm"
+				id={member.user_id}
+			>
+				<img
+					src={member.avatar_url || member.user?.avatar_url}
+					alt=""
+					class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full"
+				/>
+				<span
+					class="truncate max-w-30 sm:max-w-36 md:max-w-42 xl:max-w-full truncate"
 					style={`color: #${
 						orderRoles(member)
 							.reverse()

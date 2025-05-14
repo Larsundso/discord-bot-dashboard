@@ -17,6 +17,11 @@
 	<User {id} />
 {:else if type === 'role'}
 	<Role {id} />
-{:else if type === 'channel' && guild}
-	<Channel {id} {guild} />
+{:else if type === 'channel'}
+	{#if guild}
+		<Channel {id} {guild} />
+	{:else}
+		<!-- Fallback for channel mention when guild data is not available -->
+		<span class="text-inherit">#{id}</span>
+	{/if}
 {/if}

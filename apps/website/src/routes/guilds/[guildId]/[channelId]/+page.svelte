@@ -5,6 +5,7 @@
 	import { source } from 'sveltekit-sse';
 	import type { PageServerData } from './$types';
 	import Content from '$lib/components/message/content.svelte';
+	import Embed from '$lib/components/message/embed.svelte';
 
 	const { data: initialData }: { data: PageServerData } = $props();
 	let messages = $derived(initialData.messages);
@@ -48,6 +49,10 @@
 					>{message.member?.nick || message.author?.global_name || message.author?.username}</span
 				>
 				<Content content={message.content} />
+
+				{#each message.embeds as embed}
+					<Embed {embed} />
+				{/each}
 			</div>
 		</div>
 	{/each}

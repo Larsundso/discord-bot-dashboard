@@ -34,6 +34,8 @@
 				src={`${guild.banner_url}?size=4096`}
 				alt="Guild Banner"
 				class="w-100% absolute top-0 h-37 object-cover"
+				loading="lazy"
+				decoding="async"
 			/>
 		{/if}
 	</div>

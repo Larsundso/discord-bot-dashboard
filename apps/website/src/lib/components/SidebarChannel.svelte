@@ -13,7 +13,10 @@
 	href={`/guilds/${guild.id}/${channel.id}`}
 >
 	<ChannelIcon {channel} {guild} />
-	<span class="text-xs sm:text-sm md:text-base" class:text-2xs={channel.type === ChannelType.GuildCategory}>
-		{channel.name.slice(0, 15)}{channel.name.length > 15 ? '...' : ''}
+	<span
+		class="text-xs sm:text-sm md:text-base truncate"
+		class:text-2xs={channel.type === ChannelType.GuildCategory}
+	>
+		{channel.name}
 	</span>
 </a>
