@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Content from '$lib/components/message/content.svelte';
+	import Embed from '$lib/components/message/embed.svelte';
+	import getHighestRoleWithColor from '$lib/scripts/util/getHighestRoleWithColor';
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
-	import Content from '$lib/components/message/content.svelte';
-	import Embed from '$lib/components/message/embed.svelte';
 
-	const { data: initialData }: { data: PageServerData & PageParentData } = $props();
-	let messages = $derived(initialData.messages);
+	const { data }: { data: PageServerData & PageParentData } = $props();
+	let messages = $derived(data.messages);
 
 	$effect(() => {
 		const connection = source(`/api/channels/${page.params.channelId}/messages`, {
@@ -19,7 +20,7 @@
 		const unsubscribe = channel.subscribe((run) => {
 			if (!run) return;
 
-			const parsed = JSON.parse(run) as (typeof initialData.messages)[number];
+			const parsed = JSON.parse(run) as (typeof data.messages)[number];
 			messages = [...messages, parsed];
 		});
 
@@ -45,13 +46,22 @@
 			<div
 				class="flex flex-col justify-start items-start max-w-[calc(100%-3rem)] sm:max-w-[calc(100%-3.5rem)] overflow-hidden"
 			>
-				<span class="font-medium truncate max-w-full"
-					>{message.member?.nick || message.author?.global_name || message.author?.username}</span
+				<span
+					class="font-medium truncate max-w-full"
+					style={`color: #${
+						message.member
+							? getHighestRoleWithColor(message.member, data.guild, data.roles)
+									.color.toString(16)
+									.padStart(6, '0')
+							: 'fff'
+					}`}
 				>
+					{message.member?.nick || message.author?.global_name || message.author?.username}
+				</span>
 				<Content content={message.content} />
 
 				{#each message.embeds as embed}
-					<Embed {embed} guild={initialData.guild} />
+					<Embed {embed} guild={data.guild} />
 				{/each}
 			</div>
 		</div>

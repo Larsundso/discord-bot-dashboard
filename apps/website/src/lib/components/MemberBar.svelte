@@ -1,22 +1,16 @@
 <script lang="ts">
 	import type { RGuild, RMember, RRole, RUser } from '$lib/scripts/RTypes';
+	import getHighestHoistedRole from '$lib/scripts/util/getHighestHoistedRole';
+	import getOrderedRoles from '$lib/scripts/util/getOrderedRoles';
 
 	type ExtendedMember = RMember & { user: RUser | undefined | null };
 	const { members, roles, guild }: { guild: RGuild; roles: RRole[]; members: ExtendedMember[] } =
 		$props();
 
-	const orderRoles = (m: ExtendedMember) =>
-		roles.filter((r) => m.roles.includes(r.id)).sort((a, b) => a.position - b.position);
-
-	const getHighestHoisted = (m: ExtendedMember) =>
-		orderRoles(m)
-			.filter((r) => r.hoist)
-			.at(-1) || roles.find((r) => r.id === guild.id)!;
-
 	const rolesMap: { role: RRole; members: ExtendedMember[] }[] = [];
 
 	members.forEach((m) => {
-		const highestRole = getHighestHoisted(m);
+		const highestRole = getHighestHoistedRole(m, guild, roles);
 		const map = rolesMap.find((r) => r.role?.id === highestRole?.id);
 		if (map) map.members.push(m);
 		else rolesMap.push({ role: highestRole, members: [m] });
@@ -49,7 +43,7 @@
 				<span
 					class="truncate max-w-30 sm:max-w-36 md:max-w-42 xl:max-w-full truncate"
 					style={`color: #${
-						orderRoles(member)
+						getOrderedRoles(member, roles)
 							.reverse()
 							.find((r) => r.color)
 							?.color.toString(16)

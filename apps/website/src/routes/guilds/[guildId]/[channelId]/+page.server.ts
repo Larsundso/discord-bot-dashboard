@@ -14,7 +14,7 @@ export const load: PageServerLoad = async (event) => {
 	const authors = await Promise.all(authorIds.map((m) => cache.users.get(m))).then((r) =>
 		r.filter((m) => !!m),
 	);
-	const members = await Promise.all(authors.map((m) => cache.members.get(m.id, guildId))).then((r) =>
+	const members = await Promise.all(authorIds.map((m) => cache.members.get(guildId, m))).then((r) =>
 		r.filter((m) => !!m),
 	);
 

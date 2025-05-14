@@ -4,16 +4,15 @@
 
 	const { channels, guild }: { channels: RChannel[]; guild: RGuild } = $props();
 
-	// Calculate boost progress bar width
-	function getBoostProgressWidth(count: number): string {
+	const getBoostProgressWidth = (count: number) => {
 		if (count === 0) return '0%';
 		if (count >= 16) return '100%';
 		return `${(count / 16) * 100}%`;
-	}
+	};
 </script>
 
 <section
-	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden min-w-65 relative"
+	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden max-w-65 relative"
 >
 	<div
 		class="flex flex-row justify-between items-start w-full flex-shrink-0"
@@ -22,12 +21,14 @@
 			? '9.25rem'
 			: '2.5rem'}"
 	>
-		<span
-			class="z-10 w-48 sm:w-56 md:w-65 bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-3 sm:pl-4 md:pl-5 text-sm sm:text-base"
+		<div
+			class="z-10 w-full bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-3 flex flex-row justify-between items-center gap-5 pr-3"
 		>
-			{guild.name.slice(0, 15)}{guild.name.length > 15 ? '...' : ''}
-		</span>
-		<i class="absolute i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
+			<span class="truncate w-full">
+				{guild.name}
+			</span>
+			<i class=" i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
+		</div>
 
 		{#if guild.banner_url}
 			<img
