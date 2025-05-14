@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import ChannelIcon from '../ChannelIcon.svelte';
 
-	const { id, guild }: { id: string; guild: RGuild } = $props();
+	const { id, guild }: { id: string; guild?: RGuild } = $props();
 	let data: RChannel | null = $state(null);
 
 	onMount(async () => {
@@ -13,7 +13,7 @@
 	});
 </script>
 
-<span class="mention flex flex-rew justify-center items-center">
+<span class="mention flex flex-rew justify-center items-center mx-1">
 	{#if data}
 		<ChannelIcon channel={data} {guild} /> {data.name}
 	{:else}

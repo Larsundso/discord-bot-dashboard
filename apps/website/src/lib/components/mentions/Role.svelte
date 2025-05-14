@@ -12,7 +12,7 @@
 	});
 </script>
 
-<span class="mention flex flex-rew justify-center items-center">
+<span class="mention flex flex-rew justify-center items-center mx-1">
 	{#if data}
 		@{data.name}
 	{:else}

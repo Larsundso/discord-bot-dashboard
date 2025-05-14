@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type { RGuild } from '$lib/scripts/RTypes';
 	import type { APIEmbed, APIEmbedField } from 'discord-api-types/v10';
 	import Content from './content.svelte';
 
-	const { embed }: { embed: APIEmbed } = $props();
+	const { embed, guild }: { embed: APIEmbed; guild?: RGuild | undefined } = $props();
 
 	function getEmbedColor(color?: number): string | undefined {
 		if (color === undefined || color === null || color === 0) return undefined; // Discord often uses 0 for no color
@@ -95,10 +96,10 @@
 								rel="noreferrer nofollow ugc"
 								class="hover:underline"
 							>
-								<span>{@html embed.author.name}</span>
+								<span>{embed.author.name}</span>
 							</a>
 						{:else}
-							<span>{@html embed.author.name}</span>
+							<span>{embed.author.name}</span>
 						{/if}
 					</p>
 				{/if}
@@ -107,18 +108,18 @@
 
 		<!-- Title -->
 		{#if embed.title}
-			<div class="text-base leading-[1.375] font-semibold mt-2 inline-block">
+			<div class="text-base leading-[1.375] font-semibold mt-2 block w-full" style="overflow-wrap: anywhere; word-break: break-all; max-width: 100%; overflow: hidden;">
 				{#if embed.url}
 					<a
 						href={embed.url}
-						class="text-blue-430 dark:text-blue-345 hover:underline underline-offset-1"
+						class="text-blue hover:underline underline-offset-1 break-all"
 						target="_blank"
 						rel="noreferrer nofollow ugc"
 					>
-						<div>{@html embed.title}</div>
+						<div style="word-break: break-all; overflow-wrap: anywhere;">{embed.title}</div>
 					</a>
 				{:else}
-					<div>{@html embed.title}</div>
+					<div style="word-break: break-all; overflow-wrap: anywhere;">{embed.title}</div>
 				{/if}
 			</div>
 		{/if}
@@ -126,10 +127,10 @@
 		<!-- Description -->
 		{#if embed.description}
 			<div
-				class="text-sm font-normal mt-2 inline-block whitespace-pre-line"
-				style="--font-size: 1rem;"
+				class="text-sm font-normal mt-2 block w-full"
+				style="--font-size: 1rem; overflow-wrap: anywhere; word-break: break-all; overflow: hidden; white-space: normal;"
 			>
-				<Content content={embed.description} />
+				<Content content={embed.description ?? null} {guild} />
 			</div>
 		{/if}
 
@@ -143,7 +144,7 @@
 					{#each row as field, fieldIndexInRow (`f-${rowIndex}-${fieldIndexInRow}`)}
 						<div class="min-w-0" style={getFieldGridColumnStyle(fieldIndexInRow, row.length)}>
 							{#if field.name}
-								<div class="font-semibold mb-px"><div>{@html field.name}</div></div>
+								<div class="font-semibold mb-px"><div>{field.name}</div></div>
 							{/if}
 							{#if field.value}
 								<div class="font-normal whitespace-pre-line" style="--font-size: 1rem;">

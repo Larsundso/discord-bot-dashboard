@@ -2,13 +2,13 @@
 	import type { RChannel, RGuild } from '$lib/scripts/RTypes';
 	import { ChannelType } from 'discord-api-types/v10';
 
-	const { channel, guild }: { channel: RChannel; guild: RGuild } = $props();
+	const { channel, guild }: { channel: RChannel; guild?: RGuild } = $props();
 </script>
 
 {#if channel.type === ChannelType.GuildCategory}
 	<i class="i-tabler-chevron-down block w-4 h-4"></i>
 {:else if channel.type === ChannelType.GuildText}
-	{#if channel.id === guild.rules_channel_id}
+	{#if channel.id === guild?.rules_channel_id}
 		<svg
 			xmlns:xlink="http://www.w3.org/1999/xlink"
 			x="0"

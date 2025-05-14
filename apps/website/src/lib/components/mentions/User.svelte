@@ -29,11 +29,11 @@
 	});
 </script>
 
-<div class="mention flex flex-row justify-center items-center gap-1 w-max">
+<div class="mention flex flex-row justify-center items-center gap-1 w-max mx-1">
 	{#if user}
-		@
+		<span class="text-alt-text">@</span>
 		<img src={user.avatar_url} alt="" class="w-5 h-5 rounded-full" />
-		{user.global_name}
+		{user.global_name || user.username}
 	{:else}
 		<span class="mention flex flex-row justify-center items-center">{id}</span>
 	{/if}

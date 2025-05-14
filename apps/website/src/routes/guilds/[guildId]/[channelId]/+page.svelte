@@ -51,7 +51,7 @@
 				<Content content={message.content} />
 
 				{#each message.embeds as embed}
-					<Embed {embed} />
+					<Embed {embed} guild={initialData.guild} />
 				{/each}
 			</div>
 		</div>
