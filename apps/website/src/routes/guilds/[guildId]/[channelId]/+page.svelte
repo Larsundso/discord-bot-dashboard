@@ -3,11 +3,11 @@
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import { source } from 'sveltekit-sse';
-	import type { PageServerData } from './$types';
+	import type { PageParentData, PageServerData } from './$types';
 	import Content from '$lib/components/message/content.svelte';
 	import Embed from '$lib/components/message/embed.svelte';
 
-	const { data: initialData }: { data: PageServerData } = $props();
+	const { data: initialData }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(initialData.messages);
 
 	$effect(() => {
