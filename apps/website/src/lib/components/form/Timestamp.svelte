@@ -1,7 +1,8 @@
 <script lang="ts">
-	const { time, type = 'F' }: { time: number; type?: 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R' } =
+	const { time, type: t = 'F' }: { time: number; type?: 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R' } =
 		$props();
 	const date = $derived(new Date(time));
+	let type = $derived(t);
 
 	let currentTime = $state(Date.now());
 	let intervalId: NodeJS.Timeout | null = null;
@@ -11,6 +12,25 @@
 
 		intervalId = setInterval(() => {
 			currentTime = Date.now();
+			const timeDiff = Math.abs(currentTime - time);
+
+			if (timeDiff > 60000) {
+				clearInterval(intervalId!);
+				intervalId = null;
+
+				intervalId = setInterval(() => {
+					currentTime = Date.now();
+					const newTimeDiff = Math.abs(currentTime - time);
+
+					if (newTimeDiff > 3600000) {
+						clearInterval(intervalId!);
+						intervalId = null;
+						type = 'F';
+					}
+
+					currentTime = Date.now();
+				}, 60000);
+			}
 		}, 1000);
 
 		return () => {
