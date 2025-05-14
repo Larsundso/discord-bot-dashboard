@@ -23,7 +23,7 @@
 </script>
 
 <div
-	class="flex flex-col justify-start items-start w-60 h-100vh bg-main-darker of-y-auto of-x-hidden"
+	class="flex flex-col justify-start items-start w-60 h-100vh bg-main-darker of-y-auto of-x-hidden mt-10"
 >
 	<div class="h-10"></div>
 	{#each rolesMap as role}
