@@ -1,7 +1,22 @@
 <script lang="ts">
 	const { time, type = 'F' }: { time: number; type?: 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R' } =
 		$props();
-	const date = new Date(time);
+	const date = $derived(new Date(time));
+
+	let currentTime = $state(Date.now());
+	let intervalId: NodeJS.Timeout | null = null;
+
+	$effect(() => {
+		if (type !== 'R') return;
+
+		intervalId = setInterval(() => {
+			currentTime = Date.now();
+		}, 1000);
+
+		return () => {
+			if (intervalId) clearInterval(intervalId);
+		};
+	});
 
 	const get = {
 		d: () =>
@@ -20,7 +35,7 @@
 		F: () =>
 			`${date.toLocaleDateString(undefined, { weekday: 'long' })}, ${date.getDate()} ${date.toLocaleDateString(undefined, { month: 'long' })} ${date.getFullYear()} ${date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`,
 		R: () => {
-			const now = new Date();
+			const now = new Date(currentTime); // Use reactive current time
 			const diff = date.getTime() - now.getTime();
 			const seconds = Math.abs(Math.floor(diff / 1000));
 			const minutes = Math.abs(Math.floor(seconds / 60));
@@ -48,8 +63,10 @@
 			}
 		},
 	};
+
+	const displayText = $derived(get[type]());
 </script>
 
 <div class="bg-[rgba(78,80,88,0.48)] px-1 rounded-md w-fit text-shadow-none">
-	<span> {get[type]()} </span>
+	<span> {displayText} </span>
 </div>

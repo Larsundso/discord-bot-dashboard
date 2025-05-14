@@ -7,6 +7,7 @@
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
+	import Timestamp from '$lib/components/form/Timestamp.svelte';
 
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(data.messages);
@@ -46,7 +47,7 @@
 			<div
 				class="flex flex-col justify-start items-start max-w-[calc(100%-3rem)] sm:max-w-[calc(100%-3.5rem)] overflow-hidden"
 			>
-				<span
+				<div
 					class="font-medium truncate max-w-full"
 					style={`color: #${
 						message.member
@@ -57,7 +58,10 @@
 					}`}
 				>
 					{message.member?.nick || message.author?.global_name || message.author?.username}
-				</span>
+					<div class="text-alt-text text-xs inline-block">
+						<Timestamp time={getTimestampFromID(message.id)} type="R" />
+					</div>
+				</div>
 				<Content content={message.content} />
 
 				{#each message.embeds as embed}
