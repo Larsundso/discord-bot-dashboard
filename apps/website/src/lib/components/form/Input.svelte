@@ -56,7 +56,7 @@
 					bind:value
 					{id}
 					tabindex="-1"
-					class="bg-transparent w-full -mb-2 -mt-0.5 h-20 pl-2 pt-2 focus:outline-none"
+					class="bg-transparent w-full -mb-2 -mt-0.5 h-20 pl-2 pt-2 focus:outline-none text-sm sm:text-base"
 					oninput={() => update()}
 				></textarea>
 			{:else}
@@ -72,7 +72,7 @@
 					bind:value
 					{id}
 					tabindex="-1"
-					class="bg-transparent w-full h-full p-2 focus:outline-none btn"
+					class="bg-transparent w-full h-full p-2 focus:outline-none btn text-sm sm:text-base"
 					oninput={update}
 				/>
 			{/if}

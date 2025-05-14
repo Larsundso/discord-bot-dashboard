@@ -23,35 +23,46 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins of-y-auto of-x-hidden h-100vh of-hidden"
+	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh w-full overflow-hidden"
 >
-	<div class="w-336 fixed">
-		<div class="flex flex-row justify-start items-center gap-2 px-5 py-2 bg-main-darker">
-			<ChannelIcon {channel} guild={data.guild} />
-			{channel.name}
-			{channel.topic?.length ? '|' : ''}
-			<span class="color-alt-text">
-				{channel.topic?.slice(0, 100)}
-			</span>
+	<!-- Main content area with proper width calculation to avoid overlap -->
+	<div class="flex flex-grow flex-col w-full md:w-[calc(100%-240px)] h-full overflow-hidden">
+		<!-- Fixed channel header -->
+		<div class="w-full sticky top-0 z-10 bg-main-darker">
+			<div
+				class="flex flex-row justify-start items-center gap-2 px-3 sm:px-4 md:px-5 py-2 overflow-hidden"
+			>
+				<ChannelIcon {channel} guild={data.guild} />
+				<span class="truncate">{channel.name}</span>
+				{channel.topic?.length ? '|' : ''}
+				<span class="color-alt-text truncate hidden sm:inline">
+					{channel.topic?.slice(0, 50)}
+					{channel.topic && channel.topic.length > 50 ? '...' : ''}
+				</span>
+			</div>
+		</div>
+
+		<div
+			class="overflow-y-auto overflow-x-hidden px-2 w-[calc(100%-6.35cm)]"
+		>
+			{@render children()}
+		</div>
+
+		<div class="sticky bottom-0 w-[calc(100%-6.35cm)]  bg-main-dark py-2 z-10">
+			<div class="px-4 mb-2 w-full">
+				<TextInput
+					maxLen={4000}
+					minLen={0}
+					required={false}
+					label={`Message #${channel.name}`}
+					onkeydown={(e) => (e.key === 'Enter' ? send() : null)}
+					bind:val={message}
+				/>
+			</div>
 		</div>
 	</div>
 
-	<div class="w-336 h-90vh mt-10 of-y-auto of-x-hidden">
-		{@render children()}
+	<div class="hidden md:block fixed right-0 top-0 bottom-0 h-full w-60">
+		<MemberBar members={data.members} roles={data.roles} guild={data.guild} />
 	</div>
-
-	<div class="fixed bottom-0 w-336">
-		<div class="px-4 mb-4">
-			<TextInput
-				maxLen={4000}
-				minLen={0}
-				required={false}
-				label={`Message #${channel.name}`}
-				onkeydown={(e) => (e.key === 'Enter' ? send() : null)}
-				bind:val={message}
-			/>
-		</div>
-	</div>
-
-	<MemberBar members={data.members} roles={data.roles} guild={data.guild} />
 </div>

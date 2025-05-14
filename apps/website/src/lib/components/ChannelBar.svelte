@@ -13,7 +13,7 @@
 </script>
 
 <section
-	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden w-65 relative"
+	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden min-w-65 relative"
 >
 	<div
 		class="flex flex-row justify-between items-start w-full flex-shrink-0"
@@ -22,8 +22,10 @@
 			? '9.25rem'
 			: '2.5rem'}"
 	>
-		<span class="z-10 w-65 bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-5">
-			{guild.name.slice(0, 20)}{guild.name.length > 20 ? '...' : ''}
+		<span
+			class="z-10 w-48 sm:w-56 md:w-65 bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-3 sm:pl-4 md:pl-5 text-sm sm:text-base"
+		>
+			{guild.name.slice(0, 15)}{guild.name.length > 15 ? '...' : ''}
 		</span>
 		<i class="absolute i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
 
@@ -39,7 +41,7 @@
 	{#if guild.premium_progress_bar_enabled}
 		<hr class="content-empty w-full h-0.1 border-0px border-t-1px border-solid border-main-dark" />
 
-		<div class="flex flex-col w-61 m-2">
+		<div class="flex flex-col w-94% m-2">
 			<div class="flex flex-row justify-between">
 				<span class="color-alt-text text-xs">Lvl {guild.premium_tier}</span>
 				<span class="color-alt-text text-xs">{guild.premium_subscription_count} Boosts</span>

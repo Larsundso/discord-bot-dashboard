@@ -7,9 +7,11 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins overflow-auto h-100vh of-hidden"
+	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh of-hidden w-full"
 >
 	<ChannelBar channels={data.channels || []} guild={data.guild} />
 
-	{@render children()}
+	<div class="flex-grow of-y-auto of-x-hidden">
+		{@render children()}
+	</div>
 </div>

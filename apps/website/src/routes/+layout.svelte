@@ -12,7 +12,7 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins overflow-auto h-100vh of-hidden"
+	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh w-screen of-hidden max-w-full"
 >
 	{#if page.url.pathname !== '/'}
 		<GuildBar guilds={data.guilds} />
@@ -21,7 +21,7 @@
 		{/if}
 	{/if}
 
-	<div class="bg-main w-full">
+	<div class="bg-main flex-grow of-hidden">
 		{@render children()}
 	</div>
 </div>

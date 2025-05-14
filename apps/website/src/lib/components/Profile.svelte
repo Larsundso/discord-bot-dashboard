@@ -6,11 +6,10 @@
 	let currentName: null | string = $state(null);
 </script>
 
-<section class="absolute left-0 bottom-0 z-10 m-1 p-2 bg-main-pre-darkest rounded-md w-82">
-	<div class="flex flex-row justify-between items-center gap-5">
-		<div class="flex flex-row justify-center items-center gap-2">
-			<img src={self.avatar_url} alt="" class="rounded-full w-13" />
-			<span>{self.global_name || self.username}</span>
+<section class="absolute left-0 bottom-0 z-10 m-1 p-2 bg-main-pre-darkest rounded-md w-82">	<div class="flex flex-row justify-between items-center gap-2 sm:gap-3 md:gap-5">
+		<div class="flex flex-row justify-center items-center gap-1 sm:gap-2">
+			<img src={self.avatar_url} alt="" class="rounded-full w-8 sm:w-10 md:w-13" />
+			<span class="text-sm sm:text-base truncate max-w-36 sm:max-w-40 md:max-w-full">{self.global_name || self.username}</span>
 		</div>
 
 		<div class="flex flex-row justify-center items-center gap-2">
@@ -23,9 +22,7 @@
 				onmouseleave={() => (currentName = null)}
 				href="/@me/settings"
 			>
-				<i class="i-tabler-settings-filled block w-5 h-5 color-check-unchecked"></i>
-
-				<div class="absolute left-60 -top-2">
+				<i class="i-tabler-settings-filled block w-5 h-5 color-check-unchecked"></i>				<div class="absolute left-40 sm:left-50 md:left-60 -top-2">
 					<Tooltip text={currentName} filter="Settings" />
 				</div>
 			</a>
@@ -39,9 +36,7 @@
 				onmouseleave={() => (currentName = null)}
 				href="/"
 			>
-				<i class="i-tabler-logout block w-5 h-5 color-check-unchecked"></i>
-
-				<div class="absolute left-70 -top-2">
+				<i class="i-tabler-logout block w-5 h-5 color-check-unchecked"></i>				<div class="absolute left-40 sm:left-50 md:left-70 -top-2">
 					<Tooltip text={currentName} filter="Logout" />
 				</div>
 			</a>

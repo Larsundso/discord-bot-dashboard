@@ -19,12 +19,14 @@ export const updateDotPos = (dotContainer: HTMLDivElement, mouseY: number) => {
 export const showDot = (dotContainer: HTMLDivElement, y: number) => {
 	if (!dotContainer) return;
 	if (dotContainer.style.top === `${y + offset}px` && !dotFirstAppear) return;
+	
+	const leftHiddenPosition = window.innerWidth < 640 ? '-6px' : '-8px';
 
 	dotContainer.animate(
 		[
 			{
 				top: dotFirstAppear ? `${y + offset}px` : dotContainer.style.top,
-				left: dotFirstAppear ? '-8px' : '-4px',
+				left: dotFirstAppear ? leftHiddenPosition : '-4px',
 			},
 			{ top: `${y + offset}px`, left: '-4px' },
 		],
@@ -40,13 +42,15 @@ export const hideDot = (dotContainer: HTMLDivElement) => {
 	if (!dotContainer) return;
 	dotFirstAppear = true;
 
-	dotContainer.animate([{ left: '-4px' }, { left: '-8px' }], {
+	const leftPosition = window.innerWidth < 640 ? '-6px' : '-8px';
+
+	dotContainer.animate([{ left: '-4px' }, { left: leftPosition }], {
 		duration: 200,
 		easing,
 		fill: 'forwards',
 	});
 
-	dotContainer.style.left = '-8px';
+	dotContainer.style.left = leftPosition;
 };
 
 export const showName = (

@@ -32,14 +32,23 @@
 	);
 </script>
 
-<div class="w-full h-full flex flex-col-reverse justify-start items-start gap-5 p-5">
-	{#each sortedMessages as message}
-		<div class="flex flex-row message gap-2">
-			<img src={message.author?.avatar_url} alt="" class="w-10 h-10 rounded-full" />
-			<div class="flex flex-col justify-start items-start">
-				<span>{message.member?.nick || message.author?.global_name || message.author?.username}</span>
-				<span>{message.content}</span>
+<div class="flex flex-col-reverse justify-start items-start gap-5 p-5 min-h-full">
+	{#each sortedMessages as message}		<div class="flex flex-row message gap-2 w-full max-w-full">
+			<img
+				src={message.author?.avatar_url}
+				alt=""
+				class="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0"
+			/>
+			<div class="flex flex-col justify-start items-start max-w-[calc(100%-3rem)] sm:max-w-[calc(100%-3.5rem)] overflow-hidden">
+				<span class="font-medium truncate max-w-full"
+					>{message.member?.nick || message.author?.global_name || message.author?.username}</span
+				>
+				<span class="break-words w-full whitespace-pre-wrap overflow-hidden">{message.content}</span>
 			</div>
 		</div>
 	{/each}
+
+	{#if sortedMessages.length === 0}
+		<div class="flex-grow">No messages yet</div>
+	{/if}
 </div>
