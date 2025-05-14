@@ -25,7 +25,7 @@
 					if (newTimeDiff > 3600000) {
 						clearInterval(intervalId!);
 						intervalId = null;
-						type = 'F';
+						type = 'D';
 					}
 
 					currentTime = Date.now();

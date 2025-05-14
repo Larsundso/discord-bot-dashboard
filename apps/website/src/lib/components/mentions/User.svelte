@@ -35,6 +35,6 @@
 		<img src={user.avatar_url} alt="" class="w-5 h-5 rounded-full" />
 		{user.global_name || user.username}
 	{:else}
-		<span class="mention flex flex-row justify-center items-center">{id}</span>
+		<span class="mention flex flex-row justify-center items-center">@{id}</span>
 	{/if}
 </div>

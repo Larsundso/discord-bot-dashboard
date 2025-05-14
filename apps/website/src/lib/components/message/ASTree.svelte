@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { RGuild } from '$lib/scripts/RTypes';
+	import Timestamp from '../form/Timestamp.svelte';
 	import Channel from '../mentions/Channel.svelte';
 	import Role from '../mentions/Role.svelte';
 	import User from '../mentions/User.svelte';
@@ -109,33 +110,62 @@
 {:else if parse.type === 'link'}
 	{@const nestedContent = (parse.content as (typeof parse)[])[0]}
 	<a href={parse.target as string} title={parse.title as string} class="text-blue">
-		{'content' in nestedContent
-			? (nestedContent.content as (typeof parse)[])[0].content
-			: nestedContent}
+		{'content' in nestedContent ? nestedContent.content : nestedContent}
 	</a>
 {:else if parse.type === 'user'}
-	<span class="whitespace-nowrap inline-block"><User id={parse.id as string} /></span>
+	<span class="whitespace-nowrap inline-block [vertical-align:middle]"
+		><User id={parse.id as string} /></span
+	>
 {:else if parse.type === 'channel'}
-	<span class="whitespace-nowrap inline-block"><Channel id={parse.id as string} {guild} /></span>
+	<span class="whitespace-nowrap inline-block [vertical-align:middle]"
+		><Channel id={parse.id as string} {guild} /></span
+	>
 {:else if parse.type === 'role'}
-	<span class="whitespace-nowrap inline-block"><Role id={parse.id as string} /></span>
+	<span class="whitespace-nowrap inline-block [vertical-align:middle]"
+		><Role id={parse.id as string} /></span
+	>
 {:else if parse.type === 'everyone'}
-	<span class="whitespace-nowrap inline-block mention mx-1 px-1">@everyone</span>
+	<span class="whitespace-nowrap inline-block mention mx-1 px-1 [vertical-align:middle]"
+		>@everyone</span
+	>
 {:else if parse.type === 'here'}
-	<span class="whitespace-nowrap inline-block mention mx-1 px-1">@here</span>
+	<span class="whitespace-nowrap inline-block mention mx-1 px-1 [vertical-align:middle]">@here</span>
 {:else if parse.type === 'emoji'}
 	<span class="whitespace-nowrap inline-block align-middle">
 		<img
 			src={`https://cdn.discordapp.com/emojis/${parse.id}.${parse.animated ? 'gif' : 'webp'}`}
 			alt={(parse.name as string) || 'Emoji'}
-			class="align-middle relative"
+			class="align-middle relative [vertical-align:middle]"
 			class:w-12={useLargeEmojis}
 			class:h-12={useLargeEmojis}
 			class:w-7={!useLargeEmojis}
 			class:h-7={!useLargeEmojis}
-			style="vertical-align: middle; top: -0.1em;"
 		/>
 	</span>
+{:else if parse.type === 'twemoji'}
+	{parse.name}
+{:else if parse.type === 'url'}
+	{#if !(String((parse.content as (typeof parse)[])[0].content) as string)?.startsWith('https://tenor.com/view/')}
+		<a
+			class="color-blue hover:underline"
+			href={((parse.content as (typeof parse)[])[0].content as string) || ''}
+			target="_blank"
+		>
+			{(parse.content as (typeof parse)[])[0].content}
+		</a>
+	{/if}
+{:else if parse.type === 'timestamp'}
+	<div class="whitespace-nowrap inline-block">
+		<Timestamp time={Number(parse.timestamp) * 1000} type={parse.format as 'd'} />
+	</div>
+{:else if parse.type === 'autolink'}
+	<a
+		href={parse.target as string}
+		target="_blank"
+		class="whitespace-nowrap inline-block color-blue hover:underline [vertical-align:middle]"
+	>
+		{parse.target}
+	</a>
 {:else}
 	<span class="text-danger">Unhandled {parse.type}</span>
 {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { RChannel, RGuild } from '$lib/scripts/RTypes';
 	import SidebarChannel from './SidebarChannel.svelte';
 
@@ -12,7 +13,7 @@
 </script>
 
 <section
-	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden max-w-65 relative"
+	class="bg-main-darkest flex flex-col justify-start items-start h-100vh of-y-auto of-x-hidden max-w-65 min-w-65 relative"
 >
 	<div
 		class="flex flex-row justify-between items-start w-full flex-shrink-0"
@@ -65,7 +66,7 @@
 
 	<div class="w-full overflow-y-auto ml-3.5">
 		{#each channels as channel}
-			<SidebarChannel {channel} {guild} />
+			<SidebarChannel {channel} {guild} selected={page.params.channelId === channel.id} />
 		{/each}
 
 		<div class="content-empty w-full h-19"></div>

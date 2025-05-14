@@ -88,7 +88,7 @@
 					/>
 				{/if}
 				{#if embed.author.name}
-					<p class="font-medium text-sm whitespace-pre-wrap inline-block my-auto">
+					<p class="font-medium text-sm whitespace-normal [overflow-wrap:anywhere] inline-block my-auto">
 						{#if embed.author.url}
 							<a
 								href={embed.author.url}
@@ -108,18 +108,24 @@
 
 		<!-- Title -->
 		{#if embed.title}
-			<div class="text-base leading-[1.375] font-semibold mt-2 block w-full" style="overflow-wrap: anywhere; word-break: break-all; max-width: 100%; overflow: hidden;">
+			<div
+				class="text-base leading-[1.375] font-semibold mt-2 block w-full [overflow-wrap:anywhere] break-words max-w-100% of-hidden"
+			>
 				{#if embed.url}
 					<a
 						href={embed.url}
-						class="text-blue hover:underline underline-offset-1 break-all"
+						class="text-blue hover:underline underline-offset-1 break-words"
 						target="_blank"
 						rel="noreferrer nofollow ugc"
 					>
-						<div style="word-break: break-all; overflow-wrap: anywhere;">{embed.title}</div>
+						<div class="break-words [overflow-wrap:anywhere]">
+							<Content content={embed.title} />
+						</div>
 					</a>
 				{:else}
-					<div style="word-break: break-all; overflow-wrap: anywhere;">{embed.title}</div>
+					<div class="break-words [overflow-wrap:anywhere]">
+						<Content content={embed.title} />
+					</div>
 				{/if}
 			</div>
 		{/if}
@@ -127,27 +133,29 @@
 		<!-- Description -->
 		{#if embed.description}
 			<div
-				class="text-sm font-normal mt-2 block w-full"
-				style="--font-size: 1rem; overflow-wrap: anywhere; word-break: break-all; overflow: hidden; white-space: normal;"
+				class="text-sm font-normal mt-2 block w-full break-words [overflow-wrap:anywhere] of-hidden whitespace-normal"
 			>
-				<Content content={embed.description ?? null} {guild} />
+				<Content content={embed.description ?? null} {guild} inEmbed={true} />
 			</div>
 		{/if}
 
 		<!-- Fields -->
 		{#if fieldRows.length > 0}
 			<div
-				class="text-sm leading-[1.125rem] grid col-start-1 col-end-2 gap-x-2 gap-y-2 mt-2 min-w-0"
-				style="grid-template-columns: repeat(12, minmax(0, 1fr));"
+				class="text-sm leading-[1.125rem] grid col-start-1 col-end-2 gap-x-2 gap-y-2 mt-2 min-w-0 [grid-template-columns:repeat(12,minmax(0,1fr))]"
 			>
 				{#each fieldRows as row, rowIndex (`fr-${rowIndex}`)}
 					{#each row as field, fieldIndexInRow (`f-${rowIndex}-${fieldIndexInRow}`)}
 						<div class="min-w-0" style={getFieldGridColumnStyle(fieldIndexInRow, row.length)}>
 							{#if field.name}
-								<div class="font-semibold mb-px"><div>{field.name}</div></div>
+								<div class="font-semibold mb-px">
+									<div class="break-words [overflow-wrap:anywhere]">
+										{field.name}
+									</div>
+								</div>
 							{/if}
 							{#if field.value}
-								<div class="font-normal whitespace-pre-line" style="--font-size: 1rem;">
+								<div class="font-normal whitespace-normal">
 									<Content content={field.value} />
 								</div>
 							{/if}
@@ -172,10 +180,7 @@
 
 		<!-- Thumbnail -->
 		{#if embed.thumbnail?.url}
-			<div
-				class="flex mt-2 ml-4 justify-self-end h-fit"
-				style="grid-area: 1 / 2 / auto / 3; max-height: 80px;"
-			>
+			<div class="flex mt-2 ml-4 justify-self-end h-fit max-h-80px [grid-area:1/2/auto/3]">
 				<img
 					src={embed.thumbnail.url}
 					class="rounded max-w-[80px] max-h-20 object-contain"
@@ -197,7 +202,7 @@
 					/>
 				{/if}
 				{#if embed.footer?.text}
-					<div class="whitespace-pre-wrap inline-block my-auto">
+					<div class="whitespace-normal [overflow-wrap:anywhere] inline-block my-auto">
 						<Content content={embed.footer.text} />
 					</div>
 				{/if}
@@ -205,7 +210,9 @@
 					<p class="mx-1 my-auto">•</p>
 				{/if}
 				{#if timestampFormatted}
-					<p class="whitespace-pre-wrap inline-block my-auto">{timestampFormatted}</p>
+					<p class="whitespace-normal [overflow-wrap:anywhere] inline-block my-auto">
+						{timestampFormatted}
+					</p>
 				{/if}
 			</div>
 		{/if}

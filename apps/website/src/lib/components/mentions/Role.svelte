@@ -12,10 +12,19 @@
 	});
 </script>
 
-<span class="mention flex flex-rew justify-center items-center mx-1">
+<span
+	class="mention flex flex-ow justify-center items-center mx-1"
+	style={`color: #${data?.color ? `${data.color.toString(16).padStart(6, '0')}` : 'fff'};`}
+>
 	{#if data}
-		@{data.name}
+		@
+		{#if data.unicode_emoji}
+			{data.unicode_emoji}
+		{:else if data.icon_url}
+			<img src={data.icon_url} alt="" class="w-6 h-6" />
+		{/if}
+		{data.name}
 	{:else}
-		<span class="mention flex flex-row justify-center items-center">{id}</span>
+		<span class="mention flex flex-row justify-center items-center">@&{id}</span>
 	{/if}
 </span>

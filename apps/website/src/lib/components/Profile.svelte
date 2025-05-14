@@ -6,7 +6,7 @@
 	let currentName: null | string = $state(null);
 </script>
 
-<section class="absolute left-0 bottom-0 z-10 m-1 p-2 bg-main-pre-darkest rounded-md w-17%">
+<section class="absolute left-0 bottom-0 z-10 m-1 p-2 bg-main-pre-darkest rounded-md w-82">
 	<div class="flex flex-row justify-between items-center gap-2 sm:gap-3 md:gap-5">
 		<div class="flex flex-row justify-center items-center gap-1 sm:gap-2">
 			<img src={self.avatar_url} alt="" class="rounded-full w-8 sm:w-10 md:w-13" />
