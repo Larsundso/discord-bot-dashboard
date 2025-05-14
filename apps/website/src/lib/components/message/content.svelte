@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RGuild } from '$lib/scripts/RTypes';
 	import { parse } from 'discord-markdown-parser';
-	import AstTree from './astTree.svelte';
+	import ASTree from './ASTree.svelte';
 
 	const { content, guild }: { content: string | null; guild?: RGuild } = $props();
 
@@ -11,7 +11,7 @@
 {#if parsed}
 	<div class="whitespace-nowrap">
 		{#each parsed as parse}
-			<AstTree {parse} {guild} />
+			<ASTree {parse} {guild} useLargeEmojis={!parsed.find((p) => p.type !== 'emoji')} />
 		{/each}
 	</div>
 {/if}
