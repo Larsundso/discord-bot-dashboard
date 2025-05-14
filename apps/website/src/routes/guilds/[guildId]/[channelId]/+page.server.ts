@@ -1,4 +1,3 @@
-import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 import { api, cache } from '$lib/server';
 import type { PageServerLoad } from './$types';
 

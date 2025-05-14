@@ -1,6 +1,12 @@
 import validateToken from '$lib/scripts/util/validateToken';
-import { publisher } from '$lib/server';
+import { publisher, redis } from '$lib/server';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async (event) => {
+	redis.del('token');
+	redis.del('self');
+};
 
 const tester = /[a-zA-Z0-9]{20,26}\..{6}\..{38}/gm;
 

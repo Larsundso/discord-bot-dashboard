@@ -8,16 +8,23 @@
 	const { data: initialData }: { data: PageServerData } = $props();
 	let messages = $derived(initialData.messages);
 
-	const connection = source(`/api/channels/${page.params.channelId}/messages`, {
-		options: { method: 'GET' },
-	});
-	const channel = connection.select(CacheEvents.messageCreate);
+	$effect(() => {
+		const connection = source(`/api/channels/${page.params.channelId}/messages`, {
+			options: { method: 'GET' },
+		});
+		const channel = connection.select(CacheEvents.messageCreate);
 
-	channel.subscribe((run) => {
-		if (!run) return;
+		const unsubscribe = channel.subscribe((run) => {
+			if (!run) return;
 
-		const parsed = JSON.parse(run) as (typeof initialData.messages)[number];
-		messages = [...messages, parsed];
+			const parsed = JSON.parse(run) as (typeof initialData.messages)[number];
+			messages = [...messages, parsed];
+		});
+
+		return () => {
+			unsubscribe();
+			connection.close();
+		};
 	});
 
 	const sortedMessages = $derived(
