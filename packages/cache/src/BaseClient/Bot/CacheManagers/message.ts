@@ -12,6 +12,7 @@ export type RMessage = Omit<
  | 'message_snapshots'
  | 'stickers'
  | 'application_id'
+ | 'interaction'
 > & {
  author_id: string;
  guild_id: string;
@@ -52,6 +53,7 @@ export const RMessageKeys = [
  'role_subscription_data',
  'poll',
  'message_snapshots',
+ 'interaction_metadata',
 ] as const;
 
 export default class MessageCache extends Cache<APIMessage> {

@@ -6,7 +6,7 @@
 	const { embed, guild }: { embed: APIEmbed; guild?: RGuild | undefined } = $props();
 
 	const getEmbedColor = (color?: number) => {
-		if (color === undefined || color === null || color === 0) return undefined; // Discord often uses 0 for no color
+		if (color === undefined || color === null || color === 0) return undefined;
 		return `#${color.toString(16).padStart(6, '0')}`;
 	};
 
@@ -14,13 +14,13 @@
 		if (!isoString) return '';
 		const date = new Date(isoString);
 		const day = String(date.getDate()).padStart(2, '0');
-		const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+		const month = String(date.getMonth() + 1).padStart(2, '0');
 		const year = date.getFullYear();
 		let hours = date.getHours();
 		const minutes = String(date.getMinutes()).padStart(2, '0');
 		const ampm = hours >= 12 ? 'PM' : 'AM';
 		hours = hours % 12;
-		hours = hours ? hours : 12; // the hour '0' should be '12'
+		hours = hours ? hours : 12;
 		const strHours = String(hours);
 
 		return `${day}/${month}/${year} ${strHours}:${minutes} ${ampm}`;
@@ -60,26 +60,18 @@
 		fieldRows = newFieldRows;
 	});
 
-	const getFieldGridColumnStyle = (fieldIndexInRow: number, totalFieldsInRow: number) => {
-		if (totalFieldsInRow <= 0) return '';
-		const spanPerField = Math.floor(12 / totalFieldsInRow);
-		const startColumn = fieldIndexInRow * spanPerField + 1;
-		const endColumn = (fieldIndexInRow + 1) * spanPerField + 1;
-		return `grid-column: ${startColumn} / ${endColumn};`;
-	};
-
 	const embedBorderColor = $derived(getEmbedColor(embed.color));
 	const timestampFormatted = $derived(formatEmbedTimestamp(embed.timestamp));
 </script>
 
 {#if Object.keys(embed).length > 0}
 	<div
-		class="border-l-solid rounded dark:text-gray-100 inline-grid pr-4 pb-4 pl-3 bg-main-darker border border-l-4 pt-[2px] m-1 max-w-520px"
+		class="border-l-solid rounded dark:text-gray-100 grid pr-4 pb-4 pl-3 bg-main-darker border border-l-4 pt-[2px] m-1 max-w-520px"
 		style={`border-color: ${embedBorderColor};`}
 	>
 		<!-- Author -->
 		{#if embed.author}
-			<div class="min-w-0 flex mt-2 items-center">
+			<div class="min-w-0 flex mt-2 items-center col-start-1 col-end-2 row-auto">
 				{#if embed.author.icon_url}
 					<img
 						class="h-6 w-6 mr-2 object-contain rounded-full"
@@ -109,7 +101,7 @@
 		<!-- Title -->
 		{#if embed.title}
 			<div
-				class="text-base leading-[1.375] font-semibold mt-2 block w-full [overflow-wrap:anywhere] break-words max-w-100% of-hidden"
+				class="text-base leading-[1.375] font-semibold mt-2 block w-full [overflow-wrap:anywhere] break-words max-w-100% of-hidden col-start-1 col-end-2 row-auto"
 			>
 				{#if embed.url}
 					<a
@@ -133,7 +125,7 @@
 		<!-- Description -->
 		{#if embed.description}
 			<div
-				class="text-sm font-normal mt-2 block w-full break-words [overflow-wrap:anywhere] of-hidden whitespace-normal"
+				class="text-sm font-normal mt-2 block w-full break-words [overflow-wrap:anywhere] of-hidden whitespace-normal col-start-1 col-end-2 row-auto"
 			>
 				<Content content={embed.description ?? null} {guild} inEmbed={true} />
 			</div>
@@ -142,25 +134,27 @@
 		<!-- Fields -->
 		{#if fieldRows.length > 0}
 			<div
-				class="text-sm leading-[1.125rem] grid col-start-1 col-end-2 gap-x-2 gap-y-2 mt-2 min-w-0 [grid-template-columns:repeat(12,minmax(0,1fr))]"
+				class="text-sm leading-[1.125rem] grid col-start-1 col-end-2 gap-2 mt-2 w-full flex flex-col justify-center items-between"
 			>
 				{#each fieldRows as row, rowIndex (`fr-${rowIndex}`)}
-					{#each row as field, fieldIndexInRow (`f-${rowIndex}-${fieldIndexInRow}`)}
-						<div class="min-w-0" style={getFieldGridColumnStyle(fieldIndexInRow, row.length)}>
-							{#if field.name}
-								<div class="font-semibold mb-px">
-									<div class="break-words [overflow-wrap:anywhere]">
-										{field.name}
+					<div class="flex flex-row gap-2 w-full">
+						{#each row as field, fieldIndexInRow (`f-${rowIndex}-${fieldIndexInRow}`)}
+							<div class="min-w-33% overflow-hidden">
+								{#if field.name}
+									<div class="font-semibold mb-[2px] text-ellipsis overflow-hidden">
+										<div class="break-words [overflow-wrap:anywhere]">
+											{field.name}
+										</div>
 									</div>
-								</div>
-							{/if}
-							{#if field.value}
-								<div class="font-normal whitespace-normal">
-									<Content content={field.value} />
-								</div>
-							{/if}
-						</div>
-					{/each}
+								{/if}
+								{#if field.value}
+									<div class="font-normal whitespace-pre-line text-ellipsis overflow-hidden">
+										<Content content={field.value} />
+									</div>
+								{/if}
+							</div>
+						{/each}
+					</div>
 				{/each}
 			</div>
 		{/if}
@@ -180,7 +174,7 @@
 
 		<!-- Thumbnail -->
 		{#if embed.thumbnail?.url}
-			<div class="flex mt-2 ml-4 justify-self-end h-fit max-h-80px [grid-area:1/2/auto/3]">
+			<div class="flex mt-2 ml-4 justify-self-end h-fit max-h-80px [grid-area:1/2/2/3]">
 				<img
 					src={embed.thumbnail.url}
 					class="rounded max-w-[80px] max-h-20 object-contain"
@@ -191,9 +185,7 @@
 
 		<!-- Footer -->
 		{#if embed.footer || timestampFormatted}
-			<div
-				class="min-w-0 flex mt-2 font-medium text-xs text-primary-600 dark:text-primary-230 items-center"
-			>
+			<div class="min-w-0 flex mt-2 font-medium text-xs items-center">
 				{#if embed.footer?.icon_url}
 					<img
 						class="h-5 w-5 mr-2 object-contain rounded-full"

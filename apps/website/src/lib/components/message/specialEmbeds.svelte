@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { APIEmbed } from 'discord-api-types/v10';
+	import type { APIEmbed, EmbedType } from 'discord-api-types/v10';
 	import Video from './video.svelte';
 	import InfiniteVideo from './infiniteVideo.svelte';
 	import Automoderation from './automoderation.svelte';
 	import type { RGuild } from '$lib/scripts/RTypes';
-	import Attachment from './attachment.svelte';
 
 	const { embed, guild }: { embed: APIEmbed; guild?: RGuild } = $props();
 </script>
@@ -26,6 +25,8 @@
 			/>
 		</div>
 	</div>
+{:else if embed.type === ('auto_moderation_notification' as EmbedType)}
+	<Automoderation {embed} {guild} />
 {:else}
 	<span class="text-danger">
 		Unhandled {embed.type} embed
