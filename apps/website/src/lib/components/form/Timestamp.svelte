@@ -6,32 +6,41 @@
 
 	let currentTime = $state(Date.now());
 	let intervalId: NodeJS.Timeout | null = null;
+	let updateFrequency = $state<'second' | 'minute'>('second');
 
 	$effect(() => {
 		if (type !== 'R') return;
 
-		intervalId = setInterval(() => {
-			currentTime = Date.now();
-			const timeDiff = Math.abs(currentTime - time);
+		currentTime = Date.now();
+		updateFrequency = 'second';
 
-			if (timeDiff > 60000) {
-				clearInterval(intervalId!);
+		const setupInterval = () => {
+			if (intervalId) {
+				clearInterval(intervalId);
 				intervalId = null;
-
-				intervalId = setInterval(() => {
-					currentTime = Date.now();
-					const newTimeDiff = Math.abs(currentTime - time);
-
-					if (newTimeDiff > 3600000) {
-						clearInterval(intervalId!);
-						intervalId = null;
-						type = 'D';
-					}
-
-					currentTime = Date.now();
-				}, 60000);
 			}
-		}, 1000);
+
+			const interval = updateFrequency === 'second' ? 1000 : 60000;
+
+			intervalId = setInterval(() => {
+				currentTime = Date.now();
+				const timeDiff = Math.abs(currentTime - time);
+
+				if (timeDiff > 3600000) {
+					clearInterval(intervalId!);
+					intervalId = null;
+					type = 'D';
+					return;
+				}
+
+				if (timeDiff > 60000 && updateFrequency === 'second') {
+					updateFrequency = 'minute';
+					setupInterval();
+				}
+			}, interval);
+		};
+
+		setupInterval();
 
 		return () => {
 			if (intervalId) clearInterval(intervalId);

@@ -1,13 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Timestamp from '$lib/components/form/Timestamp.svelte';
+	import Attachment from '$lib/components/message/attachment.svelte';
+	import Component from '$lib/components/message/component.svelte';
 	import Content from '$lib/components/message/content.svelte';
 	import Embed from '$lib/components/message/embed.svelte';
+	import SpecialEmbeds from '$lib/components/message/specialEmbeds.svelte';
+	import Sticker from '$lib/components/message/sticker.svelte';
 	import getHighestRoleWithColor from '$lib/scripts/util/getHighestRoleWithColor';
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
-	import Timestamp from '$lib/components/form/Timestamp.svelte';
 
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(data.messages);
@@ -64,8 +68,24 @@
 				</div>
 				<Content content={message.content} />
 
-				{#each message.embeds as embed}
+				{#each message.sticker_items || [] as sticker}
+					<Sticker {sticker} />
+				{/each}
+
+				{#each message.embeds.filter((r) => r.type === 'rich') as embed}
 					<Embed {embed} guild={data.guild} />
+				{/each}
+
+				{#each message.embeds.filter((r) => r.type !== 'rich') as embed}
+					<SpecialEmbeds {embed} guild={data.guild} />
+				{/each}
+
+				{#each message.attachments as attachment}
+					<Attachment {attachment} />
+				{/each}
+
+				{#each message.components || [] as component}
+					<Component {component} />
 				{/each}
 			</div>
 		</div>

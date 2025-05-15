@@ -5,12 +5,12 @@
 
 	const { embed, guild }: { embed: APIEmbed; guild?: RGuild | undefined } = $props();
 
-	function getEmbedColor(color?: number): string | undefined {
+	const getEmbedColor = (color?: number) => {
 		if (color === undefined || color === null || color === 0) return undefined; // Discord often uses 0 for no color
 		return `#${color.toString(16).padStart(6, '0')}`;
-	}
+	};
 
-	function formatEmbedTimestamp(isoString?: string): string {
+	const formatEmbedTimestamp = (isoString?: string) => {
 		if (!isoString) return '';
 		const date = new Date(isoString);
 		const day = String(date.getDate()).padStart(2, '0');
@@ -24,7 +24,7 @@
 		const strHours = String(hours);
 
 		return `${day}/${month}/${year} ${strHours}:${minutes} ${ampm}`;
-	}
+	};
 
 	type FieldRow = APIEmbedField[];
 	let fieldRows: FieldRow[] = $state([]);
@@ -60,13 +60,13 @@
 		fieldRows = newFieldRows;
 	});
 
-	function getFieldGridColumnStyle(fieldIndexInRow: number, totalFieldsInRow: number): string {
+	const getFieldGridColumnStyle = (fieldIndexInRow: number, totalFieldsInRow: number) => {
 		if (totalFieldsInRow <= 0) return '';
 		const spanPerField = Math.floor(12 / totalFieldsInRow);
 		const startColumn = fieldIndexInRow * spanPerField + 1;
 		const endColumn = (fieldIndexInRow + 1) * spanPerField + 1;
 		return `grid-column: ${startColumn} / ${endColumn};`;
-	}
+	};
 
 	const embedBorderColor = $derived(getEmbedColor(embed.color));
 	const timestampFormatted = $derived(formatEmbedTimestamp(embed.timestamp));
@@ -74,7 +74,7 @@
 
 {#if Object.keys(embed).length > 0}
 	<div
-		class="border-l-solid rounded dark:text-gray-100 inline-grid pr-4 pb-4 pl-3 bg-main-darker dark:bg-background-secondary-dark border border-l-4 pt-[2px] m-1 max-w-520px"
+		class="border-l-solid rounded dark:text-gray-100 inline-grid pr-4 pb-4 pl-3 bg-main-darker border border-l-4 pt-[2px] m-1 max-w-520px"
 		style={`border-color: ${embedBorderColor};`}
 	>
 		<!-- Author -->
@@ -167,7 +167,7 @@
 
 		<!-- Image -->
 		{#if embed.image?.url}
-			<div class="mt-2">
+			<div class="mt-2 w-full col-start-1 col-end-3">
 				<div class="w-full">
 					<img
 						src={embed.image.url}
