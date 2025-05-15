@@ -1,17 +1,14 @@
 <script lang="ts">
 	import type { RUser } from '$lib/scripts/RTypes';
+	import cache from '$lib/scripts/cache';
 
 	const { id }: { id: string } = $props();
 	let user: RUser | null = $derived(null);
 	let interval: null | NodeJS.Timeout = null;
 
 	const get = async () => {
-		if (user) return;
-		const res = await fetch(`/api/users/${id}`)
-			.then((r) => (r.status === 200 ? (r.json() as Promise<RUser>) : null))
-			.catch(() => Promise.resolve(null));
-
-		user = res;
+		const u = await cache.users.get(id).catch(() => null);
+		if (user) user = u;
 	};
 
 	$effect(() => {
@@ -21,7 +18,7 @@
 		interval = setInterval(async () => {
 			await get();
 			if (user && interval) clearInterval(interval);
-		}, 1000);
+		}, 10000);
 
 		return () => {
 			if (interval) clearInterval(interval);

@@ -4,6 +4,7 @@
 	import SidebarChannel from './SidebarChannel.svelte';
 
 	const { channels, guild }: { channels: RChannel[]; guild: RGuild } = $props();
+	let showSettings = $state(false);
 
 	const getBoostProgressWidth = (count: number) => {
 		if (count === 0) return '0%';
@@ -22,13 +23,21 @@
 			? '9.25rem'
 			: '2.5rem'}"
 	>
+		<div class:invisible={!showSettings} class="absolute">hello</div>
+
 		<div
 			class="z-10 w-full bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-3 flex flex-row justify-between items-center gap-5 pr-3"
 		>
 			<span class="truncate w-full">
 				{guild.name}
 			</span>
-			<i class=" i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
+			<button
+				aria-label="Open settings"
+				onclick={() => (showSettings = !showSettings)}
+				onkeydown={(e) => (e.key === 'Enter' ? (showSettings = !showSettings) : null)}
+			>
+				<i class=" i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
+			</button>
 		</div>
 
 		{#if guild.banner_url}

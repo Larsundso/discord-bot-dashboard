@@ -2,14 +2,13 @@
 	import type { RChannel, RGuild } from '$lib/scripts/RTypes';
 	import { onMount } from 'svelte';
 	import ChannelIcon from '../ChannelIcon.svelte';
+	import cache from '$lib/scripts/cache';
 
 	const { id, guild }: { id: string; guild?: RGuild } = $props();
 	let data: RChannel | null = $state(null);
 
 	onMount(async () => {
-		data = await fetch(`/api/channels/${id}`)
-			.then((r) => r.json() as Promise<RChannel>)
-			.catch(() => Promise.resolve(null));
+		data = await cache.channels.get(id).catch(() => null);
 	});
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import cache from '$lib/scripts/cache';
 	import type { RRole } from '$lib/scripts/RTypes';
 	import { onMount } from 'svelte';
 
@@ -6,9 +7,7 @@
 	let data: RRole | null = $state(null);
 
 	onMount(async () => {
-		data = await fetch(`/api/roles/${id}`)
-			.then((r) => r.json() as Promise<RRole>)
-			.catch(() => Promise.resolve(null));
+		data = await cache.roles.get(id).catch(() => null);
 	});
 </script>
 
