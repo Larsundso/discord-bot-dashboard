@@ -11,10 +11,11 @@ export const load: LayoutServerLoad = async (event) => {
 	if (!guild) throw redirect(302, '/@me');
 
 	const fetched = event.cookies.get('fetched');
-	if (!fetched) {
+	const sessionStart = event.cookies.get('sessionStart');
+	if (!fetched || fetched !== sessionStart) {
 		event.fetch(`/api/guilds/${guildId}/members`);
 
-		event.cookies.set('fetched', guildId, {
+		event.cookies.set('fetched', sessionStart!, {
 			path: `/guilds/${guildId}`,
 			expires: new Date(Date.now() + 60 * 60 * 1000),
 			httpOnly: true,

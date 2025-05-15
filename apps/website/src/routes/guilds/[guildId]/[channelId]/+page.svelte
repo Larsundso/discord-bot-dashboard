@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Boost from '$lib/components/message/types/Boost.svelte';
 	import Message from '$lib/components/message/types/Default.svelte';
+	import Join from '$lib/components/message/types/Join.svelte';
+	import Pin from '$lib/components/message/types/Pin.svelte';
 	import StageEnd from '$lib/components/message/types/StageEnd.svelte';
 	import StageSpeaker from '$lib/components/message/types/StageSpeaker.svelte';
 	import StageStart from '$lib/components/message/types/StageStart.svelte';
@@ -9,9 +12,6 @@
 	import { MessageType } from 'discord-api-types/v10';
 	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
-	import Boost from '$lib/components/message/types/Boost.svelte';
-	import Join from '$lib/components/message/types/Join.svelte';
-	import Pin from '$lib/components/message/types/Pin.svelte';
 
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(data.messages);

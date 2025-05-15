@@ -3,7 +3,7 @@ import { publisher, redis, setAPI } from '$lib/server';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
 	redis.flushdb();
 };
 
@@ -23,6 +23,11 @@ export const actions = {
 		publisher.set('token', token);
 		publisher.set('self', JSON.stringify(self));
 		publisher.publish('login', 'login');
+		event.cookies.set('sessionStart', String(Date.now()), {
+			httpOnly: true,
+			sameSite: 'strict',
+			path: '/',
+		});
 		setAPI(token);
 
 		redirect(302, '/@me');

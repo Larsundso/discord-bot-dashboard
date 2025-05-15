@@ -34,6 +34,9 @@ import WebhookCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheM
 import messageCreate from './Events/messageCreate';
 import messageDelete from './Events/messageDelete';
 import messageUpdate from './Events/messageUpdate';
+import guildCreate from './Events/guildCreate';
+import guildUpdate from './Events/guildUpdate';
+import guildDelete from './Events/guildDelete';
 
 export const validatorAPI = new API(
 	new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(VALIDATOR_TOKEN),
@@ -57,20 +60,61 @@ subscriber.subscribe(...Object.values(CacheEvents), (err, count) => {
 	console.log(`Available Cache: ${Object.values(CacheEvents).length}`);
 });
 
+const channelFnMap: Record<CacheEvents, (_1: typeof cache, _2: string) => void> = {
+	[CacheEvents.channelCreate]: (_1, _2) => {},
+	[CacheEvents.channelDelete]: (_1, _2) => {},
+	[CacheEvents.channelPinsUpdate]: (_1, _2) => {},
+	[CacheEvents.channelUpdate]: (_1, _2) => {},
+	[CacheEvents.emojiCreate]: (_1, _2) => {},
+	[CacheEvents.emojiDelete]: (_1, _2) => {},
+	[CacheEvents.emojiUpdate]: (_1, _2) => {},
+	[CacheEvents.guildAvailable]: (_1, _2) => {},
+	[CacheEvents.guildAuditLogEntryCreate]: (_1, _2) => {},
+	[CacheEvents.guildCreate]: guildCreate,
+	[CacheEvents.guildDelete]: guildDelete,
+	[CacheEvents.guildMemberAdd]: (_1, _2) => {},
+	[CacheEvents.guildMemberRemove]: (_1, _2) => {},
+	[CacheEvents.guildMemberUpdate]: (_1, _2) => {},
+	[CacheEvents.guildRoleCreate]: (_1, _2) => {},
+	[CacheEvents.guildRoleDelete]: (_1, _2) => {},
+	[CacheEvents.guildRoleUpdate]: (_1, _2) => {},
+	[CacheEvents.guildScheduledEventCreate]: (_1, _2) => {},
+	[CacheEvents.guildScheduledEventDelete]: (_1, _2) => {},
+	[CacheEvents.guildScheduledEventUpdate]: (_1, _2) => {},
+	[CacheEvents.guildSoundboardSoundCreate]: (_1, _2) => {},
+	[CacheEvents.guildSoundboardSoundDelete]: (_1, _2) => {},
+	[CacheEvents.guildSoundboardSoundUpdate]: (_1, _2) => {},
+	[CacheEvents.guildUnavailable]: (_1, _2) => {},
+	[CacheEvents.guildUpdate]: guildUpdate,
+	[CacheEvents.inviteCreate]: (_1, _2) => {},
+	[CacheEvents.inviteDelete]: (_1, _2) => {},
+	[CacheEvents.messageCreate]: messageCreate,
+	[CacheEvents.messageDelete]: messageDelete,
+	[CacheEvents.messageDeleteBulk]: (_1, _2) => {},
+	[CacheEvents.messageReactionAdd]: (_1, _2) => {},
+	[CacheEvents.messageReactionRemove]: (_1, _2) => {},
+	[CacheEvents.messageReactionRemoveAll]: (_1, _2) => {},
+	[CacheEvents.messageReactionRemoveEmoji]: (_1, _2) => {},
+	[CacheEvents.messageUpdate]: messageUpdate,
+	[CacheEvents.presenceUpdate]: (_1, _2) => {},
+	[CacheEvents.soundboardSounds]: (_1, _2) => {},
+	[CacheEvents.stageInstanceCreate]: (_1, _2) => {},
+	[CacheEvents.stageInstanceDelete]: (_1, _2) => {},
+	[CacheEvents.stageInstanceUpdate]: (_1, _2) => {},
+	[CacheEvents.stickersUpdate]: (_1, _2) => {},
+	[CacheEvents.threadCreate]: (_1, _2) => {},
+	[CacheEvents.threadDelete]: (_1, _2) => {},
+	[CacheEvents.threadMembersUpdate]: (_1, _2) => {},
+	[CacheEvents.threadMemberUpdate]: (_1, _2) => {},
+	[CacheEvents.threadUpdate]: (_1, _2) => {},
+	[CacheEvents.typingStart]: (_1, _2) => {},
+	[CacheEvents.userUpdate]: (_1, _2) => {},
+	[CacheEvents.voiceStateUpdate]: (_1, _2) => {},
+	[CacheEvents.webhooksUpdate]: (_1, _2) => {},
+};
+
 subscriber.on('message', (channel: CacheEvents, message) => {
-	switch (channel) {
-		case CacheEvents.messageCreate:
-			messageCreate(cache, message);
-			break;
-		case CacheEvents.messageUpdate:
-			messageUpdate(cache, message);
-			break;
-		case CacheEvents.messageDelete:
-			messageDelete(cache, message);
-			break;
-		default:
-			break;
-	}
+	channelFnMap[channel]?.(cache, message);
 });
 
 export const cache = {

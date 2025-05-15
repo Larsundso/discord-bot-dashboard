@@ -1,7 +1,58 @@
 <script lang="ts">
+	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import type { PageData } from './$types';
+	import { source } from 'sveltekit-sse';
+	import type { RGuild } from '$lib/scripts/RTypes';
 
 	const { data }: { data: PageData } = $props();
+	let guilds = $derived(data.guilds);
+
+	$effect(() => {
+		const postConnection = source(`/api/guilds/events`, {
+			options: { method: 'POST' },
+		});
+		const patchConnection = source(`/api/guilds/events`, {
+			options: { method: 'PATCH' },
+		});
+		const deleteConnection = source(`/api/guilds/events`, {
+			options: { method: 'DELETE' },
+		});
+
+		const postChannel = postConnection.select(CacheEvents.guildCreate);
+		const patchChannel = patchConnection.select(CacheEvents.guildUpdate);
+		const deleteChannel = deleteConnection.select(CacheEvents.guildDelete);
+
+		const postUnsub = postChannel.subscribe((run) => {
+			if (!run) return;
+
+			const parsed = JSON.parse(run) as RGuild;
+			guilds = [...guilds, parsed];
+		});
+
+		const patchUnsub = patchChannel.subscribe((run) => {
+			if (!run) return;
+
+			const parsed = JSON.parse(run) as RGuild;
+			guilds = guilds.map((guild) => (guild.id === parsed.id ? parsed : guild));
+		});
+
+		const deleteUnsub = deleteChannel.subscribe((run) => {
+			if (!run) return;
+
+			const parsed = JSON.parse(run) as RGuild;
+			guilds = guilds.filter((guild) => guild.id !== parsed.id);
+		});
+
+		return () => {
+			postUnsub();
+			patchUnsub();
+			deleteUnsub();
+			postConnection.close();
+			patchConnection.close();
+			deleteConnection.close();
+		};
+	});
+
 	let query = $state('');
 </script>
 
@@ -23,7 +74,7 @@
 	</div>
 
 	<div class="flex flex-row justify-center items-center gap-4 w-full flex-wrap mt-5">
-		{#each data.guilds.filter((g) => g.name.toLowerCase().includes(query.toLowerCase())) as guild}
+		{#each guilds.filter((g) => g.name.toLowerCase().includes(query.toLowerCase())) as guild}
 			<a
 				class="w-15% flex flex-col justify-center items-center gap-2 p-2 relative of-hidden
     hover:scale-105 transition-all duration-100 ease-in-out"
