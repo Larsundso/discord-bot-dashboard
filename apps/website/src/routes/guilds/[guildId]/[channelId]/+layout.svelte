@@ -36,8 +36,7 @@
 				<span class="truncate">{channel.name}</span>
 				{channel.topic?.length ? '|' : ''}
 				<span class="color-alt-text truncate hidden sm:inline">
-					{channel.topic?.slice(0, 50)}
-					{channel.topic && channel.topic.length > 50 ? '...' : ''}
+					{channel.topic}
 				</span>
 			</div>
 		</div>
@@ -48,7 +47,7 @@
 			{@render children()}
 		</div>
 
-		<div class="sticky bottom-0 w-[calc(100%-6.35cm)]  bg-main-dark py-2 z-10">
+		<div class="sticky bottom-0 w-[calc(100%-6.35cm)] bg-main-dark py-2 z-10">
 			<div class="px-4 mb-2 w-full">
 				<TextInput
 					maxLen={4000}

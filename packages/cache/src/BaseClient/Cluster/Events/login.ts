@@ -16,12 +16,12 @@ export default async () => {
  console.log(`Logged in as ${self.username}#${self.discriminator} (${self.id})`);
 
  if (loggedIn) {
-  loggedIn.broadcastEval('this.destroy()');
   loggedIn.broadcastEval('process.exit(0)');
   loggedIn = null;
  }
 
  loggedIn = new ClusterManager(`./dist/bot.js`, {
+  restarts: { max: 0, interval: 0 },
   totalShards: 'auto',
   totalClusters: 'auto',
   shardsPerClusters: 10,

@@ -1,11 +1,10 @@
 import validateToken from '$lib/scripts/util/validateToken';
-import { publisher, redis } from '$lib/server';
+import { publisher, redis, setAPI } from '$lib/server';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event) => {
-	redis.del('token');
-	redis.del('self');
+export const load: PageServerLoad = async () => {
+	redis.flushdb();
 };
 
 const tester = /[a-zA-Z0-9]{20,26}\..{6}\..{38}/gm;
@@ -24,6 +23,7 @@ export const actions = {
 		publisher.set('token', token);
 		publisher.set('self', JSON.stringify(self));
 		publisher.publish('login', 'login');
+		setAPI(token);
 
 		redirect(302, '/@me');
 	},

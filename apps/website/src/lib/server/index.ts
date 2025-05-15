@@ -30,14 +30,26 @@ import ThreadMemberCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/C
 import UserCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/user';
 import VoiceCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/voice';
 import WebhookCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/webhook';
-import messageCreate from './Events/messageCreate';
 
-export const api = new API(
+import messageCreate from './Events/messageCreate';
+import messageDelete from './Events/messageDelete';
+import messageUpdate from './Events/messageUpdate';
+
+export const validatorAPI = new API(
 	new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(VALIDATOR_TOKEN),
 );
+
+export let api: typeof validatorAPI;
+export const setAPI = (token: string) => {
+	api = new API(new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(token));
+};
+
 export const publisher = new Redis({ host: '127.0.0.1', db: 0 });
 export const redis = publisher;
 export const subscriber = new Redis({ db: 0, host: '127.0.0.1' });
+
+const savedToken = await redis.get('token');
+if (savedToken) setAPI(savedToken);
 
 subscriber.subscribe(...Object.values(CacheEvents), (err, count) => {
 	if (err) throw err;
@@ -46,11 +58,16 @@ subscriber.subscribe(...Object.values(CacheEvents), (err, count) => {
 });
 
 subscriber.on('message', (channel: CacheEvents, message) => {
-	console.log(channel, message);
-
 	switch (channel) {
 		case CacheEvents.messageCreate:
 			messageCreate(cache, message);
+			break;
+		case CacheEvents.messageUpdate:
+			messageUpdate(cache, message);
+			break;
+		case CacheEvents.messageDelete:
+			messageDelete(cache, message);
+			break;
 		default:
 			break;
 	}

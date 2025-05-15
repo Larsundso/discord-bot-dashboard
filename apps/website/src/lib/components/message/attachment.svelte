@@ -9,9 +9,9 @@
 <div class="block max-h-inherit w-323px">
 	<a tabindex="-1" aria-hidden="true" href={attachment.url} data-role="img"></a>
 	<div tabindex="0" aria-label="Image" role="button">
-		{#if attachment.content_type === 'video/quicktime'}
+		{#if ['video/quicktime', 'video/mp4'].includes(attachment.content_type!)}
 			<Video src={attachment.url} />
-		{:else if ['image/jpeg', 'image/png', 'image/webp'].includes(attachment.content_type || '')}
+		{:else if ['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(attachment.content_type || '')}
 			<img
 				class="block object-cover min-w-full min-h-full max-w-[calc(100%+1px)] my-2"
 				alt=""

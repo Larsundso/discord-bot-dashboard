@@ -26,7 +26,7 @@
 >
 	<div
 		class="w-16 fixed z-5
-  before:content-empty before:bg-main-darker before:w-full before:-left-2 before:h-38 before:absolute
+  before:content-empty before:bg-main-darker before:w-20 before:-left-2 before:h-38 before:absolute
   before:-top-2 after:relative"
 	>
 		<hr

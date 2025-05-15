@@ -29,7 +29,7 @@
 				if (timeDiff > 3600000) {
 					clearInterval(intervalId!);
 					intervalId = null;
-					type = 'D';
+					type = 'f';
 					return;
 				}
 

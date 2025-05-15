@@ -5,7 +5,7 @@ import {
 import type { Emitter } from 'sveltekit-sse';
 import { cache as Cache } from '..';
 
-const event = CacheEvents.messageCreate;
+const event = CacheEvents.messageUpdate;
 export const listeners: Map<string, Emitter[]> = new Map();
 
 export default async (cache: typeof Cache, message: string) => {

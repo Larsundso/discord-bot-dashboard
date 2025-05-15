@@ -17,21 +17,48 @@
 	let messages = $derived(data.messages);
 
 	$effect(() => {
-		const connection = source(`/api/channels/${page.params.channelId}/messages`, {
-			options: { method: 'GET' },
+		const postConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
+			options: { method: 'POST' },
 		});
-		const channel = connection.select(CacheEvents.messageCreate);
+		const patchConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
+			options: { method: 'PATCH' },
+		});
+		const deleteConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
+			options: { method: 'DELETE' },
+		});
 
-		const unsubscribe = channel.subscribe((run) => {
+		const postChannel = postConnection.select(CacheEvents.messageCreate);
+		const patchChannel = patchConnection.select(CacheEvents.messageUpdate);
+		const deleteChannel = deleteConnection.select(CacheEvents.messageDelete);
+
+		const postUnsub = postChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as (typeof data.messages)[number];
 			messages = [...messages, parsed];
 		});
 
+		const patchUnsub = patchChannel.subscribe((run) => {
+			if (!run) return;
+
+			const parsed = JSON.parse(run) as (typeof data.messages)[number];
+			messages = messages.map((message) => (message.id === parsed.id ? parsed : message));
+		});
+
+		const deleteUnsub = deleteChannel.subscribe((run) => {
+			if (!run) return;
+
+			const parsed = JSON.parse(run) as (typeof data.messages)[number];
+			messages = messages.filter((message) => message.id !== parsed.id);
+		});
+
 		return () => {
-			unsubscribe();
-			connection.close();
+			postUnsub();
+			patchUnsub();
+			deleteUnsub();
+			postConnection.close();
+			patchConnection.close();
+			deleteConnection.close();
 		};
 	});
 

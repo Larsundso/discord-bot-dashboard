@@ -27,7 +27,7 @@
 			<i class="i-tabler-border-corner-rounded block w-4 h-4 color-alt-text ml-4 mt-2"></i>
 
 			{#if 'name' in message.interaction_metadata}
-				<span class="mention p-0.5">/{message.interaction_metadata.name}</span>
+				<span class="mention p-0.5 text-blue">/{message.interaction_metadata.name}</span>
 			{:else}
 				<span class="mention">Unknown Command</span>
 			{/if}
@@ -65,8 +65,11 @@
 				}`}
 			>
 				{message.member?.nick || message.author?.global_name || message.author?.username}
-				<div class="text-alt-text text-xs inline-block">
+				<div class="text-alt-text text-xs inline-block flex flex-row gap-2">
 					<Timestamp time={getTimestampFromID(message.id)} type="R" />
+					{#if message.edited_timestamp}
+						| Edited: <Timestamp time={new Date(message.edited_timestamp).getTime()} type="R" />
+					{/if}
 				</div>
 			</div>
 			<Content content={message.content} />

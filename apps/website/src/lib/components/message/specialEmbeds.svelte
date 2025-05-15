@@ -4,6 +4,7 @@
 	import InfiniteVideo from './infiniteVideo.svelte';
 	import Automoderation from './automoderation.svelte';
 	import type { RGuild } from '$lib/scripts/RTypes';
+	import Embed from './embed.svelte';
 
 	const { embed, guild }: { embed: APIEmbed; guild?: RGuild } = $props();
 </script>
@@ -27,6 +28,8 @@
 	</div>
 {:else if embed.type === ('auto_moderation_notification' as EmbedType)}
 	<Automoderation {embed} {guild} />
+{:else if ['link', 'article'].includes(embed.type as EmbedType)}
+	<Embed {embed} />
 {:else}
 	<span class="text-danger">
 		Unhandled {embed.type} embed
