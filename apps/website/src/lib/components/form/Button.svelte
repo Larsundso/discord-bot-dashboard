@@ -2,6 +2,7 @@
 	import getEffectiveBackgroundColor from '$lib/scripts/util/getEffectiveBackgroundColor';
 	import getBrightness from '$lib/scripts/util/getBrightness';
 	import { onMount } from 'svelte';
+	import type { APIMessageComponentEmoji } from 'discord-api-types/v10';
 
 	type EventVar = MouseEvent & {
 		currentTarget: EventTarget & HTMLButtonElement;
@@ -29,7 +30,7 @@
 		disabled = false,
 		height = 'small',
 		width = 'fit',
-
+		emoji,
 		onclick,
 	}: {
 		text: string;
@@ -37,7 +38,7 @@
 		disabled?: boolean;
 		height?: Height;
 		width?: Width;
-
+		emoji?: APIMessageComponentEmoji;
 		onclick?: (e: EventVar) => void;
 	} = $props();
 
@@ -52,254 +53,55 @@
 	});
 </script>
 
-{#if style === 'primary'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="hover:text-white! btn-primary"
-		class:hover:bg-primary-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'primary-outline'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-primary-outlined"
-		class:hover:bg-primary-hover={!disabled}
-		class:hover:border-transparent={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'inverted-white'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-inverted-white hover:color-[--color]!"
-		class:cursor-not-allowed={disabled}
-		class:hover:bg-primary-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'red'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-danger"
-		class:hover:bg-danger-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'red-outline'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-danger-outlined"
-		class:hover:bg-red-hover={!disabled}
-		class:hover:border-transparent={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'green'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-success"
-		class:hover:bg-success-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'green-outline'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-success-outlined"
-		class:hover:bg-green-hover={!disabled}
-		class:hover:border-transparent={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'secondary'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-secondary"
-		class:hover:bg-secondary-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'secondary-outline'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-secondary-outlined"
-		class:hover:bg-secondary-hover={!disabled}
-		class:hover:border-transparent={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-	</button>
-{:else if style === 'link'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-link"
-		class:hover:bg-secondary-hover={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
+<button
+	{onclick}
+	bind:this={element}
+	class:w-full={width === 'full'}
+	class:p-1={height === 'tiny' || height === 'icon'}
+	class:min-w-15={height === 'tiny'}
+	class:p-2={height === 'small'}
+	class:min-w-20={height === 'small'}
+	class:p-3={height === 'medium'}
+	class:min-w-30={height === 'medium'}
+	class:p-4={height === 'large'}
+	class:min-w-40={height === 'large'}
+	class:p-0={height === 'min'}
+	class:p-5={height === 'max'}
+	class:btn-extra-link-outlined={style === 'link-outline'}
+	class:btn-link={style === 'link'}
+	class:btn-extra-secondary-outlined={style === 'secondary-outline'}
+	class:btn-secondary={style === 'secondary'}
+	class:btn-extra-success-outlined={style === 'green-outline'}
+	class:btn-success={style === 'green'}
+	class:btn-extra-danger-outlined={style === 'red-outline'}
+	class:btn-danger={style === 'red'}
+	class:btn-extra-inverted-white={style === 'inverted-white'}
+	class:btn-extra-primary-outlined={style === 'primary-outline'}
+	class:hover:text-white!={style === 'primary'}
+	class:btn-primary={style === 'primary'}
+	class="hover:color-[--color]!"
+	class:hover:bg-secondary-hover={!disabled}
+	class:hover:border-transparent={!disabled}
+	style={cssStyle}
+	{disabled}
+>
+	{#if emoji}
+		<span class="whitespace-nowrap inline-block align-middle">
+			{#if emoji.name && emoji.id}
+				<img
+					src={`https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? 'gif' : 'webp'}`}
+					alt={(emoji.name as string) || 'Emoji'}
+					class="align-middle relative [vertical-align:middle] w-7 h-7"
+				/>
+			{:else}
+				{emoji.name || emoji.id}
+			{/if}
+		</span>
+	{/if}
+
+	{text}
+
+	{#if style === 'link' || style === 'link-outline'}
 		<span class="i-tabler-external-link block"></span>
-	</button>
-{:else if style === 'link-outline'}
-	<button
-		{onclick}
-		bind:this={element}
-		class:w-full={width === 'full'}
-		class:p-1={height === 'tiny' || height === 'icon'}
-		class:min-w-15={height === 'tiny'}
-		class:p-2={height === 'small'}
-		class:min-w-20={height === 'small'}
-		class:p-3={height === 'medium'}
-		class:min-w-30={height === 'medium'}
-		class:p-4={height === 'large'}
-		class:min-w-40={height === 'large'}
-		class:p-0={height === 'min'}
-		class:p-5={height === 'max'}
-		class="btn-extra-link-outlined"
-		class:hover:bg-secondary-hover={!disabled}
-		class:hover:border-transparent={!disabled}
-		style={cssStyle}
-		{disabled}
-	>
-		{text}
-		<span class="i-tabler-external-link block"></span>
-	</button>
-{/if}
+	{/if}
+</button>
