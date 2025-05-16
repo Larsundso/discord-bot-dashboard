@@ -8,26 +8,16 @@
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import type { RGuild } from '$lib/scripts/RTypes';
-	import { source } from 'sveltekit-sse';
+	import cache from '$lib/scripts/cache';
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 
 	const { data, children }: { data: LayoutData; children: Snippet } = $props();
 	let guilds = $derived(data.guilds);
 
 	$effect(() => {
-		const postConnection = source(`/api/guilds/events`, {
-			options: { method: 'POST' },
-		});
-		const patchConnection = source(`/api/guilds/events`, {
-			options: { method: 'PATCH' },
-		});
-		const deleteConnection = source(`/api/guilds/events`, {
-			options: { method: 'DELETE' },
-		});
-
-		const postChannel = postConnection.select(CacheEvents.guildCreate);
-		const patchChannel = patchConnection.select(CacheEvents.guildUpdate);
-		const deleteChannel = deleteConnection.select(CacheEvents.guildDelete);
+		const postChannel = cache.emitter.get(CacheEvents.guildCreate)!;
+		const patchChannel = cache.emitter.get(CacheEvents.guildUpdate)!;
+		const deleteChannel = cache.emitter.get(CacheEvents.guildDelete)!;
 
 		const postUnsub = postChannel.subscribe((run) => {
 			if (!run) return;
@@ -54,9 +44,6 @@
 			postUnsub();
 			patchUnsub();
 			deleteUnsub();
-			postConnection.close();
-			patchConnection.close();
-			deleteConnection.close();
 		};
 	});
 </script>

@@ -12,29 +12,22 @@
 	import { MessageType } from 'discord-api-types/v10';
 	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
+	import cache from '$lib/scripts/cache';
 
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(data.messages);
 
 	$effect(() => {
-		const postConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
-			options: { method: 'POST' },
-		});
-		const patchConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
-			options: { method: 'PATCH' },
-		});
-		const deleteConnection = source(`/api/channels/${page.params.channelId}/messages/events`, {
-			options: { method: 'DELETE' },
-		});
-
-		const postChannel = postConnection.select(CacheEvents.messageCreate);
-		const patchChannel = patchConnection.select(CacheEvents.messageUpdate);
-		const deleteChannel = deleteConnection.select(CacheEvents.messageDelete);
+		const postChannel = cache.emitter.get(CacheEvents.messageCreate)!;
+		const patchChannel = cache.emitter.get(CacheEvents.messageUpdate)!;
+		const deleteChannel = cache.emitter.get(CacheEvents.messageDelete)!;
 
 		const postUnsub = postChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as (typeof data.messages)[number];
+			if (parsed.channel_id !== page.params.channelId) return;
+
 			messages = [...messages, parsed];
 		});
 
@@ -42,6 +35,8 @@
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as (typeof data.messages)[number];
+			if (parsed.channel_id !== page.params.channelId) return;
+
 			messages = messages.map((message) => (message.id === parsed.id ? parsed : message));
 		});
 
@@ -49,6 +44,8 @@
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as (typeof data.messages)[number];
+			if (parsed.channel_id !== page.params.channelId) return;
+
 			messages = messages.filter((message) => message.id !== parsed.id);
 		});
 
@@ -56,9 +53,6 @@
 			postUnsub();
 			patchUnsub();
 			deleteUnsub();
-			postConnection.close();
-			patchConnection.close();
-			deleteConnection.close();
 		};
 	});
 
