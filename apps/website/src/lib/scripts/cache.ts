@@ -1,4 +1,6 @@
 import type { RChannel, RRole, RUser } from '$lib/scripts/RTypes';
+import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
+import { source, type Source, type SourceSelected } from 'sveltekit-sse';
 
 interface CacheHandler<T> {
 	cache: Map<string, T>;
@@ -10,6 +12,8 @@ const cache: {
 	users: CacheHandler<RUser>;
 	channels: CacheHandler<RChannel>;
 	roles: CacheHandler<RRole>;
+
+	emitter: Map<CacheEvents, ReturnType<Source['select']>>;
 } = {
 	users: {
 		cache: new Map<string, RUser>(),
@@ -97,6 +101,17 @@ const cache: {
 			return newRequest;
 		},
 	},
+
+	emitter: (() => {
+		const connection = source('/api/gateway', { options: { method: 'GET' } });
+
+		const map = new Map<CacheEvents, ReturnType<(typeof connection)['select']>>();
+		Object.keys(CacheEvents).forEach((event) =>
+			map.set(event as CacheEvents, connection.select(event)),
+		);
+
+		return map;
+	})(),
 };
 
 export default cache;

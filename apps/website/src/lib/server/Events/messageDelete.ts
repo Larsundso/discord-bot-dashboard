@@ -8,11 +8,10 @@ import { cache as Cache } from '..';
 const event = CacheEvents.messageDelete;
 export const listeners: Map<string, Emitter[]> = new Map();
 
-export default async (_: typeof Cache, message: string) => {
+export default async (cache: typeof Cache, message: string) => {
+	if (!cache.listeners.length) return;
+
 	const payload = JSON.parse(message) as Message<typeof event>;
 
-	const channelListeners = listeners.get(payload.channel_id);
-	if (!channelListeners) return;
-
- channelListeners.forEach((emit) => emit(event, JSON.stringify({ id: payload.id })));
+	cache.listeners.forEach((emit) => emit(event, JSON.stringify({ id: payload.id })));
 };

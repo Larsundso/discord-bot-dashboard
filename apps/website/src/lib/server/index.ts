@@ -1,8 +1,5 @@
 import { VALIDATOR_TOKEN } from '$env/static/private';
-import {
-	CacheEvents,
-	type Message,
-} from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events.js';
+import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events.js';
 import { API } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { Redis } from 'ioredis';
@@ -31,12 +28,13 @@ import UserCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheMana
 import VoiceCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/voice';
 import WebhookCache from '@discord-bot-dashboard/cache/src/BaseClient/Bot/CacheManagers/webhook';
 
+import { type Emitter } from 'sveltekit-sse';
+import guildCreate from './Events/guildCreate';
+import guildDelete from './Events/guildDelete';
+import guildUpdate from './Events/guildUpdate';
 import messageCreate from './Events/messageCreate';
 import messageDelete from './Events/messageDelete';
 import messageUpdate from './Events/messageUpdate';
-import guildCreate from './Events/guildCreate';
-import guildUpdate from './Events/guildUpdate';
-import guildDelete from './Events/guildDelete';
 
 export const validatorAPI = new API(
 	new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(VALIDATOR_TOKEN),
@@ -117,7 +115,7 @@ subscriber.on('message', (channel: CacheEvents, message) => {
 	channelFnMap[channel]?.(cache, message);
 });
 
-export const cache = {
+const redisCache = {
 	automods: new AutomodCache(redis),
 	bans: new BanCache(redis),
 	channels: new ChannelCache(redis),
@@ -141,4 +139,11 @@ export const cache = {
 	users: new UserCache(redis),
 	voices: new VoiceCache(redis),
 	webhooks: new WebhookCache(redis),
+};
+
+export const cache: typeof redisCache & {
+	listeners: Emitter[];
+} = {
+	...redisCache,
+	listeners: [],
 };

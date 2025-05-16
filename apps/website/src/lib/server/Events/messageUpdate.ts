@@ -9,10 +9,9 @@ const event = CacheEvents.messageUpdate;
 export const listeners: Map<string, Emitter[]> = new Map();
 
 export default async (cache: typeof Cache, message: string) => {
-	const payload = JSON.parse(message) as Message<typeof event>;
+	if (!cache.listeners.length) return;
 
-	const channelListeners = listeners.get(payload.channel_id);
-	if (!channelListeners) return;
+	const payload = JSON.parse(message) as Message<typeof event>;
 
 	const messageData = await cache.messages.get(payload.channel_id, payload.id);
 	if (!messageData) return;
@@ -23,7 +22,5 @@ export default async (cache: typeof Cache, message: string) => {
 	const member = await cache.members.get(messageData.guild_id, messageData.author_id);
 	if (!member) return;
 
-	channelListeners.forEach((emit) =>
-		emit(event, JSON.stringify({ ...messageData, author, member })),
-	);
+	cache.listeners.forEach((emit) => emit(event, JSON.stringify({ ...messageData, author, member })));
 };
