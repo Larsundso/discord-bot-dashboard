@@ -3,6 +3,7 @@
 		href,
 		text,
 		icon,
+		active = false,
 	}: {
 		href: string;
 		text: string;
@@ -17,10 +18,15 @@
 			| 'integrations'
 			| 'bans'
 			| 'audit-logs';
+		active?: boolean;
 	} = $props();
 </script>
 
-<a {href} class="flex flex-row gap-1 justify-start items-center hover:bg-main-dark p-1 rounded-md">
+<a
+	{href}
+	class="flex flex-row gap-1 justify-start items-center hover:bg-main-dark p-1 rounded-md w-full"
+	class:bg-main-light={active}
+>
 	{#if icon}
 		<i
 			class="block w-6 h-6 color-alt-text"

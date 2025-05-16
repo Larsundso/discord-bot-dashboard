@@ -5,7 +5,7 @@
 	import SidebarChannel from './SidebarChannel.svelte';
 
 	const { channels, guild }: { channels: RChannel[]; guild: RGuild } = $props();
-	let showSettings = $state(true);
+	let showSettings = $state(false);
 
 	const getBoostProgressWidth = (count: number) => {
 		if (count === 0) return '0%';
@@ -66,7 +66,11 @@
 				onclick={() => (showSettings = !showSettings)}
 				onkeydown={(e) => (e.key === 'Enter' ? (showSettings = !showSettings) : null)}
 			>
-				<i class=" i-tabler-chevron-up block h-5 w-5 top-3 right-3 z-10"></i>
+				<i
+					class=" block h-5 w-5 top-3 right-3 z-10"
+					class:i-tabler-chevron-up={showSettings}
+					class:i-tabler-chevron-down={!showSettings}
+				></i>
 			</button>
 		</div>
 

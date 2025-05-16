@@ -21,7 +21,7 @@ export default async () => {
  }
 
  loggedIn = new ClusterManager(`./dist/bot.js`, {
-  restarts: { max: 0, interval: 0 },
+  // restarts: { max: 0, interval: 0 },
   totalShards: 'auto',
   totalClusters: 'auto',
   shardsPerClusters: 10,
