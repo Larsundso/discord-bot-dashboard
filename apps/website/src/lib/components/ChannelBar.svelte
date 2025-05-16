@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { RChannel, RGuild } from '$lib/scripts/RTypes';
+	import ChannelBarButton from './ChannelBarButton.svelte';
 	import SidebarChannel from './SidebarChannel.svelte';
 
 	const { channels, guild }: { channels: RChannel[]; guild: RGuild } = $props();
-	let showSettings = $state(false);
+	let showSettings = $state(true);
 
 	const getBoostProgressWidth = (count: number) => {
 		if (count === 0) return '0%';
@@ -19,11 +20,40 @@
 	<div
 		class="flex flex-row justify-between items-start w-full flex-shrink-0"
 		class:h-10={!guild.banner_url}
-		style="min-height: {guild.banner_url ? '9.25rem' : '2.5rem'}; max-height: {guild.banner_url
-			? '9.25rem'
-			: '2.5rem'}"
+		class:min-h-12={!guild.banner_url}
+		class:min-h-37={guild.banner_url}
+		class:max-h-9.25={!guild.banner_url}
+		class:max-h-2.5={guild.banner_url}
 	>
-		<div class:invisible={!showSettings} class="absolute">hello</div>
+		<div
+			class:invisible={!showSettings}
+			class="absolute z-20 bg-main-darker w-[calc(100%-10px)] ml-5px b-solid b-1px b-alt-text h-max mt-10 rounded-md p-2 flex flex-col gap-2"
+		>
+			<ChannelBarButton text="Settings" icon="settings" href={`/guilds/${guild.id}/settings`} />
+			<hr class="w-full b-main-lighter" />
+			<ChannelBarButton text="Roles" icon="roles" href={`/guilds/${guild.id}/settings/roles`} />
+			<ChannelBarButton text="Emojis" icon="emojis" href={`/guilds/${guild.id}/settings/emojis`} />
+			<ChannelBarButton
+				text="Stickers"
+				icon="stickers"
+				href={`/guilds/${guild.id}/settings/stickers`}
+			/>
+			<ChannelBarButton text="Sounds" icon="sounds" href={`/guilds/${guild.id}/settings/sounds`} />
+			<ChannelBarButton text="Members" icon="members" href={`/guilds/${guild.id}/settings/members`} />
+			<ChannelBarButton text="Invites" icon="invites" href={`/guilds/${guild.id}/settings/invites`} />
+			<ChannelBarButton
+				text="Integrations"
+				icon="integrations"
+				href={`/guilds/${guild.id}/settings/integrations`}
+			/>
+			<hr class="w-full b-main-lighter" />
+			<ChannelBarButton
+				text="Audit-Log"
+				icon="audit-logs"
+				href={`/guilds/${guild.id}/settings/audit-log`}
+			/>
+			<ChannelBarButton text="Bans" icon="bans" href={`/guilds/${guild.id}/settings/bans`} />
+		</div>
 
 		<div
 			class="z-10 w-full bg-gradient-to-t from-[rgba(0,0,0,0)] to-[rgba(0,0,0,0.75)] pt-3 pl-3 flex flex-row justify-between items-center gap-5 pr-3"
