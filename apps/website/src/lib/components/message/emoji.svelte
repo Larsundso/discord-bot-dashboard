@@ -8,7 +8,7 @@
 </script>
 
 <div
-	class="relative inline-block align-text-bottom"
+	class="relative inline-block align-text-bottom flex flex-row justify-center items-center"
 	class:w-6={small}
 	class:h-6={small}
 	class:w-10={!small}
