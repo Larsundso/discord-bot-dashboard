@@ -1,14 +1,29 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Button from '$lib/components/form/Button.svelte';
+	import Switch from '$lib/components/form/Switch.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Timestamp from '$lib/components/form/Timestamp.svelte';
+	import { PermissionsBitField } from '$lib/scripts/util/PermissionsBitField';
 	import rgbaFromHex from '$lib/scripts/util/rgbaFromHex';
 	import type { PageData, PageParentData } from './$types';
+
+	const spacePascal = (str: string) =>
+		str
+			.replace(/([a-z])([A-Z])/g, '$1 $2')
+			.replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+			.replace(/_/g, ' ')
+			.replace(/\b\w/g, (c) => c.toUpperCase());
 
 	const { data }: { data: PageData & PageParentData } = $props();
 	const role = $derived(data.roles.find((r) => r.id === page.params.roleId)!);
 	const rgba = $derived(rgbaFromHex(role.color.toString(16).padStart(6, '0')));
+	const permissions = $derived(
+		Object.entries(new PermissionsBitField(BigInt(role.permissions)).serialize()).map(
+			([perm, val]) => [spacePascal(perm), val],
+		) as [string, boolean][],
+	);
+	let query: string = $state('');
 </script>
 
 <div class="ml-4 text-xl p-2 flex flex-row justify-between items-center">
@@ -20,6 +35,7 @@
 	<form
 		class="flex flex-col justify-start items-start bg-main-light h-[calc(100vh-45px)] ml-2 p-4 rounded-tl-xl of-auto w-50% gap-1"
 	>
+		me
 		<h2 class="text-xl color-alt-text">Display</h2>
 
 		<label for="name">Role Name</label>
@@ -67,7 +83,27 @@
 			<Button disabled={true} text="Remove Icon" style="red-outline" />
 		</div>
 
-		<h2 class="text-xl color-alt-text mt-4">Permissions</h2>
+		<div class="flex flex-row justify-between items-center w-full mb-2">
+			<h2 class="text-xl color-alt-text mt-4">Permissions</h2>
+			<TextInput
+				id="permQuery"
+				label="Search Permission"
+				size="short"
+				type="text"
+				bind:val={query}
+				required={false}
+			/>
+		</div>
+
+		<div class="w-full flex flex-col justify-center items-center gap-2">
+			{#each permissions.filter(([perm]) => perm
+					.toLowerCase()
+					.includes(query.toLowerCase())) as [perm, checked]}
+				<div class="w-full flex flex-row justify-between">
+					<Switch {checked} name={perm} title={perm} type="on/off" width="full" disabled={true} />
+				</div>
+			{/each}
+		</div>
 	</form>
 
 	<div class="flex flex-col justify-start items-start bg-main-light h-[calc(100vh-45px)] w-50% p-2">
