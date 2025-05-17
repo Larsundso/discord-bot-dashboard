@@ -7,17 +7,19 @@
 	import StageEnd from '$lib/components/message/types/StageEnd.svelte';
 	import StageSpeaker from '$lib/components/message/types/StageSpeaker.svelte';
 	import StageStart from '$lib/components/message/types/StageStart.svelte';
+	import cache from '$lib/scripts/cache';
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 	import { MessageType } from 'discord-api-types/v10';
-	import { source } from 'sveltekit-sse';
 	import type { PageParentData, PageServerData } from './$types';
-	import cache from '$lib/scripts/cache';
 
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let messages = $derived(data.messages);
+	let lastEl: HTMLDivElement;
 
 	$effect(() => {
+		lastEl.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
+
 		const postChannel = cache.emitter.get(CacheEvents.messageCreate)!;
 		const patchChannel = cache.emitter.get(CacheEvents.messageUpdate)!;
 		const deleteChannel = cache.emitter.get(CacheEvents.messageDelete)!;
@@ -28,6 +30,7 @@
 			const parsed = JSON.parse(run) as (typeof data.messages)[number];
 			if (parsed.channel_id !== page.params.channelId) return;
 
+			lastEl.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'start' });
 			messages = [...messages, parsed];
 		});
 
@@ -61,8 +64,12 @@
 	);
 </script>
 
-<div class="flex flex-col-reverse justify-start items-start gap-5 p-5 min-h-full">
+<div class="flex flex-col-reverse justify-start items-start p-5 pb-0 min-h-full">
+	<div class="invisible h-0" bind:this={lastEl}></div>
+
 	{#each sortedMessages as message}
+		<div class="invisible mt-5"></div>
+
 		{#if [MessageType.Default, MessageType.ChatInputCommand, MessageType.Reply, MessageType.AutoModerationAction].includes(message.type)}
 			<Message {message} guild={data.guild} roles={data.roles} />
 		{:else if message.type === MessageType.StageEnd}
