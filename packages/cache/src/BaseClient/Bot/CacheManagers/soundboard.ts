@@ -5,6 +5,7 @@ import Cache from './base.js';
 export type RSoundboardSound = Omit<APISoundboardSound, 'user' | 'guild_id'> & {
  user_id: string | null;
  guild_id: string;
+ sound_url: string;
 };
 
 export const RSoundboardSoundKeys = [
@@ -16,10 +17,15 @@ export const RSoundboardSoundKeys = [
  'guild_id',
  'available',
  'user_id',
+ 'sound_url',
 ] as const;
 
 export default class SoundboardCache extends Cache<APISoundboardSound> {
  public keys = RSoundboardSoundKeys;
+
+ public static getSoundUrl = (id: string) => {
+  return `https://cdn.discordapp.com/soundboard-sounds/${id}`;
+ };
 
  constructor(redis: Redis) {
   super(redis, 'soundboards');
@@ -40,6 +46,7 @@ export default class SoundboardCache extends Cache<APISoundboardSound> {
 
   const rData = structuredClone(data) as unknown as RSoundboardSound;
   rData.user_id = data.user?.id || null;
+  rData.sound_url = SoundboardCache.getSoundUrl(data.sound_id);
 
   keysNotToCache.forEach((k) => delete (rData as Record<string, unknown>)[k as string]);
 

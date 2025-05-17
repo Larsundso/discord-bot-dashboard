@@ -1,19 +1,25 @@
 <script lang="ts">
 	import cache from '$lib/scripts/cache';
 	import type { RRole } from '$lib/scripts/RTypes';
+	import rgbaFromHex from '$lib/scripts/util/rgbaFromHex';
 	import { onMount } from 'svelte';
 
 	const { id }: { id: string } = $props();
 	let data: RRole | null = $state(null);
+	let color: number[] = $derived([]);
 
 	onMount(async () => {
 		data = await cache.roles.get(id).catch(() => null);
+		if (!data) return;
+
+		color = rgbaFromHex((data.color || 0xffffff).toString(16).padStart(6, '0'));
 	});
 </script>
 
 <span
 	class="mention flex flex-ow justify-center items-center mx-1"
-	style={`color: #${data?.color ? `${data.color.toString(16).padStart(6, '0')}` : 'fff'};`}
+	style={`color: rgb(${color.join(', ')});
+ background-color: rgba(${color.join(', ')}, 0.3);`}
 >
 	{#if data}
 		@

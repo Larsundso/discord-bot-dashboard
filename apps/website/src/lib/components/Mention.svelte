@@ -21,7 +21,6 @@
 	{#if guild}
 		<Channel {id} {guild} />
 	{:else}
-		<!-- Fallback for channel mention when guild data is not available -->
 		<span class="text-inherit">#{id}</span>
 	{/if}
 {/if}
