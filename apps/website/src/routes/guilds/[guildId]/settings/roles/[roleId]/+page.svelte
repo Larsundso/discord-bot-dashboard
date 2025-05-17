@@ -33,6 +33,7 @@
 				size="short"
 				type="text"
 				val={role.name}
+				disabled={role.name === '@everyone'}
 			/>
 		</div>
 

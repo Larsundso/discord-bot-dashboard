@@ -12,6 +12,7 @@
 		id,
 		onupdate,
 		onkeydown,
+  disabled = false,
 	}: {
 		required: boolean;
 		type?: 'text' | 'number' | 'email' | 'password';
@@ -23,6 +24,7 @@
 		id?: string;
 		onupdate?: (v: string | null) => void;
 		onkeydown?: (e: KeyboardEvent) => void;
+  disabled?: boolean;
 	} = $props();
 </script>
 
@@ -38,4 +40,5 @@
 	onkeydown={(e) => onkeydown?.(e)}
 	{size}
 	bind:value={val}
+ {disabled}
 />

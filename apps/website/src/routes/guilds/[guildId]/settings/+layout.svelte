@@ -11,7 +11,7 @@
 >
 	<SettingsBar guild={data.guild} />
 
-	<div class="flex-grow of-y-auto of-x-hidden">
+	<div class="flex-grow of-y-auto of-x-hidden h-full" style="max-height: 100vh;">
 		{@render children()}
 	</div>
 </section>

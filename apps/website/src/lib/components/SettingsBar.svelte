@@ -19,13 +19,6 @@
 
 	<hr class="w-full b-main-lighter" />
 	<ChannelBarButton
-		text="Settings"
-		icon="settings"
-		href={`/guilds/${guild.id}/settings`}
-		active={page.url.pathname.endsWith('settings')}
-	/>
-	<hr class="w-full b-main-lighter" />
-	<ChannelBarButton
 		text="Roles"
 		icon="roles"
 		href={`/guilds/${guild.id}/settings/roles`}

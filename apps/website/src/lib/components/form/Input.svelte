@@ -12,7 +12,8 @@
 		onupdate,
 		class: className,
 		value = $bindable(''),
-  onkeydown,
+		onkeydown,
+		disabled = false,
 	}: {
 		required: boolean;
 		type?: 'text' | 'number' | 'email' | 'password';
@@ -27,7 +28,8 @@
 		onupdate?: (v: string | number | null) => void;
 		class?: string;
 		value?: string;
-  onkeydown?: (e: KeyboardEvent) => void;
+		onkeydown?: (e: KeyboardEvent) => void;
+		disabled?: boolean;
 	} = $props();
 
 	let queued = false;
@@ -57,7 +59,9 @@
 					{id}
 					tabindex="-1"
 					class="bg-transparent w-full -mb-2 -mt-0.5 h-20 pl-2 pt-2 focus:outline-none text-sm sm:text-base"
+					class:cursor-not-allowed={disabled}
 					oninput={() => update()}
+					{disabled}
 				></textarea>
 			{:else}
 				<input
@@ -73,7 +77,9 @@
 					{id}
 					tabindex="-1"
 					class="bg-transparent w-full h-full p-2 focus:outline-none btn text-sm sm:text-base"
+					class:cursor-not-allowed={disabled}
 					oninput={update}
+					{disabled}
 				/>
 			{/if}
 

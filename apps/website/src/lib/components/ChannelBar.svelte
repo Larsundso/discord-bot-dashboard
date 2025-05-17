@@ -29,8 +29,6 @@
 			class:invisible={!showSettings}
 			class="absolute z-20 bg-main-darker w-[calc(100%-10px)] ml-5px b-solid b-1px b-alt-text h-max mt-10 rounded-md p-2 flex flex-col gap-2"
 		>
-			<ChannelBarButton text="Settings" icon="settings" href={`/guilds/${guild.id}/settings`} />
-			<hr class="w-full b-main-lighter" />
 			<ChannelBarButton text="Roles" icon="roles" href={`/guilds/${guild.id}/settings/roles`} />
 			<ChannelBarButton text="Emojis" icon="emojis" href={`/guilds/${guild.id}/settings/emojis`} />
 			<ChannelBarButton
