@@ -121,12 +121,12 @@
 				<img
 					src={`${guild.discovery_splash_url}?size=4096`}
 					alt=""
-					class="w-full rounded-t-xl h-100 object-cover"
+					class="w-full rounded-xl h-100 object-cover"
 				/>
 			{/if}
 
 			{#if guild.icon_url}
-				<div class="z-10 ml-5 -mt-15 bg-main-dark p-1 rounded-3xl position-inherit w-max">
+				<div class="z-10 ml-5 -mt-15 bg-main-dark p-1 rounded-3xl w-max inline-block">
 					<img src={guild.icon_url} alt="" class="rounded-3xl" />
 				</div>
 			{/if}
