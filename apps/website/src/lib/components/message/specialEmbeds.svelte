@@ -16,13 +16,15 @@
 {:else if embed.type === 'auto_moderation_message'}
 	<Automoderation {embed} {guild} />
 {:else if embed.type === 'image'}
+	{@const size = new URL(embed.thumbnail!.url).searchParams.get('size')}
 	<div class="block max-h-inherit w-323px">
 		<a tabindex="-1" aria-hidden="true" href={embed.thumbnail!.url} data-role="img"></a>
 		<div tabindex="0" aria-label="Image" role="button">
 			<img
-				class="block object-cover min-w-full min-h-full max-w-[calc(100%+1px)] my-2"
+				class="block object-cover max-w-[calc(100%+1px)] my-2"
 				alt=""
 				src={embed.thumbnail!.url}
+				style="width: {size ? `${size}px` : '100%'}"
 			/>
 		</div>
 	</div>
