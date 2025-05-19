@@ -1,9 +1,10 @@
 import { Client, API as DAPI } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
-import { CompressionMethod, Encoding, WebSocketManager } from '@discordjs/ws';
-import { GatewayDispatchEvents, GatewayIntentBits } from 'discord-api-types/v10';
+import { CompressionMethod, Encoding, WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } from 'discord-api-types/v10';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
 import redis, { cache as RedisCache } from './Redis.js';
+import rawCache from './Cache.js';
 
 const token = await redis.get('token');
 
@@ -70,4 +71,20 @@ client.once(GatewayDispatchEvents.Ready, () =>
  console.log(`Shards ${getInfo().SHARD_LIST.join(', ')} ready`),
 );
 
-import('./Events.js');
+client.gateway.on(WebSocketShardEvents.Dispatch, (data) => {
+ if (data.op !== GatewayOpcodes.Dispatch) return;
+ rawCache(data);
+
+ // switch (data.t) {
+ // TODO: wait for d to document this
+ // case 'VOICE_CHANNEL_STATUS_UPDATE' as GatewayDispatchEvents:
+ //  voiceChannelStatusUpdate(data.d as unknown as Parameters<typeof voiceChannelStatusUpdate>[0]);
+ //  break;
+ // TODO: wait for d to document this
+ // case 'CHANNEL_STATUSES' as GatewayDispatchEvents:
+ //  channelStatuses(data.d as unknown as Parameters<typeof channelStatuses>[0]);
+ //  break;
+ // default:
+ //  break;
+ // }
+});
