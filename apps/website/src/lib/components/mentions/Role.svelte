@@ -12,7 +12,7 @@
 		data = await cache.roles.get(id).catch(() => null);
 		if (!data) return;
 
-		color = rgbaFromHex((data.color || 0xffffff).toString(16).padStart(6, '0'));
+		color = data.color ? rgbaFromHex(data.color.toString(16).padStart(6, '0')) : [];
 	});
 </script>
 
