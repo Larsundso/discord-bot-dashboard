@@ -4,7 +4,7 @@
 		animated = false,
 		name,
 		small,
-	}: { id: string; animated: boolean; name: string; small: boolean } = $props();
+	}: { id: string | null; animated: boolean; name: string; small: boolean } = $props();
 </script>
 
 <div
@@ -15,13 +15,17 @@
 	class:h-10={!small}
 	role="tooltip"
 >
-	<img
-		src={`https://cdn.discordapp.com/emojis/${id}${animated ? '.gif' : '.png'}?v=1`}
-		alt={name}
-		class="relative"
-		class:inline={small}
-		class:block={!small}
-		loading="lazy"
-		decoding="async"
-	/>
+	{#if id}
+		<img
+			src={`https://cdn.discordapp.com/emojis/${id}${animated ? '.gif' : '.png'}?v=1`}
+			alt={name}
+			class="relative"
+			class:inline={small}
+			class:block={!small}
+			loading="lazy"
+			decoding="async"
+		/>
+	{:else}
+		<span class:text-xl={small} class:text-4xl={!small}>{name}</span>
+	{/if}
 </div>
