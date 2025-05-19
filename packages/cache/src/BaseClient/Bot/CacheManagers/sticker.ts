@@ -4,7 +4,10 @@ import Cache from './base.js';
 
 export type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
-export type RSticker = MakeRequired<APISticker, 'guild_id'> & { user_id: string | null };
+export type RSticker = Omit<
+ MakeRequired<APISticker, 'guild_id'> & { user_id: string | null },
+ 'user'
+>;
 
 export const RStickerKeys = [
  'id',
@@ -17,6 +20,7 @@ export const RStickerKeys = [
  'available',
  'guild_id',
  'sort_value',
+ 'user_id',
 ] as const;
 
 export default class StickerCache extends Cache<APISticker> {
