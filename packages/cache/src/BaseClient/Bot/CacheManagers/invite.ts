@@ -1,9 +1,9 @@
-import type { APIInvite } from 'discord-api-types/v10';
+import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
 
 export type RInvite = Omit<
- APIInvite,
+ APIInvite | APIExtendedInvite,
  'guild' | 'channel' | 'inviter' | 'target_user' | 'guild_scheduled_event' | 'stage_instance'
 > & {
  guild_id: string;
@@ -12,6 +12,11 @@ export type RInvite = Omit<
  target_user_id: string | null;
  guild_scheduled_event_id: string | null;
  application_id: string | null;
+ max_uses?: number;
+ max_age?: number;
+ created_at?: string;
+ temporary?: boolean;
+ uses?: number;
 };
 
 export const RInviteKeys = [
@@ -27,16 +32,21 @@ export const RInviteKeys = [
  'target_user_id',
  'guild_scheduled_event_id',
  'application_id',
+ 'max_uses',
+ 'max_age',
+ 'created_at',
+ 'temporary',
+ 'uses',
 ] as const;
 
-export default class InviteCache extends Cache<APIInvite> {
- public keys = RInviteKeys;
+export default class InviteCache extends Cache<APIExtendedInvite | APIInvite> {
+ public override keys = RInviteKeys as unknown as readonly (keyof RInvite)[];
 
  constructor(redis: Redis) {
   super(redis, 'invites');
  }
 
- async set(data: APIInvite) {
+ async set(data: APIExtendedInvite | APIInvite) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
@@ -44,7 +54,7 @@ export default class InviteCache extends Cache<APIInvite> {
   return true;
  }
 
- apiToR(data: APIInvite) {
+ apiToR(data: APIExtendedInvite | APIInvite) {
   if (!data.guild) return false;
 
   const keysNotToCache = Object.keys(data).filter(
