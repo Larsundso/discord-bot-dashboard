@@ -6,6 +6,7 @@
 	import type { REmoji, RGuild, RRole, RSoundboardSound, RSticker } from '$lib/scripts/RTypes';
 	import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 	import splitByThousand from '$lib/scripts/util/splitByThousands';
+	import Sound from './message/sound.svelte';
 
 	const {
 		guild,
@@ -397,20 +398,7 @@
 				<h2 class="text-lg font-semibold mb-4">Custom Sounds</h2>
 				<div class="flex flex-wrap gap-3 justify-center items-center">
 					{#each sounds as sound}
-						<figure class="flex flex-col items-center">
-							<audio controls>
-								<source src={sound.sound_url} type="audio/mp3" />
-							</audio>
-							<figcaption class="text-xs text-alt-text flex flex-row">
-								{#if sound.emoji_id && sound.emoji_name}
-									<Emoji animated={false} id={sound.emoji_id} name={sound.emoji_name} small={true} />
-								{:else if sound.emoji_name}
-									{sound.emoji_name}
-								{/if}
-
-								{sound.name}
-							</figcaption>
-						</figure>
+						<Sound {sound} />
 					{/each}
 				</div>
 			</div>
