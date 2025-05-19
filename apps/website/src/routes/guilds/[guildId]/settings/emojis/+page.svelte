@@ -30,7 +30,7 @@
 	</span>
 {/if}
 
-<div class="flex w-full flex-row justify-evenly flex-wrap items-center gap-2">
+<div class="flex w-full flex-row justify-evenly flex-wrap items-center gap-2 mb-5">
 	{#each data.emojis
 		.filter((e) => e.name?.toLowerCase().includes(query.toLowerCase()))
 		.sort((a, b) => a.name!.localeCompare(b.name!)) as emoji}
