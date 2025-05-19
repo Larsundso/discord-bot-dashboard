@@ -9,10 +9,10 @@
 	const { data }: { data: PageServerData & PageParentData } = $props();
 </script>
 
-<div class="flex w-full flex-row justify-evenly flex-wrap items-center gap-2 mb-5">
+<div class="flex w-full flex-row justify-evenly flex-wrap items-center gap-2 mb-5 p-3">
 	{#each data.invites.sort((a, b) => a.code!.localeCompare(b.code!)) as invite}
 		<div
-			class="w-40% flex flex-col justify-center items-start gap-2 hover:bg-main-light duration-100 transition-all ease-in-out rounded-xl p-2"
+			class="w-33% flex flex-col justify-center items-start gap-2 hover:bg-main-light duration-100 transition-all ease-in-out rounded-xl p-2"
 		>
 			<TextInput
 				disabled={true}
