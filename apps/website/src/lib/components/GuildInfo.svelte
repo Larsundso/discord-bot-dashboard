@@ -9,11 +9,11 @@
 	import Sound from './message/sound.svelte';
 
 	const {
-		guild,
-		roles,
-		emojis,
-		stickers,
-		sounds,
+		guild: raw_guild,
+		roles: raw_roles,
+		emojis: raw_emojis,
+		stickers: raw_stickers,
+		sounds: raw_sounds,
 	}: {
 		guild: RGuild;
 		roles: RRole[];
@@ -21,6 +21,12 @@
 		stickers: RSticker[];
 		sounds: RSoundboardSound[];
 	} = $props();
+
+	const guild = $derived(raw_guild);
+	const roles = $derived(raw_roles);
+	const emojis = $derived(raw_emojis);
+	const stickers = $derived(raw_stickers);
+	const sounds = $derived(raw_sounds);
 
 	let presences: number | undefined = $derived(guild.approximate_presence_count);
 	let members: number | undefined = $derived(guild.approximate_member_count);
