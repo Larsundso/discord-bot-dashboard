@@ -1,5 +1,12 @@
-export default (hex: string) => [
-	parseInt(hex.slice(1, 3), 16),
-	parseInt(hex.slice(3, 5), 16),
-	parseInt(hex.slice(5, 7), 16),
-];
+export default (hex: string) => {
+	// Remove '#' if present for consistency
+	if (hex.startsWith('#')) {
+		hex = hex.substring(1);
+	}
+
+	return [
+		parseInt(hex.slice(0, 2), 16),
+		parseInt(hex.slice(2, 4), 16),
+		parseInt(hex.slice(4, 6), 16),
+	];
+};
