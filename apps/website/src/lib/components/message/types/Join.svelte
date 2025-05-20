@@ -10,7 +10,7 @@
 
 <div class="flex flex-row -ml-1 color-alt-text items-center gap-2">
 	<div class="text-xs color-alt-text">
-		<Timestamp time={getTimestampFromID(message.id)} type="R" />
+		<Timestamp time={getTimestampFromID(message.id)} type="R" autoConvert={true} />
 	</div>
 
 	<i class="i-tabler-door-exit block w-6 h-6"></i>

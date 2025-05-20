@@ -66,9 +66,13 @@
 			>
 				{message.member?.nick || message.author?.global_name || message.author?.username}
 				<div class="text-alt-text text-xs inline-block flex flex-row gap-2">
-					<Timestamp time={getTimestampFromID(message.id)} type="R" />
+					<Timestamp time={getTimestampFromID(message.id)} type="R" autoConvert={true} />
 					{#if message.edited_timestamp}
-						| Edited: <Timestamp time={new Date(message.edited_timestamp).getTime()} type="R" />
+						| Edited: <Timestamp
+							time={new Date(message.edited_timestamp).getTime()}
+							type="R"
+							autoConvert={true}
+						/>
 					{/if}
 				</div>
 			</div>

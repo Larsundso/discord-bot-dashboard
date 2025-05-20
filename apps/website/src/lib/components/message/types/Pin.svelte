@@ -9,7 +9,7 @@
 
 <div class="flex flex-row justify-start items-center gap-2">
 	<div class="text-xs color-alt-text">
-		<Timestamp time={getTimestampFromID(message.id)} type="R" />
+		<Timestamp time={getTimestampFromID(message.id)} type="R" autoConvert={true} />
 	</div>
 
 	<User id={message.author_id} /> pinned a message to the channel.

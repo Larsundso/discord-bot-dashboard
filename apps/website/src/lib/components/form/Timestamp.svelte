@@ -1,12 +1,19 @@
 <script lang="ts">
-	const { time, type: t = 'F' }: { time: number; type?: 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R' } =
-		$props();
+	const {
+		time,
+		type: t = 'F',
+		autoConvert = false,
+	}: {
+		time: number;
+		type?: 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R';
+		autoConvert?: boolean;
+	} = $props();
 	const date = $derived(new Date(time));
 	let type = $derived(t);
 
 	let currentTime = $state(Date.now());
 	let intervalId: NodeJS.Timeout | null = null;
-	let updateFrequency = $state<'second' | 'minute'>('second');
+	let updateFrequency = $state<'second' | 'minute' | 'hour' | 'day'>('second');
 
 	$effect(() => {
 		if (type !== 'R') return;
@@ -20,20 +27,43 @@
 				intervalId = null;
 			}
 
-			const interval = updateFrequency === 'second' ? 1000 : 60000;
+			let interval = 1000; // 1 second default
+
+			switch (updateFrequency) {
+				case 'minute':
+					interval = 60000;
+					break; // 1 minute
+				case 'hour':
+					interval = 3600000;
+					break; // 1 hour
+				case 'day':
+					interval = 86400000;
+					break; // 1 day
+				default:
+					interval = 1000; // 1 second
+			}
 
 			intervalId = setInterval(() => {
 				currentTime = Date.now();
 				const timeDiff = Math.abs(currentTime - time);
 
-				if (timeDiff > 3600000) {
+				if (timeDiff > 3600000 && autoConvert) {
 					clearInterval(intervalId!);
 					intervalId = null;
 					type = 'f';
 					return;
 				}
 
-				if (timeDiff > 60000 && updateFrequency === 'second') {
+				if (timeDiff > 86400000 && updateFrequency !== 'day') {
+					// > 1 day
+					updateFrequency = 'day';
+					setupInterval();
+				} else if (timeDiff > 3600000 && updateFrequency !== 'hour' && updateFrequency !== 'day') {
+					// > 1 hour
+					updateFrequency = 'hour';
+					setupInterval();
+				} else if (timeDiff > 60000 && updateFrequency === 'second') {
+					// > 1 minute
 					updateFrequency = 'minute';
 					setupInterval();
 				}
