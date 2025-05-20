@@ -17,7 +17,7 @@
 </script>
 
 <span
-	class="mention flex flex-ow justify-center items-center mx-1"
+	class="mention flex flex-row justify-center items-center mx-1"
 	style={`color: rgb(${color.join(', ')});
  background-color: rgba(${color.join(', ')}, 0.3);`}
 >
