@@ -39,6 +39,8 @@
 					src={member.avatar_url || member.user?.avatar_url}
 					alt=""
 					class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full"
+     loading="lazy"
+     decoding="async"
 				/>
 				<span
 					class="truncate max-w-30 sm:max-w-36 md:max-w-42 xl:max-w-full truncate"

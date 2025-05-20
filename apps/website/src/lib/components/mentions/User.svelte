@@ -29,7 +29,7 @@
 <div class="mention flex flex-row justify-center items-center gap-1 w-max mx-1">
 	{#if data}
 		<span class="text-alt-text">@</span>
-		<img src={data.avatar_url} alt="" class="w-5 h-5 rounded-full" />
+		<img src={data.avatar_url} alt="" class="w-5 h-5 rounded-full" loading="lazy" decoding="async" />
 		{data.global_name || data.username}
 	{:else}
 		<span class="mention flex flex-row justify-center items-center">@{id}</span>
