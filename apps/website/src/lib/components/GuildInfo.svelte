@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { beforeNavigate } from '$app/navigation';
 	import Timestamp from '$lib/components/form/Timestamp.svelte';
 	import Mention from '$lib/components/Mention.svelte';
 	import Emoji from '$lib/components/message/emoji.svelte';
@@ -8,12 +9,12 @@
 	import splitByThousand from '$lib/scripts/util/splitByThousands';
 	import Sound from './message/sound.svelte';
 
-	const {
-		guild: raw_guild,
+	let {
+		guild,
 		roles: raw_roles,
-		emojis: raw_emojis,
-		stickers: raw_stickers,
-		sounds: raw_sounds,
+		emojis,
+		stickers,
+		sounds,
 	}: {
 		guild: RGuild;
 		roles: RRole[];
@@ -22,11 +23,11 @@
 		sounds: RSoundboardSound[];
 	} = $props();
 
-	const guild = $derived(raw_guild);
-	const roles = $derived(raw_roles);
-	const emojis = $derived(raw_emojis);
-	const stickers = $derived(raw_stickers);
-	const sounds = $derived(raw_sounds);
+	let roles = $derived(raw_roles);
+
+	beforeNavigate(() => {
+		roles = [];
+	});
 
 	let presences: number | undefined = $derived(guild.approximate_presence_count);
 	let members: number | undefined = $derived(guild.approximate_member_count);
@@ -209,7 +210,7 @@
 		</div>
 	</section>
 
-	<section class="flex flex-col gap-5 p-5 mx-auto">
+	<section class="flex flex-col gap-5 p-5 mx-auto w-full">
 		<div class="bg-main-light rounded-xl p-5">
 			<h2 class="text-lg font-semibold mb-4">Server Details</h2>
 

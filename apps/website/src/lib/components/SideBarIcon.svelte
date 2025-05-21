@@ -88,7 +88,8 @@
 </script>
 
 <a
-	class="group relative"
+	class="group relative inline-block of-initial"
+	class:my-1={!['@me', 'guilds', 'add'].includes(id)}
 	onmouseover={() => hovered(true)}
 	onmouseleave={() => hovered(false)}
 	onfocus={() => hovered(true)}
