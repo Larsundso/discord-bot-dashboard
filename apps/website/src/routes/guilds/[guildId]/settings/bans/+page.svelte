@@ -6,6 +6,8 @@
 
 	// const { data }: { data: PageServerData } = $props();
 	let bans: GETResponse = $state([]);
+	let fetchRun = $state(0);
+	let firstBan: GETResponse[number] | null = $state(null);
 
 	const getBans = async (n: boolean) => {
 		const res = await fetch(
@@ -13,7 +15,9 @@
 		);
 		if (!res.ok) return;
 
+		fetchRun += 1;
 		bans = (await res.json()) as GETResponse;
+		if (fetchRun === 1) firstBan = bans.at(0) || null;
 	};
 
 	const next = () => {
@@ -61,11 +65,13 @@
 		text=""
 		style="secondary-outline"
 		onclick={() => prev()}
+		disabled={!!bans.find((b) => b.user.id === firstBan?.user.id)}
 	/>
 	<Button
 		emoji={{ animated: false, id: '▶️' }}
 		text=""
 		style="secondary-outline"
 		onclick={() => next()}
+		disabled={bans.length < 100}
 	/>
 </div>
