@@ -52,13 +52,7 @@
 		text="Invites"
 		icon="invites"
 		href={`/guilds/${guild.id}/settings/invites`}
-		active={page.url.pathname.includes('bans')}
-	/>
-	<ChannelBarButton
-		text="Integrations"
-		icon="integrations"
-		href={`/guilds/${guild.id}/settings/integrations`}
-		active={page.url.pathname.includes('integrations')}
+		active={page.url.pathname.includes('invites')}
 	/>
 	<hr class="w-full b-main-lighter" />
 	<ChannelBarButton

@@ -39,11 +39,6 @@
 			<ChannelBarButton text="Sounds" icon="sounds" href={`/guilds/${guild.id}/settings/sounds`} />
 			<ChannelBarButton text="Members" icon="members" href={`/guilds/${guild.id}/settings/members`} />
 			<ChannelBarButton text="Invites" icon="invites" href={`/guilds/${guild.id}/settings/invites`} />
-			<ChannelBarButton
-				text="Integrations"
-				icon="integrations"
-				href={`/guilds/${guild.id}/settings/integrations`}
-			/>
 			<hr class="w-full b-main-lighter" />
 			<ChannelBarButton
 				text="Audit-Log"
