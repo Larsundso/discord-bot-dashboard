@@ -10,7 +10,7 @@
 	import type { GETResponse } from '../../../../api/guilds/[guildId]/members/search/+server';
 	import type { PageParentData, PageServerData } from './$types';
 
-	type ExtendedMember = RMember & { user: RUser | undefined | null };
+	type ExtendedMember = Omit<RMember, 'roles'> & { user: RUser | undefined | null; roles: RRole[] };
 	const { data }: { data: PageServerData & PageParentData } = $props();
 	let members = $derived([...data.members]);
 	let rolesMap: { role: RRole; members: ExtendedMember[] }[] = $derived.by(() => {
@@ -19,8 +19,9 @@
 		members.forEach((m) => {
 			const highestRole = getHighestHoistedRole(m, data.guild, data.roles);
 			const map = deriveMap.find((r) => r.role?.id === highestRole?.id);
-			if (map) map.members.push(m);
-			else deriveMap.push({ role: highestRole, members: [m] });
+			const member = { ...m, roles: m.roles.map((r) => data.roles.find((role) => role.id === r)!) };
+			if (map) map.members.push(member);
+			else deriveMap.push({ role: highestRole, members: [member] });
 		});
 
 		return deriveMap;
@@ -111,10 +112,10 @@
 							decoding="async"
 							loading="lazy"
 						/>
-						<span
+						<div
 							class="w-max text-lg"
 							style={`color: #${
-								getOrderedRoles(member, data.roles)
+								getOrderedRoles({ ...member, roles: member.roles.map((r) => r.id) }, data.roles)
 									.reverse()
 									.find((r) => r.color)
 									?.color.toString(16)
@@ -122,7 +123,8 @@
 							}`}
 						>
 							{getName(member)}
-						</span>
+       <span class="color-alt-text text-xs"> ({member.user?.username}) </span>
+						</div>
 					</div>
 
 					{#if isMuted}
@@ -146,9 +148,9 @@
 				</div>
 
 				<div class="flex flex-row justify-start items-center gap-2 w-full flex-wrap">
-					{#each member.roles.sort((b, a) => Number(data.roles.find((r) => r.id === a)?.position) - Number(data.roles.find((r) => r.id === b)?.position)) as roleId}
+					{#each member.roles.sort((b, a) => a.position - b.position) as role}
 						<span class="flex flex-row justify-start items-center gap-1 w-max max-w-60 truncate">
-							<Role id={roleId} />
+							<Role id={role.id} />
 						</span>
 					{/each}
 				</div>
