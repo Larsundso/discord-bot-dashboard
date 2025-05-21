@@ -2,17 +2,23 @@
 	import cache from '$lib/scripts/cache';
 	import type { RRole } from '$lib/scripts/RTypes';
 	import rgbaFromHex from '$lib/scripts/util/rgbaFromHex';
-	import { onMount } from 'svelte';
 
 	const { id }: { id: string } = $props();
-	let data: RRole | null = $state(null);
+	let data: RRole | string = $derived(id);
 	let color: number[] = $derived([]);
 
-	onMount(async () => {
-		data = await cache.roles.get(id).catch(() => null);
-		if (!data) return;
+	$effect(() => {
+		if (typeof data !== 'string') return;
 
-		color = data.color ? rgbaFromHex(data.color.toString(16).padStart(6, '0')) : [];
+		cache.roles
+			.get(data)
+			.catch(() => null)
+			.then((res) => {
+				if (!res) return;
+
+				data = res;
+				color = data.color ? rgbaFromHex(data.color.toString(16).padStart(6, '0')) : [];
+			});
 	});
 </script>
 
@@ -21,7 +27,7 @@
 	style={`color: rgb(${color.join(', ')});
  background-color: rgba(${color.join(', ')}, 0.3);`}
 >
-	{#if data}
+	{#if typeof data !== 'string'}
 		@
 		{#if data.unicode_emoji}
 			{data.unicode_emoji}
