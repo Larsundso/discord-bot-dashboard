@@ -49,7 +49,7 @@
 				{#if invite.uses}
 					<span class="b-l-2px b-main-darker rounded-lg b-solid pl-2">
 						Uses: <br />
-						{invite.max_uses}{invite.max_uses ? `/${invite.max_uses}` : ''}
+						{invite.uses}{invite.max_uses ? `/${invite.max_uses}` : ''}
 					</span>
 				{/if}
 			</div>
