@@ -1,15 +1,14 @@
 <script lang="ts">
+	import { page } from '$app/state';
+	import Button from '$lib/components/form/Button.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Timestamp from '$lib/components/form/Timestamp.svelte';
+	import Role from '$lib/components/mentions/Role.svelte';
 	import type { RMember, RRole, RUser } from '$lib/scripts/RTypes';
 	import getHighestHoistedRole from '$lib/scripts/util/getHighestHoistedRole';
 	import getOrderedRoles from '$lib/scripts/util/getOrderedRoles';
-	import type { PageParentData, PageServerData } from './$types';
-	import sleep from '$lib/scripts/util/sleep';
-	import { page } from '$app/state';
 	import type { GETResponse } from '../../../../api/guilds/[guildId]/members/search/+server';
-	import Button from '$lib/components/form/Button.svelte';
-	import Role from '$lib/components/mentions/Role.svelte';
+	import type { PageParentData, PageServerData } from './$types';
 
 	type ExtendedMember = RMember & { user: RUser | undefined | null };
 	const { data }: { data: PageServerData & PageParentData } = $props();
@@ -27,8 +26,8 @@
 		return deriveMap;
 	});
 
-	let fetching = $derived(false);
-	let query = $derived('');
+	let fetching = $state(false);
+	let query = $state('');
 	const getQuery = async () => {
 		if (!query || query.length < 2) {
 			members = [...data.members];
@@ -37,11 +36,11 @@
 
 		fetching = true;
 		const res = await fetch(`/api/guilds/${page.params.guildId}/members/search?query=${query}`);
-		fetching = false;
 		const searchResults = (await res.json()) as GETResponse;
 
-  console.log(members)
 		members = [...searchResults];
+
+		fetching = false;
 	};
 
 	const getName = (member: ExtendedMember) =>
