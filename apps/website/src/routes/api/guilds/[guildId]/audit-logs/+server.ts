@@ -3,6 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import type { APIAuditLog, APIThreadChannel } from 'discord-api-types/v10';
 import type { RIntegration, RThread, RUser, RWebhook } from '$lib/scripts/RTypes';
+import getTimestampFromID from '$lib/scripts/util/getTimestampFromID';
 
 export const GET: RequestHandler = async (event) => {
 	const actionType = event.url.searchParams.get('action_type');
@@ -29,6 +30,9 @@ export const GET: RequestHandler = async (event) => {
 
 	return json({
 		...res,
+		audit_log_entries: res.audit_log_entries.sort(
+			(b, a) => getTimestampFromID(a.id) - getTimestampFromID(b.id),
+		),
 		users: res.users.map((u) => cache.users.apiToR(u)),
 		integrations: res.integrations.map((i) => cache.integrations.apiToR(i, event.params.guildId)),
 		threads: res.threads.map((t) => cache.threads.apiToR(t as APIThreadChannel)),
