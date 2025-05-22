@@ -161,51 +161,53 @@
 						{/if}
 					</div>
 				</div>
-				<div class="w-50% px-5">
-					<br />
-					<div class="flex flex-col gap-2">
-						<div class="flex flex-row items-center gap-2">
-							<span class="font-semibold">Owner:</span>
-							<Mention type="user" id={guild.owner_id} />
+				{#key guild.id}
+					<div class="w-50% px-5">
+						<br />
+						<div class="flex flex-col gap-2">
+							<div class="flex flex-row items-center gap-2">
+								<span class="font-semibold">Owner:</span>
+								<Mention type="user" id={guild.owner_id} />
+							</div>
+
+							{#if guild.afk_channel_id}
+								<div class="flex flex-row items-center gap-2">
+									<span class="font-semibold">AFK Channel:</span>
+									<Mention type="channel" id={guild.afk_channel_id} {guild} />
+									<span class="text-alt-text">({guild.afk_timeout} seconds)</span>
+								</div>
+							{/if}
+
+							{#if guild.system_channel_id}
+								<div class="flex flex-row items-center gap-2">
+									<span class="font-semibold">System Channel:</span>
+									<Mention type="channel" id={guild.system_channel_id} {guild} />
+								</div>
+							{/if}
+
+							{#if guild.rules_channel_id}
+								<div class="flex flex-row items-center gap-2">
+									<span class="font-semibold">Rules Channel:</span>
+									<Mention type="channel" id={guild.rules_channel_id} {guild} />
+								</div>
+							{/if}
+
+							{#if guild.public_updates_channel_id}
+								<div class="flex flex-row items-center gap-2">
+									<span class="font-semibold">Updates Channel:</span>
+									<Mention type="channel" id={guild.public_updates_channel_id} {guild} />
+								</div>
+							{/if}
+
+							{#if guild.safety_alerts_channel_id}
+								<div class="flex flex-row items-center gap-2">
+									<span class="font-semibold">Safety Alerts Channel:</span>
+									<Mention type="channel" id={guild.safety_alerts_channel_id} {guild} />
+								</div>
+							{/if}
 						</div>
-
-						{#if guild.afk_channel_id}
-							<div class="flex flex-row items-center gap-2">
-								<span class="font-semibold">AFK Channel:</span>
-								<Mention type="channel" id={guild.afk_channel_id} {guild} />
-								<span class="text-alt-text">({guild.afk_timeout} seconds)</span>
-							</div>
-						{/if}
-
-						{#if guild.system_channel_id}
-							<div class="flex flex-row items-center gap-2">
-								<span class="font-semibold">System Channel:</span>
-								<Mention type="channel" id={guild.system_channel_id} {guild} />
-							</div>
-						{/if}
-
-						{#if guild.rules_channel_id}
-							<div class="flex flex-row items-center gap-2">
-								<span class="font-semibold">Rules Channel:</span>
-								<Mention type="channel" id={guild.rules_channel_id} {guild} />
-							</div>
-						{/if}
-
-						{#if guild.public_updates_channel_id}
-							<div class="flex flex-row items-center gap-2">
-								<span class="font-semibold">Updates Channel:</span>
-								<Mention type="channel" id={guild.public_updates_channel_id} {guild} />
-							</div>
-						{/if}
-
-						{#if guild.safety_alerts_channel_id}
-							<div class="flex flex-row items-center gap-2">
-								<span class="font-semibold">Safety Alerts Channel:</span>
-								<Mention type="channel" id={guild.safety_alerts_channel_id} {guild} />
-							</div>
-						{/if}
 					</div>
-				</div>
+				{/key}
 			</div>
 		</div>
 	</section>
@@ -312,7 +314,7 @@
 						{#if guild.widget_channel_id}
 							<p class="w-max flex flex-row">
 								<span class="font-medium">Widget Channel:</span>
-								<Mention type="channel" id={guild.widget_channel_id} {guild} />
+								{#key guild.id}<Mention type="channel" id={guild.widget_channel_id} {guild} />{/key}
 							</p>
 						{/if}
 					</div>
@@ -525,7 +527,7 @@
 					<div class="space-y-2">
 						<h3 class="font-semibold">Welcome Channels</h3>
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-							{#each guild.welcome_screen.welcome_channels as channel}
+							{#each guild.welcome_screen.welcome_channels as channel (channel.channel_id)}
 								<div class="bg-main-dark p-3 rounded-md flex items-center gap-2">
 									{#if channel.emoji_id}
 										<img
@@ -538,7 +540,7 @@
 									{/if}
 									<div>
 										<p class="font-medium">{channel.description}</p>
-										<Mention type="channel" id={channel.channel_id} {guild} />
+										{#key guild.id}<Mention type="channel" id={channel.channel_id} {guild} />{/key}
 									</div>
 								</div>
 							{/each}
