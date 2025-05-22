@@ -7,9 +7,10 @@ export const GET: RequestHandler = async (event) => {
 	const channelId = event.params.channelId;
 
 	const channel = await cache.channels.get(channelId);
-	if (!channel) return error(404);
+	const thread = await cache.threads.get(channelId);
+	if (!channel && !thread) return error(404);
 
-	return json(channel);
+	return json(channel || thread);
 };
 
 export type GETResponse = RChannel;
