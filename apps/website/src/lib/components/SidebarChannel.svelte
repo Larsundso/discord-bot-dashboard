@@ -7,19 +7,31 @@
 		$props();
 </script>
 
-<a
-	class="flex flex-row justify-start items-center gap-1 color-alt-text py-0.5 rounded-lg px-0.5 mr-2
- transition-all duration-100 ease-in-out hover:bg-main-dark"
+<div
+	class="flex flex-row justify-start items-center gap-1 color-alt-text py-0.5 rounded-lg px-0.5 mr-2 relative
+ transition-all duration-100 ease-in-out hover:bg-main-dark group"
 	class:bg-main-dark={selected}
 	class:mt-4={channel.type === ChannelType.GuildCategory}
- class:pointer-events-none={channel.type === ChannelType.GuildCategory}
-	href={`/guilds/${guild.id}/${channel.id}`}
+	class:pointer-events-none={channel.type === ChannelType.GuildCategory}
 >
-	<ChannelIcon {channel} {guild} />
-	<span
-		class="text-xs sm:text-sm md:text-base truncate"
-		class:text-2xs={channel.type === ChannelType.GuildCategory}
+	<a
+		href={`/guilds/${guild.id}/${channel.id}`}
+		class="flex flex-row justify-start items-center gap-1"
 	>
-		{channel.name}
-	</span>
-</a>
+		<ChannelIcon {channel} {guild} />
+		<span
+			class="text-xs sm:text-sm md:text-base truncate"
+			class:text-2xs={channel.type === ChannelType.GuildCategory}
+		>
+			{channel.name}
+		</span>
+	</a>
+
+	<a
+		class="absolute right-1 op-0 group-hover:op-100 top-1 transition-all duration-100 ease-in-out"
+		href="/guilds/{guild.id}/{channel.id}/settings"
+		aria-label="Channel settings"
+	>
+		<i class="i-tabler-settings-filled inline-block w-4 h-4"></i>
+	</a>
+</div>
