@@ -9,7 +9,7 @@ export const GET: RequestHandler = async (event) => {
 	const role = await cache.roles.get(roleId);
 	if (!role) return error(404);
 
-	return json(role);
+	return json(role as GETResponse);
 };
 
 export type GETResponse = RRole;

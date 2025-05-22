@@ -80,7 +80,6 @@
 
 		update();
 		if (single) expanded = false;
-		// if (!bind) selectedOptions = [];
 	};
 
 	const clickWindow = (

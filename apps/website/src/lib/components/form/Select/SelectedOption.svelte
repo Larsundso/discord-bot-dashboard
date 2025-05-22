@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Channel from '$lib/components/mentions/Channel.svelte';
+	import Role from '$lib/components/mentions/Role.svelte';
+	import User from '$lib/components/mentions/User.svelte';
 	import type { RChannel, RRole, RUser } from '$lib/scripts/RTypes';
 
 	type Option = string | RRole | RChannel | RUser;
@@ -20,7 +23,15 @@
 		aria-label="Toggle Select"
 	>
 		<span>
-			{opt}
+			{#if typeof opt === 'string'}
+				{opt}
+			{:else if 'username' in opt}
+				<User id={opt.id} />
+			{:else if 'color' in opt}
+				<Role id={opt.id} />
+			{:else if 'name' in opt}
+				<Channel id={opt.id} />
+			{/if}
 		</span>
 	</div>
 {:else}
@@ -33,7 +44,15 @@
 		aria-label="Remove Select"
 	>
 		<span>
-			{opt}
+			{#if typeof opt === 'string'}
+				{opt}
+			{:else if 'username' in opt}
+				<User id={opt.id} />
+			{:else if 'color' in opt}
+				<Role id={opt.id} />
+			{:else if 'name' in opt}
+				<Channel id={opt.id} />
+			{/if}
 		</span>
 		<div class="w-4">
 			<span class="i-tabler-x block pointer-events-none select-none"></span>

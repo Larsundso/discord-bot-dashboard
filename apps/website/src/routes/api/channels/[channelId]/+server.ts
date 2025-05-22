@@ -1,7 +1,7 @@
 import { cache } from '$lib/server';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { RChannel } from '$lib/scripts/RTypes';
+import type { RChannel, RThread } from '$lib/scripts/RTypes';
 
 export const GET: RequestHandler = async (event) => {
 	const channelId = event.params.channelId;
@@ -10,7 +10,7 @@ export const GET: RequestHandler = async (event) => {
 	const thread = await cache.threads.get(channelId);
 	if (!channel && !thread) return error(404);
 
-	return json(channel || thread);
+	return json((channel || thread) as GETResponse);
 };
 
-export type GETResponse = RChannel;
+export type GETResponse = RChannel | RThread;

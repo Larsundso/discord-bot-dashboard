@@ -9,7 +9,7 @@ export const GET: RequestHandler = async (event) => {
 	const user = await cache.users.get(userId);
 	if (!user) return error(404);
 
-	return json(user);
+	return json(user as GETResponse);
 };
 
 export type GETResponse = RUser;

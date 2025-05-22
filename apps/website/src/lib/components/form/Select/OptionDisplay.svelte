@@ -14,7 +14,7 @@
 		if (hasErrored) return;
 
 		hasErrored = true;
-		replaceImage = '/images/member.webp';
+		replaceImage = '';
 	};
 </script>
 
@@ -24,7 +24,7 @@
 	{:else}
 		{#if 'avatar_url' in option}
 			<img
-				src={replaceImage || option.avatar_url || '/images/member.webp'}
+				src={replaceImage || option.avatar_url || ''}
 				alt=""
 				height="32"
 				width="32"

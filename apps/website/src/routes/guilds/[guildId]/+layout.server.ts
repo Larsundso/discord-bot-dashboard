@@ -13,7 +13,7 @@ export const load: LayoutServerLoad = async (event) => {
 	const fetched = event.cookies.get('fetched');
 	const sessionStart = event.cookies.get('sessionStart');
 	if (!fetched || fetched !== sessionStart) {
-		event.fetch(`/api/guilds/${guildId}/members`);
+		event.fetch(`/api/guilds/${guildId}/init`);
 
 		event.cookies.set('fetched', sessionStart!, {
 			path: `/guilds/${guildId}`,

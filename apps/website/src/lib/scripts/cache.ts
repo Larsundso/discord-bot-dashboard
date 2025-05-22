@@ -1,4 +1,4 @@
-import type { RChannel, RRole, RUser } from '$lib/scripts/RTypes';
+import type { RAutomod, RChannel, RRole, RUser } from '$lib/scripts/RTypes';
 import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 import { source, type Source, type SourceSelected } from 'sveltekit-sse';
 
@@ -12,6 +12,7 @@ const cache: {
 	users: CacheHandler<RUser>;
 	channels: CacheHandler<RChannel>;
 	roles: CacheHandler<RRole>;
+	automod: CacheHandler<RAutomod>;
 
 	emitter: Map<CacheEvents, ReturnType<Source['select']>>;
 } = {
@@ -98,6 +99,36 @@ const cache: {
 					throw error;
 				});
 			cache.roles.requests.set(id, newRequest);
+			return newRequest;
+		},
+	},
+
+	automod: {
+		cache: new Map<string, RAutomod>(),
+		requests: new Map<string, Promise<RAutomod>>(),
+		get: async (id: string) => {
+			const cached = cache.automod.cache.get(id);
+			if (cached) return Promise.resolve(cached);
+
+			const request = cache.automod.requests.get(id);
+			if (request) return request;
+
+			const newRequest = fetch(`/api/automod/${id}`)
+				.then((res) => {
+					if (res.status === 200) return res.json();
+					else throw new Error(`Failed to fetch automod: ${res.status}`);
+				})
+				.then((automod: RAutomod) => {
+					cache.automod.cache.set(id, automod);
+					cache.automod.requests.delete(id);
+					return automod;
+				})
+				.catch((error) => {
+					cache.automod.requests.delete(id);
+					throw error;
+				});
+
+			cache.automod.requests.set(id, newRequest);
 			return newRequest;
 		},
 	},
