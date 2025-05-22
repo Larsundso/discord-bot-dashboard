@@ -12,6 +12,7 @@
  transition-all duration-100 ease-in-out hover:bg-main-dark"
 	class:bg-main-dark={selected}
 	class:mt-4={channel.type === ChannelType.GuildCategory}
+ class:pointer-events-none={channel.type === ChannelType.GuildCategory}
 	href={`/guilds/${guild.id}/${channel.id}`}
 >
 	<ChannelIcon {channel} {guild} />
