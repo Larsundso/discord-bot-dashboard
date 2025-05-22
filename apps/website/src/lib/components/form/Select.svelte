@@ -96,7 +96,7 @@
 	};
 </script>
 
-<svelte:window on:click={clickWindow} on:keydown={clickWindow} />
+<svelte:window onclick={clickWindow} onkeydown={clickWindow} />
 
 <div {id} class={twMerge(['relative w-full', className])}>
 	<input
@@ -121,7 +121,7 @@
 					class:left-1={!single}
 					class:left-2={single}
 				>
-					{#each selectedOptions as opt, j (j)}
+					{#each selectedOptions as opt (typeof opt === 'string' ? opt : opt.id)}
 						<SelectedOption {single} {optionClick} {opt} />
 					{/each}
 				</div>
