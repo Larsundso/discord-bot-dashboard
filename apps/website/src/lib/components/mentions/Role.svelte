@@ -36,6 +36,6 @@
 		{/if}
 		{data.name}
 	{:else}
-		<span class="mention flex flex-row justify-center items-center">@&{id}</span>
+		<span class="flex flex-row justify-center items-center">@&{id}</span>
 	{/if}
 </span>

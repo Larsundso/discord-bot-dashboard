@@ -14,8 +14,8 @@
 
 <span class="mention flex flex-rew justify-center items-center mx-1">
 	{#if data}
-		<ChannelIcon channel={data} {guild} /> {data.name}
+		#<ChannelIcon channel={data} {guild} /> {data.name}
 	{:else}
-		<span class="mention flex flex-row justify-center items-center">#{id}</span>
+		<span class="flex flex-row justify-center items-center">#{id}</span>
 	{/if}
 </span>
