@@ -7,10 +7,8 @@
 </script>
 
 <div
-	class="flex flex-col justify-center items-start gap-2 text-sm of-y-auto of-x-hidden h-100lvh max-w-20% p-2"
+	class="flex flex-col justify-start items-start gap-2 text-sm of-y-auto of-x-hidden h-100lvh max-w-20% p-2"
 >
-	<div class="content-empty mt-1850"></div>
-
 	{#each roles as role}
 		{@const color = rgbaFromHex(role.color.toString(16).padStart(6, '0'))}
 		<a

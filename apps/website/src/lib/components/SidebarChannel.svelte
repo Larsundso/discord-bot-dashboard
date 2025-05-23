@@ -16,7 +16,7 @@
 >
 	<a
 		href={`/guilds/${guild.id}/${channel.id}`}
-		class="flex flex-row justify-start items-center gap-1"
+		class="flex flex-row justify-start items-center gap-1 w-full"
 	>
 		<ChannelIcon {channel} {guild} />
 		<span

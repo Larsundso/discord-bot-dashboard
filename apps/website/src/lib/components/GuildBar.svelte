@@ -26,26 +26,12 @@
 >
 	<div
 		class="w-16 fixed z-5
-  before:content-empty before:bg-main-darker before:w-20 before:-left-2 before:h-38 before:absolute
+  before:content-empty before:bg-main-darker before:w-20 before:-left-2 before:h-20 before:absolute
   before:-top-2 after:relative"
 	>
 		<hr
 			class="border-t-2 border-main rounded-full w-full m-auto z-5 absolute -bottom-2 left-50% -translate-x-50%"
 		/>
-		<SideBarIcon
-			src="favicon.png"
-			name="Direct Messages"
-			size={40}
-			bg
-			id="@me"
-			onHover={(e) => {
-				showName(e, dotContainer!, nameContainer!);
-				currentName = e.name;
-			}}
-			onUnhover={() => (currentName = null)}
-		/>
-
-		<div class="content-empty h-2"></div>
 
 		<SideBarIcon
 			src="search.svg"
@@ -61,7 +47,7 @@
 		/>
 	</div>
 	<div class="h-100lvh mt-10 w-full">
-		<div class="content-empty h-28 min-w-12 sm:min-w-14 md:min-w-16"></div>
+		<div class="content-empty h-8 min-w-12 sm:min-w-14 md:min-w-16"></div>
 		{#each guilds as guild, i}
 			{#if i !== 0}
 				<br class="mt-2.5 content-empty block" />

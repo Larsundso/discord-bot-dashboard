@@ -211,7 +211,6 @@
 										{/if}
 									</div>
 									<Timestamp time={getTimestampFromID(entry.id)} type="R" />
-									{entry.id}
 								</div>
 
 								<span>Reason: {entry.reason || 'None provided'}</span>
