@@ -33,6 +33,30 @@ services:
   networks:
    - default
 
+ cache:
+  build:
+   context: .
+   dockerfile: cache.Dockerfile
+  restart: unless-stopped
+  networks:
+   - default
+  depends_on:
+   - redis
+   - nirn
+
+ website:
+  build:
+   context: .
+   dockerfile: website.Dockerfile
+  restart: unless-stopped
+  ports:
+   - "0.0.0.0:5173:5173"
+  networks:
+   - default
+  depends_on:
+   - redis
+   - nirn
+
 networks:
  default:
   driver: bridge

@@ -37,17 +37,17 @@ import messageDelete from './Events/messageDelete';
 import messageUpdate from './Events/messageUpdate';
 
 export const validatorAPI = new API(
-	new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(VALIDATOR_TOKEN),
+	new REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(VALIDATOR_TOKEN),
 );
 
 export let api: typeof validatorAPI;
 export const setAPI = (token: string) => {
-	api = new API(new REST({ version: '10', api: 'http://127.0.0.1:8080/api' }).setToken(token));
+	api = new API(new REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(token));
 };
 
-export const publisher = new Redis({ host: '127.0.0.1', db: 0 });
+export const publisher = new Redis({ host: 'redis', db: 0 });
 export const redis = publisher;
-export const subscriber = new Redis({ db: 0, host: '127.0.0.1' });
+export const subscriber = new Redis({ db: 0, host: 'redis' });
 
 const savedToken = await redis.get('token');
 if (savedToken) setAPI(savedToken);

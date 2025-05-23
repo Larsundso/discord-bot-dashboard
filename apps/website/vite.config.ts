@@ -6,6 +6,9 @@ import extractorSvelte from '@unocss/extractor-svelte';
 import UnoCSS from '@unocss/svelte-scoped/vite';
 
 export default defineConfig({
-	server: { allowedHosts: [] },
+	server: { 
+		host: '0.0.0.0',
+		allowedHosts: [] 
+	},
 	plugins: [UnoCSS({ injectReset: '' }), sveltekit(), extractorSvelte()],
 });

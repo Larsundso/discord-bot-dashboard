@@ -8,7 +8,7 @@ import rawCache from './Cache.js';
 
 const token = await redis.get('token');
 
-const rest = new REST({ api: 'http://127.0.0.1:8080/api' });
+const rest = new REST({ api: 'http://nirn:8080/api' });
 rest.setToken(token!);
 
 const gateway = new WebSocketManager({
