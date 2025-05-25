@@ -27,7 +27,11 @@
 				Your browser does not support the audio tag.
 			</audio>
 		{:else}
-			<span class="color-danger"> Unhandled {attachment.content_type} attachment </span>
+			<img
+				class="block object-cover min-w-full min-h-full max-w-[calc(100%+1px)] my-2"
+				alt=""
+				src={attachment.url}
+			/>
 		{/if}
 	</div>
 </div>
