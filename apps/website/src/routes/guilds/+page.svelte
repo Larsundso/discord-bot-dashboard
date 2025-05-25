@@ -7,20 +7,41 @@
 	import Button from '$lib/components/form/Button.svelte';
 
 	const { data }: { data: PageData } = $props();
-	let guilds = $derived(data.guilds);
-	let shownGuilds = $derived(guilds.slice(0, 500));
+	let allGuilds = $state<RGuild[]>([...(data.guilds as RGuild[] || [])]);
 	let lastPage = $state(1);
+	let shownGuilds = $derived(allGuilds.slice((lastPage - 1) * 500, lastPage * 500));
+	let isLoading = $state(false);
+	let loadingMore = $state(false);
+	let hasMoreGuilds = $state(true);
 
 	const prev = () => {
 		lastPage = lastPage - 1;
 		if (lastPage < 1) lastPage = 1;
-		shownGuilds = guilds.slice(lastPage * 500 - 500, lastPage * 500);
 	};
 
 	const next = () => {
 		lastPage = lastPage + 1;
-		if (lastPage > Math.ceil(guilds.length / 500)) lastPage = Math.ceil(guilds.length / 500);
-		shownGuilds = guilds.slice(lastPage * 500 - 500, lastPage * 500);
+		if (lastPage > Math.ceil(allGuilds.length / 500)) lastPage = Math.ceil(allGuilds.length / 500);
+	};
+
+	const loadMoreGuilds = async () => {
+		if (loadingMore || !hasMoreGuilds) return;
+		
+		loadingMore = true;
+		try {
+			const response = await fetch(`/api/guilds/load-more?offset=${allGuilds.length}&limit=50`);
+			const newGuilds: RGuild[] = await response.json();
+			
+			if (newGuilds.length === 0) {
+				hasMoreGuilds = false;
+			} else {
+				allGuilds = [...allGuilds, ...newGuilds];
+			}
+		} catch (error) {
+			console.error('Failed to load more guilds:', error);
+		} finally {
+			loadingMore = false;
+		}
 	};
 
 	$effect(() => {
@@ -32,21 +53,21 @@
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			guilds = [...guilds, parsed];
+			allGuilds = [...allGuilds, parsed];
 		});
 
 		const patchUnsub = patchChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			guilds = guilds.map((guild) => (guild.id === parsed.id ? parsed : guild));
+			allGuilds = allGuilds.map((guild) => (guild.id === parsed.id ? parsed : guild));
 		});
 
 		const deleteUnsub = deleteChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			guilds = guilds.filter((guild) => guild.id !== parsed.id);
+			allGuilds = allGuilds.filter((guild) => guild.id !== parsed.id);
 		});
 
 		return () => {
@@ -92,13 +113,13 @@
 				text=""
 				style="secondary-outline"
 				onclick={() => next()}
-				disabled={lastPage === Math.ceil(guilds.length / 500)}
+				disabled={lastPage === Math.ceil(allGuilds.length / 500)}
 			/>
 		</div>
 	</div>
 
 	<div class="flex flex-row justify-center items-center gap-2 w-full flex-wrap mt-5">
-		{#each query ? guilds.filter((g) => g.name
+		{#each query ? allGuilds.filter((g) => g.name
 						.toLowerCase()
 						.includes(query.toLowerCase())) : shownGuilds as guild}
 			<a
@@ -114,7 +135,7 @@
 					>
 						{guild.name
 							.split(/\s+/g)
-							.map((w) => w[0].toUpperCase())
+							.map((w: string) => w[0].toUpperCase())
 							.join('')
 							.slice(0, 5)}
 					</div>
@@ -123,4 +144,16 @@
 			</a>
 		{/each}
 	</div>
+
+	<!-- Load More Button -->
+	{#if hasMoreGuilds && !query}
+		<div class="flex justify-center mt-5">
+			<Button
+				text={loadingMore ? "Loading..." : "Load More Guilds"}
+				style="primary"
+				onclick={loadMoreGuilds}
+				disabled={loadingMore}
+			/>
+		</div>
+	{/if}
 </section>
