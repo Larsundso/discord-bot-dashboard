@@ -1,3 +1,4 @@
+import type { RGuild } from '$lib/scripts/RTypes';
 import { cache, redis } from '$lib/server';
 import type { LayoutServerLoad } from './$types';
 import type { APIUser } from 'discord-api-types/v10';
@@ -18,7 +19,7 @@ const getGuilds = async () => {
 	const limitedKeys = guildKeys.slice(0, 100);
 
 	const batchSize = 10;
-	const results = [];
+	const results: RGuild[] = [];
 
 	for (let i = 0; i < limitedKeys.length; i += batchSize) {
 		const batch = limitedKeys.slice(i, i + batchSize);
@@ -31,7 +32,10 @@ const getGuilds = async () => {
 						setTimeout(() => reject(new Error('Timeout')), 2000),
 					);
 
-					const result = await Promise.race([cache.guilds.get(guildId), timeoutPromise]);
+					const result = (await Promise.race([
+						cache.guilds.get(guildId),
+						timeoutPromise,
+					])) as RGuild | null;
 
 					return result;
 				} catch (error) {
