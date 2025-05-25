@@ -32,7 +32,6 @@ services:
    - default
   depends_on:
    - redis
-   - nirn
 
  website:
   build:
@@ -45,7 +44,6 @@ services:
    - default
   depends_on:
    - redis
-   - nirn
 
 networks:
  default:
