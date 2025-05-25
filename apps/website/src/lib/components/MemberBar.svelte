@@ -7,13 +7,16 @@
 	const { members, roles, guild }: { guild: RGuild; roles: RRole[]; members: ExtendedMember[] } =
 		$props();
 
-	const rolesMap: { role: RRole; members: ExtendedMember[] }[] = [];
-
-	members.forEach((m) => {
-		const highestRole = getHighestHoistedRole(m, guild, roles);
-		const map = rolesMap.find((r) => r.role?.id === highestRole?.id);
-		if (map) map.members.push(m);
-		else rolesMap.push({ role: highestRole, members: [m] });
+	const rolesMap = $derived.by(() => {
+		const map: { role: RRole; members: ExtendedMember[] }[] = [];
+		members.forEach((m) => {
+			const highestRole = getHighestHoistedRole(m, guild, roles);
+			const existingMap = map.find((r) => r.role?.id === highestRole?.id);
+			if (existingMap) existingMap.members.push(m);
+			else map.push({ role: highestRole, members: [m] });
+		});
+		
+		return map;
 	});
 
 	const getName = (m: ExtendedMember) => {

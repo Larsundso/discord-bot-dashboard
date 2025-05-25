@@ -10,17 +10,11 @@ export const load: LayoutServerLoad = async (event) => {
 	const guild = await cache.guilds.get(guildId);
 	if (!guild) throw redirect(302, '/@me');
 
-	const fetched = event.cookies.get('fetched');
+	const fetched = await redis.hget('fetched', guildId);
 	const sessionStart = event.cookies.get('sessionStart');
 	if (!fetched || fetched !== sessionStart) {
 		event.fetch(`/api/guilds/${guildId}/init`);
-
-		event.cookies.set('fetched', sessionStart!, {
-			path: `/guilds/${guildId}`,
-			expires: new Date(Date.now() + 60 * 60 * 1000),
-			httpOnly: true,
-			sameSite: 'strict',
-		});
+		redis.hset('fetched', guildId, String(sessionStart));
 	}
 
 	return { guild, channels: await getChannels(guildId) };
