@@ -4,7 +4,6 @@
 	import type { GETResponse } from '../../../../api/guilds/[guildId]/bans/+server';
 	import Button from '$lib/components/form/Button.svelte';
 
-	// const { data }: { data: PageServerData } = $props();
 	let bans: GETResponse = $state([]);
 	let fetchRun = $state(0);
 	let firstBan: GETResponse[number] | null = $state(null);

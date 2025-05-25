@@ -1,5 +1,4 @@
 export default (hex: string) => {
-	// Remove '#' if present for consistency
 	if (hex.startsWith('#')) {
 		hex = hex.substring(1);
 	}
