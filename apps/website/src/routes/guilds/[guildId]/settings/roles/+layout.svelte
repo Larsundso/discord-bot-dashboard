@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh of-hidden w-full"
+	class="flex flex-row justify-start items-start bg-main-dark relative  h-100vh of-hidden w-full"
 >
 	<RolesBar roles={data.roles} guild={data.guild} />
 

@@ -49,7 +49,7 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh w-screen of-hidden max-w-full"
+	class="flex flex-row justify-start items-start bg-main-dark relative  h-100vh w-screen of-hidden max-w-full"
 >
 	{#if page.url.pathname !== '/'}
 		<GuildBar {guilds} />

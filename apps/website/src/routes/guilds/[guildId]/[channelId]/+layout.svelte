@@ -23,7 +23,7 @@
 </script>
 
 <div
-	class="flex flex-row justify-start items-start bg-main-dark relative text-poppins h-100vh w-full overflow-hidden"
+	class="flex flex-row justify-start items-start bg-main-dark relative  h-100vh w-full overflow-hidden"
 >
 	<!-- Main content area with proper width calculation to avoid overlap -->
 	<div class="flex flex-grow flex-col w-full md:w-[calc(100%-240px)] h-full overflow-hidden">

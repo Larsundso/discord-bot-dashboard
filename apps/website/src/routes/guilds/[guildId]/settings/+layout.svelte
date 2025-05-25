@@ -7,7 +7,7 @@
 </script>
 
 <section
-	class="fixed w-100vw h-100vh bg-main-dark left-0 top-0 z-50 flex flex-row justify-start items-start text-poppins of-hidden"
+	class="fixed w-100vw h-100vh bg-main-dark left-0 top-0 z-50 flex flex-row justify-start items-start  of-hidden"
 >
 	<SettingsBar guild={data.guild} />
 
