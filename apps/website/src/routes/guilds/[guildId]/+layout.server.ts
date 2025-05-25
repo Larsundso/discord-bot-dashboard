@@ -17,7 +17,10 @@ export const load: LayoutServerLoad = async (event) => {
 		redis.hset('fetched', guildId, String(sessionStart));
 	}
 
-	return { guild, channels: await getChannels(guildId) };
+	const self = (await await redis.get('self').then((r) => JSON.parse(r!))) as APIUser;
+	const me = await cache.members.get(guildId, self.id);
+
+	return { guild, channels: await getChannels(guildId), me };
 };
 
 const getChannels = async (guildId: string) => {
