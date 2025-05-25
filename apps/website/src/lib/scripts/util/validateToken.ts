@@ -1,9 +1,13 @@
-import { validatorAPI } from '$lib/server/index';
+import { API } from '@discordjs/core';
+import { REST } from '@discordjs/rest';
 
 export default async (token: string) => {
 	const botId = Buffer.from(token.split('.')[0], 'base64').toString();
 
-	const worked = await validatorAPI.users.get(botId).catch((r) => false);
+	const rest = new REST().setToken(token);
+	const api = new API(rest);
+	const worked = await api.users.get(botId).catch((r) => false);
+	console.log(worked);
 
 	return worked;
 };

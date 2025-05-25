@@ -23,16 +23,6 @@ services:
   networks:
    - default
 
- nirn:
-  image: ghcr.io/germanoeich/nirn-proxy:v1.3.3
-  restart: unless-stopped
-  environment:
-   REQUEST_TIMEOUT: 15000
-  ports:
-   - "127.0.0.1:8080:8080"
-  networks:
-   - default
-
  cache:
   build:
    context: .

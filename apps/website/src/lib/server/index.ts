@@ -1,4 +1,3 @@
-import { VALIDATOR_TOKEN } from '$env/static/private';
 import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events.js';
 import { API } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
@@ -36,18 +35,14 @@ import messageCreate from './Events/messageCreate';
 import messageDelete from './Events/messageDelete';
 import messageUpdate from './Events/messageUpdate';
 
-export const validatorAPI = new API(
-	new REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(VALIDATOR_TOKEN),
-);
-
-export let api: typeof validatorAPI;
+export let api: typeof API.prototype;
 export const setAPI = (token: string) => {
-	api = new API(new REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(token));
+	api = new API(new REST({ version: '10' }).setToken(token));
 };
 
-export const publisher = new Redis({ host: 'redis', db: 0 });
+export const publisher = new Redis({ host: '127.0.0.1', db: 0 });
 export const redis = publisher;
-export const subscriber = new Redis({ db: 0, host: 'redis' });
+export const subscriber = new Redis({ db: 0, host: '127.0.0.1' });
 
 const savedToken = await redis.get('token');
 if (savedToken) setAPI(savedToken);
