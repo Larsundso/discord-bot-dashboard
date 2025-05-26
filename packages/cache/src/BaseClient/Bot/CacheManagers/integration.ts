@@ -1,6 +1,7 @@
 import type { APIGuildIntegration } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RIntegration = Omit<APIGuildIntegration, 'user'> & {
  user_id: string | null;
@@ -33,11 +34,11 @@ export default class IntegrationCache extends Cache<
   super(redis, 'integrations');
  }
 
- async set(data: APIGuildIntegration, guildId: string) {
+ async set(pipeline: ChainableCommander | undefined, data: APIGuildIntegration, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

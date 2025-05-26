@@ -1,6 +1,7 @@
 import type { APIEmoji } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type REmoji = Omit<APIEmoji, 'user' | 'id'> & {
  user_id: string | null;
@@ -26,11 +27,11 @@ export default class EmojiCache extends Cache<APIEmoji> {
   super(redis, 'emojis');
  }
 
- async set(data: APIEmoji, guildId: string) {
+ async set(pipeline: ChainableCommander | undefined, data: APIEmoji, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

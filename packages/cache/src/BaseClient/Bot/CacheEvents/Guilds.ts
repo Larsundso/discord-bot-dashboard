@@ -43,30 +43,41 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildBanAdd]: (data: GatewayGuildBanAddDispatchData) => {
-  redis.bans.set({ reason: '-', user: data.user }, data.guild_id);
-  redis.users.set(data.user);
+  redis.bans.set(undefined, { reason: '-', user: data.user }, data.guild_id);
+  redis.users.set(undefined, data.user);
  },
 
  [GatewayDispatchEvents.GuildBanRemove]: (data: GatewayGuildBanRemoveDispatchData) => {
-  redis.bans.del(data.guild_id, data.user.id);
-  redis.users.set(data.user);
+  redis.bans.del(undefined, data.guild_id, data.user.id);
+  redis.users.set(undefined, data.user);
  },
 
  [GatewayDispatchEvents.GuildCreate]: (data: GatewayGuildCreateDispatchData) => {
   if (data.unavailable) return;
   if ('geo_restricted' in data && data.geo_restricted) return;
 
-  redis.guilds.set(data);
-  data.soundboard_sounds.forEach((sound) => redis.soundboards.set({ ...sound, guild_id: data.id }));
-  data.emojis.forEach((emoji) => redis.emojis.set(emoji, data.id));
-  data.threads.forEach((thread) => redis.threads.set({ ...thread, guild_id: data.id }));
-  data.guild_scheduled_events.forEach((event) => redis.events.set(event));
-  data.roles.forEach((role) => redis.roles.set(role, data.id));
-  data.members.forEach((member) => redis.members.set(member, data.id));
-  data.members.forEach((member) => redis.users.set(member.user));
-  data.voice_states.forEach((voice) => redis.voices.set({ ...voice, guild_id: data.id }));
-  data.channels.forEach((channel) => redis.channels.set({ ...channel, guild_id: data.id }));
-  data.stickers.forEach((sticker) => redis.stickers.set({ ...sticker, guild_id: data.id }));
+  console.log('guild create', data.id);
+  console.log(data.channels.length, 'channels');
+
+  const pipeline = RedisClient.pipeline();
+  redis.guilds.set(pipeline, data);
+  data.soundboard_sounds.forEach((sound) =>
+   redis.soundboards.set(pipeline, { ...sound, guild_id: data.id }),
+  );
+  data.emojis.forEach((emoji) => redis.emojis.set(pipeline, emoji, data.id));
+  data.threads.forEach((thread) => redis.threads.set(pipeline, { ...thread, guild_id: data.id }));
+  data.guild_scheduled_events.forEach((event) => redis.events.set(pipeline, event));
+  data.roles.forEach((role) => redis.roles.set(pipeline, role, data.id));
+  data.members.forEach((member) => redis.members.set(pipeline, member, data.id));
+  data.members.forEach((member) => redis.users.set(pipeline, member.user));
+  data.voice_states.forEach((voice) => redis.voices.set(pipeline, { ...voice, guild_id: data.id }));
+  data.channels.forEach((channel) =>
+   redis.channels.set(pipeline, { ...channel, guild_id: data.id }),
+  );
+  data.stickers.forEach((sticker) =>
+   redis.stickers.set(pipeline, { ...sticker, guild_id: data.id }),
+  );
+  pipeline.exec();
 
   publisher.publish(
    CacheEvents.guildCreate,
@@ -176,7 +187,7 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildUpdate]: async (data: GatewayGuildUpdateDispatchData) => {
-  await redis.guilds.set(data);
+  await redis.guilds.set(undefined, data);
   publisher.publish(
    CacheEvents.guildUpdate,
    JSON.stringify({ id: data.id } as Message<CacheEvents.guildUpdate>),
@@ -189,9 +200,8 @@ export default {
   const pipeline = RedisClient.pipeline();
   pipeline.del(...Object.keys(emojis));
   pipeline.del(redis.stickers.keystore(data.guild_id));
+  data.emojis.forEach((emoji) => redis.emojis.set(pipeline, emoji, data.guild_id));
   await pipeline.exec();
-
-  data.emojis.forEach((emoji) => redis.emojis.set(emoji, data.guild_id));
 
   publisher.publish(
    CacheEvents.emojiUpdate,
@@ -203,8 +213,8 @@ export default {
   undefined,
 
  [GatewayDispatchEvents.GuildMemberAdd]: async (data: GatewayGuildMemberAddDispatchData) => {
-  await redis.members.set(data, data.guild_id);
-  await redis.users.set(data.user);
+  await redis.members.set(undefined, data, data.guild_id);
+  await redis.users.set(undefined, data.user);
 
   const payload = { guild_id: data.guild_id, user_id: data.user.id };
   publisher.publish(
@@ -214,8 +224,8 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildMemberRemove]: async (data: GatewayGuildMemberRemoveDispatchData) => {
-  await redis.members.del(data.guild_id, data.user.id);
-  await redis.users.set(data.user);
+  await redis.members.del(undefined, data.guild_id, data.user.id);
+  await redis.users.set(undefined, data.user);
 
   const payload = { guild_id: data.guild_id, user_id: data.user.id };
   publisher.publish(
@@ -226,15 +236,18 @@ export default {
 
  [GatewayDispatchEvents.GuildMembersChunk]: async (data: GatewayGuildMembersChunkDispatchData) => {
   console.log('chunk received', data.guild_id);
+
+  const pipeline = RedisClient.pipeline();
   data.members.forEach((member) => {
-   redis.members.set(member, data.guild_id);
-   redis.users.set(member.user);
+   redis.members.set(pipeline, member, data.guild_id);
+   redis.users.set(pipeline, member.user);
   });
+  pipeline.exec();
  },
 
  [GatewayDispatchEvents.GuildMemberUpdate]: async (data: GatewayGuildMemberUpdateDispatchData) => {
   if (data.joined_at && data.deaf && data.mute) {
-   redis.members.set(data as Parameters<typeof redis.members.set>[0], data.guild_id);
+   redis.members.set(undefined, data as Parameters<typeof redis.members.set>[1], data.guild_id);
    return;
   }
 
@@ -243,6 +256,7 @@ export default {
   ).then((r) => (r ? (JSON.parse(r) as APIGuildMember) : null));
   if (!member) {
    redis.members.set(
+    undefined,
     {
      ...data,
      joined_at: data.joined_at || new Date().toISOString(),
@@ -259,6 +273,7 @@ export default {
 
   if (!data.user) return;
   redis.members.set(
+   undefined,
    {
     ...mergedMember,
     deaf: mergedMember.deaf || false,
@@ -277,7 +292,7 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildRoleCreate]: async (data: GatewayGuildRoleCreateDispatchData) => {
-  await redis.roles.set(data.role, data.guild_id);
+  await redis.roles.set(undefined, data.role, data.guild_id);
   const payload = { guild_id: data.guild_id, role_id: data.role.id };
   publisher.publish(
    CacheEvents.guildRoleCreate,
@@ -287,7 +302,7 @@ export default {
 
  [GatewayDispatchEvents.GuildRoleDelete]: async (data: GatewayGuildRoleCreateDispatchData) => {
   if (!data.role) return;
-  await redis.roles.del(data.role.id);
+  await redis.roles.del(undefined, data.role.id);
 
   const payload = { guild_id: data.guild_id, role_id: data.role.id };
   publisher.publish(
@@ -297,7 +312,7 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildRoleUpdate]: async (data: GatewayGuildRoleCreateDispatchData) => {
-  await redis.roles.set(data.role, data.guild_id);
+  await redis.roles.set(undefined, data.role, data.guild_id);
 
   const payload = { guild_id: data.guild_id, role_id: data.role.id };
   publisher.publish(
@@ -309,7 +324,7 @@ export default {
  [GatewayDispatchEvents.GuildScheduledEventCreate]: async (
   data: GatewayGuildScheduledEventCreateDispatchData,
  ) => {
-  await redis.events.set(data);
+  await redis.events.set(undefined, data);
 
   const payload = { guild_id: data.guild_id, event_id: data.id };
   publisher.publish(
@@ -321,7 +336,7 @@ export default {
  [GatewayDispatchEvents.GuildScheduledEventDelete]: async (
   data: GatewayGuildScheduledEventDeleteDispatchData,
  ) => {
-  await redis.events.del(data.id);
+  await redis.events.del(undefined, data.id);
 
   const payload = { guild_id: data.guild_id, event_id: data.id };
   publisher.publish(
@@ -333,7 +348,7 @@ export default {
  [GatewayDispatchEvents.GuildScheduledEventUpdate]: async (
   data: GatewayGuildScheduledEventUpdateDispatchData,
  ) => {
-  await redis.events.set(data);
+  await redis.events.set(undefined, data);
 
   const payload = { guild_id: data.guild_id, event_id: data.id };
   publisher.publish(
@@ -354,7 +369,7 @@ export default {
   data: GatewayGuildSoundboardSoundCreateDispatchData,
  ) => {
   if (!data.guild_id) return;
-  await redis.soundboards.set(data);
+  await redis.soundboards.set(undefined, data);
 
   const payload = { guild_id: data.guild_id, sound_id: data.sound_id };
   publisher.publish(
@@ -366,7 +381,7 @@ export default {
  [GatewayDispatchEvents.GuildSoundboardSoundDelete]: async (
   data: GatewayGuildSoundboardSoundDeleteDispatchData,
  ) => {
-  await redis.soundboards.del(data.sound_id);
+  await redis.soundboards.del(undefined, data.sound_id);
 
   const payload = { guild_id: data.guild_id, sound_id: data.sound_id };
   publisher.publish(
@@ -378,7 +393,7 @@ export default {
  [GatewayDispatchEvents.GuildSoundboardSoundUpdate]: async (
   data: GatewayGuildSoundboardSoundUpdateDispatchData,
  ) => {
-  if (!data.guild_id) await redis.soundboards.set(data);
+  if (!data.guild_id) await redis.soundboards.set(undefined, data);
 
   const payload = { guild_id: data.guild_id, sound_id: data.sound_id };
   publisher.publish(
@@ -397,7 +412,7 @@ export default {
   await pipeline.exec();
 
   data.soundboard_sounds.forEach((sound) =>
-   redis.soundboards.set({ ...sound, guild_id: data.guild_id }),
+   redis.soundboards.set(undefined, { ...sound, guild_id: data.guild_id }),
   );
 
   publisher.publish(
@@ -413,9 +428,11 @@ export default {
   const pipeline = RedisClient.pipeline();
   pipeline.del(...Object.keys(stickers));
   pipeline.del(redis.stickers.keystore(data.guild_id));
-  await pipeline.exec();
 
-  data.stickers.forEach((sticker) => redis.stickers.set({ ...sticker, guild_id: data.guild_id }));
+  data.stickers.forEach((sticker) =>
+   redis.stickers.set(pipeline, { ...sticker, guild_id: data.guild_id }),
+  );
+  await pipeline.exec();
 
   publisher.publish(
    CacheEvents.stickersUpdate,

@@ -13,12 +13,12 @@ import { CacheEvents, type Message } from '../../Cluster/Events.js';
 
 export default {
  [GatewayDispatchEvents.InviteCreate]: (data: GatewayInviteCreateDispatchData) => {
-  if (data.inviter) redis.users.set(data.inviter);
+  if (data.inviter) redis.users.set(undefined, data.inviter);
 
-  if (data.target_user) redis.users.set(data.target_user);
+  if (data.target_user) redis.users.set(undefined, data.target_user);
 
   if (data.guild_id) {
-   redis.invites.set({
+   redis.invites.set(undefined, {
     ...data,
     type: InviteType.Guild,
     guild: {
@@ -49,7 +49,7 @@ export default {
  },
 
  [GatewayDispatchEvents.InviteDelete]: async (data: GatewayInviteDeleteDispatchData) => {
-  await redis.invites.del(data.code);
+  await redis.invites.del(undefined, data.code);
 
   const payload = { guild_id: data.guild_id, code: data.code };
   publisher.publish(

@@ -158,18 +158,21 @@ export default abstract class Cache<
   return `${this.keystorePrefix}${ids.length ? `:${ids.join(':')}` : ''}`;
  }
 
- getKeystore(...ids: string[]) {
-  return this.redis.hgetall(this.keystore(...ids));
+ getKeystore(pipeline: ChainableCommander | undefined, ...ids: string[]) {
+  return (this.redis || pipeline).hgetall(this.keystore(...ids));
  }
 
  key(...ids: string[]) {
   return `${this.prefix}${ids.length ? `:${ids.join(':')}` : ''}`;
  }
 
- abstract set(...args: [T, string, string, string]): Promise<boolean>;
+ abstract set(pipeline: ChainableCommander, ...args: [T, string, string, string]): Promise<boolean>;
 
- get(...ids: string[]): Promise<null | DeriveRFromAPI<T, K>> {
-  return this.redis.get(this.key(...ids)).then((data) => this.stringToData(data));
+ get(
+  pipeline: ChainableCommander | undefined,
+  ...ids: string[]
+ ): Promise<null | DeriveRFromAPI<T, K>> {
+  return (this.redis || pipeline).get(this.key(...ids)).then((data) => this.stringToData(data));
  }
 
  private setKeystore(
@@ -179,7 +182,7 @@ export default abstract class Cache<
   keys: string[],
  ) {
   pipeline.hset(this.keystore(...keystoreKeys), this.key(...keys), 0);
-  pipeline.call('hexpire', this.keystore(...keystoreKeys), this.key(...keys), ttl);
+  pipeline.call('hexpire', this.keystore(...keystoreKeys), ttl, 'FIELDS', '1', this.key(...keys));
  }
 
  private setKey(
@@ -192,20 +195,26 @@ export default abstract class Cache<
   pipeline.expire(this.key(...keys), ttl);
  }
 
- setValue(value: DeriveRFromAPI<T, K>, keystoreIds: string[], ids: string[], ttl: number = 604800) {
-  const pipeline = this.redis.pipeline();
+ setValue(
+  value: DeriveRFromAPI<T, K>,
+  keystoreIds: string[],
+  ids: string[],
+  ttl: number = 604800,
+  p?: ChainableCommander,
+ ) {
+  const pipeline = p || this.redis.pipeline();
   this.setKey(pipeline, ttl, ids, value);
   this.setKeystore(pipeline, ttl, keystoreIds, ids);
 
-  return pipeline.exec();
+  return p || pipeline.exec();
  }
 
- del(...ids: string[]) {
-  const pipeline = this.redis.pipeline();
+ del(p: ChainableCommander | undefined, ...ids: string[]) {
+  const pipeline = p || this.redis.pipeline();
   pipeline.del(this.key(...ids));
   pipeline.hdel(this.keystore(...ids), this.key(...ids));
 
-  return pipeline.exec();
+  return p || pipeline.exec();
  }
 
  abstract apiToR(...args: [T, string, string, string]): DeriveRFromAPI<T, K> | false;

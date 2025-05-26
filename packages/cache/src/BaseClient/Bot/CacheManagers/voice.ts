@@ -1,6 +1,7 @@
 import type { APIVoiceState } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RVoiceState = Omit<APIVoiceState, 'member' | 'guild_id'> & { guild_id: string };
 
@@ -26,11 +27,17 @@ export default class VoiceCache extends Cache<APIVoiceState> {
   super(redis, 'voices');
  }
 
- async set(data: APIVoiceState) {
+ async set(pipeline: ChainableCommander | undefined, data: APIVoiceState) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.user_id]);
+  await this.setValue(
+   rData,
+   [rData.guild_id],
+   [rData.guild_id, rData.user_id],
+   undefined,
+   pipeline,
+  );
   return true;
  }
 

@@ -1,6 +1,7 @@
 import type { APIGuildChannel, ChannelType } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RChannelTypes =
  | ChannelType.GuildAnnouncement
@@ -58,11 +59,11 @@ export default class ChannelCache extends Cache<
   super(redis, 'channels');
  }
 
- async set(data: APIGuildChannel<RChannelTypes>) {
+ async set(pipeline: ChainableCommander | undefined, data: APIGuildChannel<RChannelTypes>) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

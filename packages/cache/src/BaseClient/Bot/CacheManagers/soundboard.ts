@@ -1,6 +1,7 @@
 import type { APISoundboardSound } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RSoundboardSound = Omit<APISoundboardSound, 'user' | 'guild_id'> & {
  user_id: string | null;
@@ -31,11 +32,11 @@ export default class SoundboardCache extends Cache<APISoundboardSound> {
   super(redis, 'soundboards');
  }
 
- async set(data: APISoundboardSound) {
+ async set(pipeline: ChainableCommander | undefined, data: APISoundboardSound) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.sound_id]);
+  await this.setValue(rData, [rData.guild_id], [rData.sound_id], undefined, pipeline);
   return true;
  }
 

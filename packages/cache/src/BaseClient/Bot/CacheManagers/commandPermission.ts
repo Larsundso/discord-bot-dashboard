@@ -1,6 +1,7 @@
 import type { APIApplicationCommandPermission } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RCommandPermission = APIApplicationCommandPermission & { guild_id: string };
 
@@ -13,11 +14,15 @@ export default class CommandPermissionCache extends Cache<APIApplicationCommandP
   super(redis, 'commandPermissions');
  }
 
- async set(data: APIApplicationCommandPermission, guildId: string) {
+ async set(
+  pipeline: ChainableCommander | undefined,
+  data: APIApplicationCommandPermission,
+  guildId: string,
+ ) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

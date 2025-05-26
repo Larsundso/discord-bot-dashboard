@@ -1,5 +1,5 @@
 import type { APIAutoModerationRule } from 'discord-api-types/v10';
-import Redis from 'ioredis';
+import Redis, { type ChainableCommander } from 'ioredis';
 import Cache from './base.js';
 
 export type RAutomod = APIAutoModerationRule;
@@ -25,11 +25,11 @@ export default class AutomodCache extends Cache<APIAutoModerationRule> {
   super(redis, 'automod');
  }
 
- async set(data: APIAutoModerationRule) {
+ async set(pipeline: ChainableCommander | undefined, data: APIAutoModerationRule) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

@@ -17,12 +17,13 @@ import { CacheEvents, type Message } from '../../Cluster/Events.js';
 
 export default {
  [GatewayDispatchEvents.MessageCreate]: async (data: GatewayMessageCreateDispatchData) => {
-  if (data.guild_id) redis.messages.set(data, data.guild_id);
+  if (data.guild_id) redis.messages.set(undefined, data, data.guild_id);
 
-  if (!data.webhook_id) redis.users.set(data.author);
+  if (!data.webhook_id) redis.users.set(undefined, data.author);
 
-  const cache = await redis.threads.get(data.channel_id);
-  if (cache) redis.threads.set({ ...cache, message_count: (cache.message_count || 0) + 1 });
+  const cache = await redis.threads.get(undefined, data.channel_id);
+  if (cache)
+   redis.threads.set(undefined, { ...cache, message_count: (cache.message_count || 0) + 1 });
 
   const payload = { guild_id: data.guild_id, channel_id: data.channel_id, id: data.id };
   publisher.publish(
@@ -32,7 +33,7 @@ export default {
  },
 
  [GatewayDispatchEvents.MessageDelete]: async (data: GatewayMessageDeleteDispatchData) => {
-  await redis.messages.del(data.id);
+  await redis.messages.del(undefined, data.id);
 
   const payload = {
    guild_id: data.guild_id,
@@ -46,7 +47,7 @@ export default {
  },
 
  [GatewayDispatchEvents.MessageDeleteBulk]: async (data: GatewayMessageDeleteBulkDispatchData) => {
-  data.ids.forEach((id) => redis.messages.del(id));
+  data.ids.forEach((id) => redis.messages.del(undefined, id));
 
   const payload = {
    guild_id: data.guild_id,
@@ -62,7 +63,7 @@ export default {
  [GatewayDispatchEvents.MessageUpdate]: async (data: GatewayMessageUpdateDispatchData) => {
   if (!data.guild_id) return;
 
-  await redis.messages.set(data, data.guild_id);
+  await redis.messages.set(undefined, data, data.guild_id);
 
   const payload = {
    guild_id: data.guild_id,
@@ -83,9 +84,9 @@ export default {
  [GatewayDispatchEvents.MessageReactionAdd]: async (
   data: GatewayMessageReactionAddDispatchData,
  ) => {
-  if (data.member && data.guild_id) redis.members.set(data.member, data.guild_id);
+  if (data.member && data.guild_id) redis.members.set(undefined, data.member, data.guild_id);
 
-  if (data.member?.user) redis.users.set(data.member.user);
+  if (data.member?.user) redis.users.set(undefined, data.member.user);
 
   const payload = {
    guild_id: data.guild_id,
@@ -100,9 +101,14 @@ export default {
 
   if (!data.guild_id) return;
 
-  const cache = await redis.reactions.get(data.message_id, (data.emoji.id || data.emoji.name)!);
+  const cache = await redis.reactions.get(
+   undefined,
+   data.message_id,
+   (data.emoji.id || data.emoji.name)!,
+  );
 
   redis.reactions.set(
+   undefined,
    {
     burst_colors: data.burst_colors,
     emoji: data.emoji,
@@ -138,9 +144,14 @@ export default {
 
   if (!data.guild_id) return;
 
-  const cache = await redis.reactions.get(data.message_id, (data.emoji.id || data.emoji.name)!);
+  const cache = await redis.reactions.get(
+   undefined,
+   data.message_id,
+   (data.emoji.id || data.emoji.name)!,
+  );
 
   redis.reactions.set(
+   undefined,
    {
     burst_colors: cache?.burst_colors || [],
     emoji: data.emoji,

@@ -1,6 +1,7 @@
 import type { APIThreadChannel } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RThread = Pick<
  APIThreadChannel,
@@ -50,11 +51,11 @@ export default class ThreadCache extends Cache<
   super(redis, 'threads');
  }
 
- async set(data: Omit<APIThreadChannel, 'position'>) {
+ async set(pipeline: ChainableCommander | undefined, data: Omit<APIThreadChannel, 'position'>) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

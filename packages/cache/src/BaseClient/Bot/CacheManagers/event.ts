@@ -1,6 +1,7 @@
 import type { APIGuildScheduledEvent } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type REvent = Omit<APIGuildScheduledEvent, 'creator' | 'image'> & {
  image_url: string | null;
@@ -38,11 +39,11 @@ export default class EventCache extends Cache<APIGuildScheduledEvent> {
   super(redis, 'events');
  }
 
- async set(data: APIGuildScheduledEvent) {
+ async set(pipeline: ChainableCommander | undefined, data: APIGuildScheduledEvent) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

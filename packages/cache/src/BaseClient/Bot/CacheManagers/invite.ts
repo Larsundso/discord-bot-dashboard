@@ -1,6 +1,7 @@
 import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RInvite = Omit<
  APIInvite | APIExtendedInvite,
@@ -46,11 +47,11 @@ export default class InviteCache extends Cache<APIExtendedInvite | APIInvite> {
   super(redis, 'invites');
  }
 
- async set(data: APIExtendedInvite | APIInvite) {
+ async set(pipeline: ChainableCommander | undefined, data: APIExtendedInvite | APIInvite) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.code]);
+  await this.setValue(rData, [rData.guild_id], [rData.code], undefined, pipeline);
   return true;
  }
 

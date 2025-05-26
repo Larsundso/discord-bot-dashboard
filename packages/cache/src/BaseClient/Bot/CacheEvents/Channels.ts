@@ -12,7 +12,7 @@ import { CacheEvents, type Message } from '../../Cluster/Events.js';
 
 export default {
  [GatewayDispatchEvents.ChannelCreate]: async (data: GatewayChannelCreateDispatchData) => {
-  await redis.channels.set(data);
+  await redis.channels.set(undefined, data);
   const payload = { id: data.id, guild_id: data.guild_id };
   publisher.publish(
    CacheEvents.channelCreate,
@@ -21,7 +21,7 @@ export default {
  },
 
  [GatewayDispatchEvents.ChannelDelete]: async (data: GatewayChannelDeleteDispatchData) => {
-  await redis.channels.del(data.id);
+  await redis.channels.del(undefined, data.id);
   const payload = { id: data.id, guild_id: data.guild_id };
   publisher.publish(
    CacheEvents.channelDelete,
@@ -48,7 +48,7 @@ export default {
  },
 
  [GatewayDispatchEvents.ChannelUpdate]: async (data: GatewayChannelUpdateDispatchData) => {
-  await redis.channels.set(data);
+  await redis.channels.set(undefined, data);
   const payload = { id: data.id, guild_id: data.guild_id };
   publisher.publish(
    CacheEvents.channelUpdate,

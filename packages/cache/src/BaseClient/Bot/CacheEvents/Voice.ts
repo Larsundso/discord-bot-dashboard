@@ -16,7 +16,7 @@ export default {
  [GatewayDispatchEvents.VoiceServerUpdate]: (_: GatewayVoiceServerUpdateDispatchData) => undefined,
 
  [GatewayDispatchEvents.VoiceStateUpdate]: async (data: GatewayVoiceStateUpdateDispatchData) => {
-  await redis.voices.set(data);
+  await redis.voices.set(undefined, data);
 
   publisher.publish(
    CacheEvents.threadMemberUpdate,

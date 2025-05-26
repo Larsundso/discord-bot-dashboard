@@ -1,6 +1,7 @@
 import type { APIApplicationCommand } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RCommand = Omit<APIApplicationCommand, 'guild_id'>;
 
@@ -32,11 +33,11 @@ export default class CommandCache extends Cache<APIApplicationCommand> {
   super(redis, 'commands');
  }
 
- async set(data: APIApplicationCommand) {
+ async set(pipeline: ChainableCommander | undefined, data: APIApplicationCommand) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [], [rData.id]);
+  await this.setValue(rData, [], [rData.id], undefined, pipeline);
   return true;
  }
 

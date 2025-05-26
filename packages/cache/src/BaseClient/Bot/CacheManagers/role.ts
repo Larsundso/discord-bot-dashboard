@@ -1,6 +1,7 @@
 import type { APIRole } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RRole = Omit<APIRole, 'icon'> & { icon_url: string | null; guild_id: string };
 
@@ -31,11 +32,11 @@ export default class RoleCache extends Cache<APIRole> {
   return `https://cdn.discordapp.com/role-icons/${roleId}/${icon}.${icon.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- async set(data: APIRole, guildId: string) {
+ async set(pipeline: ChainableCommander | undefined, data: APIRole, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

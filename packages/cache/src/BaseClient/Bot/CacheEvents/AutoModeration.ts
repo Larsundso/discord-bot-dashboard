@@ -14,13 +14,13 @@ export default {
 
  [GatewayDispatchEvents.AutoModerationRuleCreate]: (
   data: GatewayAutoModerationRuleCreateDispatchData,
- ) => redis.automods.set(data),
+ ) => redis.automods.set(undefined, data),
 
  [GatewayDispatchEvents.AutoModerationRuleDelete]: (
   data: GatewayAutoModerationRuleCreateDispatchData,
- ) => redis.automods.del(data.id),
+ ) => redis.automods.del(undefined, data.id),
 
  [GatewayDispatchEvents.AutoModerationRuleUpdate]: (
   data: GatewayAutoModerationRuleUpdateDispatchData,
- ) => redis.automods.set(data),
+ ) => redis.automods.set(undefined, data),
 } as const;

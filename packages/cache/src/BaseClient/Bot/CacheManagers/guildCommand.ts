@@ -2,6 +2,7 @@ import type { APIApplicationCommand } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
 import type { MakeRequired } from './sticker.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RGuildCommand = MakeRequired<APIApplicationCommand, 'guild_id'>;
 
@@ -37,11 +38,14 @@ export default class GuildCommandCache extends Cache<
   super(redis, 'commands');
  }
 
- async set(data: APIApplicationCommand & { guild_id: string }) {
+ async set(
+  pipeline: ChainableCommander | undefined,
+  data: APIApplicationCommand & { guild_id: string },
+ ) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

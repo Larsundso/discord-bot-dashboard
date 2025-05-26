@@ -13,7 +13,7 @@ export default {
  [GatewayDispatchEvents.StageInstanceCreate]: async (
   data: GatewayStageInstanceCreateDispatchData,
  ) => {
-  await redis.stages.set(data);
+  await redis.stages.set(undefined, data);
 
   publisher.publish(
    CacheEvents.stageInstanceCreate,
@@ -24,7 +24,7 @@ export default {
  [GatewayDispatchEvents.StageInstanceDelete]: async (
   data: GatewayStageInstanceDeleteDispatchData,
  ) => {
-  await redis.stages.del(data.id);
+  await redis.stages.del(undefined, data.id);
 
   publisher.publish(
    CacheEvents.stageInstanceDelete,
@@ -35,7 +35,7 @@ export default {
  [GatewayDispatchEvents.StageInstanceUpdate]: async (
   data: GatewayStageInstanceUpdateDispatchData,
  ) => {
-  await redis.stages.set(data);
+  await redis.stages.set(undefined, data);
 
   publisher.publish(
    CacheEvents.stageInstanceUpdate,

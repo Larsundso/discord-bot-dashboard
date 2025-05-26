@@ -1,6 +1,7 @@
 import type { APIMessage, APIMessageSnapshotFields } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RMessage = Omit<
  APIMessage,
@@ -63,11 +64,11 @@ export default class MessageCache extends Cache<APIMessage> {
   super(redis, 'messages');
  }
 
- async set(data: APIMessage, guildId: string) {
+ async set(pipeline: ChainableCommander | undefined, data: APIMessage, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.channel_id, rData.id], 300);
+  await this.setValue(rData, [rData.guild_id], [rData.channel_id, rData.id], 300, pipeline);
   return true;
  }
 

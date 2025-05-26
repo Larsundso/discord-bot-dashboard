@@ -1,6 +1,7 @@
 import type { APISticker } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -30,11 +31,11 @@ export default class StickerCache extends Cache<APISticker> {
   super(redis, 'stickers');
  }
 
- async set(data: APISticker) {
+ async set(pipeline: ChainableCommander | undefined, data: APISticker) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.id], undefined, pipeline);
   return true;
  }
 

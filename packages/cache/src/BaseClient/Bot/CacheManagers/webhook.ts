@@ -1,6 +1,7 @@
 import { type APIWebhook } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RWebhook = Omit<APIWebhook, 'user' | 'avatar' | 'guild_id'> & {
  user_id: string | null;
@@ -36,11 +37,11 @@ export default class WebhookCache extends Cache<
   return `https://cdn.discordapp.com/avatars/${webhookId}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- async set(data: APIWebhook) {
+ async set(pipeline: ChainableCommander | undefined, data: APIWebhook) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.id]);
+  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.id], undefined, pipeline);
   return true;
  }
 

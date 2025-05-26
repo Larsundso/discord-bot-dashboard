@@ -1,6 +1,7 @@
 import type { APIBan } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RBan = Omit<APIBan, 'user'> & { user_id: string; guild_id: string };
 
@@ -13,11 +14,17 @@ export default class BanCache extends Cache<APIBan> {
   super(redis, 'bans');
  }
 
- async set(data: APIBan, guildId: string) {
+ async set(pipeline: ChainableCommander | undefined, data: APIBan, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.setValue(rData, [rData.guild_id], [rData.user_id, rData.guild_id]);
+  await this.setValue(
+   rData,
+   [rData.guild_id],
+   [rData.user_id, rData.guild_id],
+   undefined,
+   pipeline,
+  );
   return true;
  }
 

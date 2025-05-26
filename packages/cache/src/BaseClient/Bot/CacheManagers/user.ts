@@ -1,6 +1,7 @@
 import type { APIUser } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
+import type { ChainableCommander } from 'ioredis';
 
 export type RUser = Omit<APIUser, 'avatar_decoration_data' | 'avatar' | 'banner'> & {
  avatar_decoration_data?: { asset_url: string; sku_id: string };
@@ -51,11 +52,11 @@ export default class UserCache extends Cache<APIUser> {
   return `https://cdn.discordapp.com/banners/${userId}/${banner}.${banner.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- async set(data: APIUser) {
+ async set(pipeline: ChainableCommander | undefined, data: APIUser) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.setValue(rData, [], [rData.id]);
+  await this.setValue(rData, [], [rData.id], undefined, pipeline);
   return true;
  }
 

@@ -14,7 +14,7 @@ import { CacheEvents } from '../../Cluster/Events.js';
 
 export default {
  [GatewayDispatchEvents.ThreadCreate]: async (data: GatewayThreadCreateDispatchData) => {
-  await cache.threads.set(data);
+  await cache.threads.set(undefined, data);
 
   publisher.publish(
    CacheEvents.threadCreate,
@@ -23,7 +23,7 @@ export default {
  },
 
  [GatewayDispatchEvents.ThreadDelete]: async (data: GatewayThreadDeleteDispatchData) => {
-  cache.threads.del(data.id);
+  cache.threads.del(undefined, data.id);
 
   publisher.publish(
    CacheEvents.threadDelete,
@@ -55,7 +55,7 @@ export default {
  },
 
  [GatewayDispatchEvents.ThreadUpdate]: async (data: GatewayThreadUpdateDispatchData) => {
-  await cache.threads.set(data);
+  await cache.threads.set(undefined, data);
 
   publisher.publish(
    CacheEvents.threadUpdate,
@@ -65,26 +65,26 @@ export default {
 
  [GatewayDispatchEvents.ThreadListSync]: (data: GatewayThreadListSyncDispatchData) => {
   data.threads.forEach((thread) =>
-   cache.threads.set({ ...thread, guild_id: data.guild_id || thread.guild_id }),
+   cache.threads.set(undefined, { ...thread, guild_id: data.guild_id || thread.guild_id }),
   );
 
   data.members.forEach((threadMember) => {
-   cache.threadMembers.set(threadMember, data.guild_id);
+   cache.threadMembers.set(undefined, threadMember, data.guild_id);
 
    if (!threadMember.member) return;
-   cache.members.set(threadMember.member, data.guild_id);
+   cache.members.set(undefined, threadMember.member, data.guild_id);
   });
  },
 
  [GatewayDispatchEvents.ThreadMembersUpdate]: (data: GatewayThreadMembersUpdateDispatchData) => {
   data.added_members?.forEach((threadMember) => {
-   cache.threadMembers.set(threadMember, data.guild_id);
+   cache.threadMembers.set(undefined, threadMember, data.guild_id);
 
    if (!threadMember.member) return;
-   cache.members.set(threadMember.member, data.guild_id);
+   cache.members.set(undefined, threadMember.member, data.guild_id);
   });
 
-  data.removed_member_ids?.forEach((id) => cache.threadMembers.del(data.id, id));
+  data.removed_member_ids?.forEach((id) => cache.threadMembers.del(undefined, data.id, id));
 
   publisher.publish(
    CacheEvents.threadMembersUpdate,
@@ -100,7 +100,7 @@ export default {
  [GatewayDispatchEvents.ThreadMemberUpdate]: async (
   data: GatewayThreadMemberUpdateDispatchData,
  ) => {
-  await cache.threadMembers.set(data, data.guild_id);
+  await cache.threadMembers.set(undefined, data, data.guild_id);
 
   publisher.publish(
    CacheEvents.threadMemberUpdate,
@@ -108,6 +108,6 @@ export default {
   );
 
   if (!data.member) return;
-  cache.members.set(data.member, data.guild_id);
+  cache.members.set(undefined, data.member, data.guild_id);
  },
 } as const;
