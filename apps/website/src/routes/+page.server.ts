@@ -2,11 +2,6 @@ import validateToken from '$lib/scripts/util/validateToken';
 import { publisher, redis, setAPI } from '$lib/server';
 import { WebsiteEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 import { fail, type Actions } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-
-export const load: PageServerLoad = async (event) => {
-	if (event.url.searchParams.get('logout')) redis.flushdb();
-};
 
 const tester = /[a-zA-Z0-9]{20,26}\..{6}\..{38}/gm;
 

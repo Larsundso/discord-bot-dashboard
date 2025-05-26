@@ -38,7 +38,7 @@
 				onmouseover={() => (currentName = 'Logout')}
 				onblur={() => (currentName = null)}
 				onmouseleave={() => (currentName = null)}
-				href="/?logout=true"
+				href="/"
 			>
 				<i class="i-tabler-logout block w-5 h-5 color-check-unchecked"></i>
 				<div class="absolute left-40 sm:left-50 md:left-70 -top-2">
