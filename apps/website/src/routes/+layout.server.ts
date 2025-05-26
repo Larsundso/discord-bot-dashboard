@@ -1,13 +1,15 @@
 import type { RGuild } from '$lib/scripts/RTypes';
-import { cache, redis } from '$lib/server';
+import { api, cache, redis } from '$lib/server';
 import type { LayoutServerLoad } from './$types';
 import type { APIUser } from 'discord-api-types/v10';
 
 export const load: LayoutServerLoad = async () => {
-	const selfS = await redis.get('self');
-	if (!selfS) return { self: null, guilds: [] };
+	const self = await redis
+		.get('self')
+		.then((r) => (r ? (JSON.parse(r) as APIUser) : api.users.getCurrent().catch(() => null)));
+	if (!self) return { self: null, guilds: [] };
 
-	const self = JSON.parse(selfS) as APIUser;
+	redis.set('self', JSON.stringify(self));
 
 	return { self: await cache.users.get(self.id), guilds: await getGuilds() };
 };
