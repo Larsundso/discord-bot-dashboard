@@ -6,8 +6,10 @@ export default async (token: string) => {
 
 	const rest = new REST().setToken(token);
 	const api = new API(rest);
-	const worked = await api.users.get(botId).catch((r) => false);
-	console.log(worked);
+	const worked = await api.users.get(botId).catch((r) => {
+		console.log(r);
+		false;
+	});
 
 	return worked;
 };
