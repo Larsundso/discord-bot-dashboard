@@ -1,6 +1,6 @@
 import validateToken from '$lib/scripts/util/validateToken';
 import { publisher, redis, setAPI } from '$lib/server';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -30,6 +30,6 @@ export const actions = {
 		});
 		setAPI(token);
 
-		redirect(302, '/@me');
+		return { success: true };
 	},
 } satisfies Actions;
