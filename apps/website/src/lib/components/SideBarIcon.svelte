@@ -97,7 +97,7 @@
 	bind:this={self}
 	role="button"
 	tabindex="0"
-	data-sveltekit-preload-data="tap"
+	data-sveltekit-preload-data={id === 'guilds' ? 'off' : 'tap'}
 	href={id === '@me'
 		? '/@me'
 		: id === 'guilds'
