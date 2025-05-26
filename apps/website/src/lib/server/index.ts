@@ -41,9 +41,9 @@ export const setAPI = (token: string) => {
 	savedToken = token;
 };
 
-export const publisher = new Redis({ host: '127.0.0.1', db: 0 });
+export const publisher = new Redis({ host: 'redis', db: 0 });
 export const redis = publisher;
-export const subscriber = new Redis({ db: 0, host: '127.0.0.1' });
+export const subscriber = new Redis({ db: 0, host: 'redis' });
 
 export let savedToken: null | string = null;
 
