@@ -52,7 +52,7 @@ export default {
   redis.users.set(undefined, data.user);
  },
 
- [GatewayDispatchEvents.GuildCreate]: (data: GatewayGuildCreateDispatchData) => {
+ [GatewayDispatchEvents.GuildCreate]: async (data: GatewayGuildCreateDispatchData) => {
   if (data.unavailable) return;
   if ('geo_restricted' in data && data.geo_restricted) return;
 
@@ -61,21 +61,27 @@ export default {
 
   const pipeline = RedisClient.pipeline();
   redis.guilds.set(pipeline, data);
-  data.soundboard_sounds.forEach((sound) =>
-   redis.soundboards.set(pipeline, { ...sound, guild_id: data.id }),
+  await Promise.all(
+   data.soundboard_sounds.map((sound) =>
+    redis.soundboards.set(pipeline, { ...sound, guild_id: data.id }),
+   ),
   );
-  data.emojis.forEach((emoji) => redis.emojis.set(pipeline, emoji, data.id));
-  data.threads.forEach((thread) => redis.threads.set(pipeline, { ...thread, guild_id: data.id }));
-  data.guild_scheduled_events.forEach((event) => redis.events.set(pipeline, event));
-  data.roles.forEach((role) => redis.roles.set(pipeline, role, data.id));
-  data.members.forEach((member) => redis.members.set(pipeline, member, data.id));
-  data.members.forEach((member) => redis.users.set(pipeline, member.user));
-  data.voice_states.forEach((voice) => redis.voices.set(pipeline, { ...voice, guild_id: data.id }));
-  data.channels.forEach((channel) =>
-   redis.channels.set(pipeline, { ...channel, guild_id: data.id }),
+  await Promise.all(data.emojis.map((emoji) => redis.emojis.set(pipeline, emoji, data.id)));
+  await Promise.all(
+   data.threads.map((thread) => redis.threads.set(pipeline, { ...thread, guild_id: data.id })),
   );
-  data.stickers.forEach((sticker) =>
-   redis.stickers.set(pipeline, { ...sticker, guild_id: data.id }),
+  await Promise.all(data.guild_scheduled_events.map((event) => redis.events.set(pipeline, event)));
+  await Promise.all(data.roles.map((role) => redis.roles.set(pipeline, role, data.id)));
+  await Promise.all(data.members.map((member) => redis.members.set(pipeline, member, data.id)));
+  await Promise.all(data.members.map((member) => redis.users.set(pipeline, member.user)));
+  await Promise.all(
+   data.voice_states.map((voice) => redis.voices.set(pipeline, { ...voice, guild_id: data.id })),
+  );
+  await Promise.all(
+   data.channels.map((channel) => redis.channels.set(pipeline, { ...channel, guild_id: data.id })),
+  );
+  await Promise.all(
+   data.stickers.map((sticker) => redis.stickers.set(pipeline, { ...sticker, guild_id: data.id })),
   );
   pipeline.exec();
 
@@ -200,7 +206,7 @@ export default {
   const pipeline = RedisClient.pipeline();
   pipeline.del(...Object.keys(emojis));
   pipeline.del(redis.stickers.keystore(data.guild_id));
-  data.emojis.forEach((emoji) => redis.emojis.set(pipeline, emoji, data.guild_id));
+  await Promise.all(data.emojis.map((emoji) => redis.emojis.set(pipeline, emoji, data.guild_id)));
   await pipeline.exec();
 
   publisher.publish(
@@ -238,11 +244,16 @@ export default {
   console.log('chunk received', data.guild_id);
 
   const pipeline = RedisClient.pipeline();
-  data.members.forEach((member) => {
-   redis.members.set(pipeline, member, data.guild_id);
-   redis.users.set(pipeline, member.user);
-  });
-  pipeline.exec();
+  await Promise.all(
+   data.members
+    .map((member) => [
+     redis.members.set(pipeline, member, data.guild_id),
+     redis.users.set(pipeline, member.user),
+    ])
+    .flat(),
+  );
+
+  pipeline.exec().then(console.log);
  },
 
  [GatewayDispatchEvents.GuildMemberUpdate]: async (data: GatewayGuildMemberUpdateDispatchData) => {
@@ -429,8 +440,10 @@ export default {
   pipeline.del(...Object.keys(stickers));
   pipeline.del(redis.stickers.keystore(data.guild_id));
 
-  data.stickers.forEach((sticker) =>
-   redis.stickers.set(pipeline, { ...sticker, guild_id: data.guild_id }),
+  await Promise.all(
+   data.stickers.map((sticker) =>
+    redis.stickers.set(pipeline, { ...sticker, guild_id: data.guild_id }),
+   ),
   );
   await pipeline.exec();
 
