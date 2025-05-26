@@ -225,7 +225,7 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildMembersChunk]: async (data: GatewayGuildMembersChunkDispatchData) => {
-  console.log('chunk received');
+  console.log('chunk received', data.guild_id);
   data.members.forEach((member) => {
    redis.members.set(member, data.guild_id);
    redis.users.set(member.user);
