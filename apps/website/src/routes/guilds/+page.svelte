@@ -1,37 +1,65 @@
 <script lang="ts">
-	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
-	import type { PageData } from './$types';
-	import { source } from 'sveltekit-sse';
+	import Button from '$lib/components/form/Button.svelte';
 	import type { RGuild } from '$lib/scripts/RTypes';
 	import cache from '$lib/scripts/cache';
-	import Button from '$lib/components/form/Button.svelte';
+	import { CacheEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
+	import type { PageData } from './$types';
 
 	const { data }: { data: PageData } = $props();
-	let allGuilds = $state<RGuild[]>([...(data.guilds as RGuild[] || [])]);
-	let lastPage = $state(1);
-	let shownGuilds = $derived(allGuilds.slice((lastPage - 1) * 500, lastPage * 500));
-	let isLoading = $state(false);
+	let allGuilds = $state<RGuild[]>([...((data.guilds as RGuild[]) || [])]);
+	let currentPage = $state(1);
+	let itemsPerPage = 100;
 	let loadingMore = $state(false);
 	let hasMoreGuilds = $state(true);
+	let query = $state('');
 
-	const prev = () => {
-		lastPage = lastPage - 1;
-		if (lastPage < 1) lastPage = 1;
+	let displayedGuilds = $derived.by(() => {
+		let guilds: RGuild[];
+		if (query) {
+			guilds = allGuilds.filter((g) => g.name.toLowerCase().includes(query.toLowerCase()));
+		} else {
+			const start = (currentPage - 1) * itemsPerPage;
+			const end = start + itemsPerPage;
+			guilds = allGuilds.slice(start, end);
+		}
+
+		const seen = new Set<string>();
+		return guilds.filter((guild) => {
+			if (seen.has(guild.id)) {
+				return false;
+			}
+			seen.add(guild.id);
+			return true;
+		});
+	});
+
+	let totalPages = $derived.by(() => Math.ceil(allGuilds.length / itemsPerPage));
+
+	const prev = async () => {
+		if (currentPage > 1) {
+			currentPage = currentPage - 1;
+		}
 	};
 
-	const next = () => {
-		lastPage = lastPage + 1;
-		if (lastPage > Math.ceil(allGuilds.length / 500)) lastPage = Math.ceil(allGuilds.length / 500);
+	const next = async () => {
+		if (currentPage < totalPages) {
+			currentPage = currentPage + 1;
+		} else if (hasMoreGuilds) {
+			await loadMoreGuilds();
+			if (allGuilds.length > currentPage * itemsPerPage) {
+				currentPage = currentPage + 1;
+			}
+		}
 	};
 
 	const loadMoreGuilds = async () => {
 		if (loadingMore || !hasMoreGuilds) return;
-		
+
 		loadingMore = true;
 		try {
 			const response = await fetch(`/api/guilds/load-more?offset=${allGuilds.length}&limit=50`);
 			const newGuilds: RGuild[] = await response.json();
-			
+
 			if (newGuilds.length === 0) {
 				hasMoreGuilds = false;
 			} else {
@@ -53,7 +81,9 @@
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			allGuilds = [...allGuilds, parsed];
+			if (!allGuilds.some((g) => g.id === parsed.id)) {
+				allGuilds = [...allGuilds, parsed];
+			}
 		});
 
 		const patchUnsub = patchChannel.subscribe((run) => {
@@ -76,8 +106,6 @@
 			deleteUnsub();
 		};
 	});
-
-	let query = $state('');
 </script>
 
 <section class="h-100vh flex flex-col justify-start items-center of-auto">
@@ -88,7 +116,7 @@
 				text=""
 				style="secondary-outline"
 				onclick={() => prev()}
-				disabled={lastPage === 1}
+				disabled={currentPage === 1}
 			/>
 		</div>
 
@@ -113,15 +141,13 @@
 				text=""
 				style="secondary-outline"
 				onclick={() => next()}
-				disabled={lastPage === Math.ceil(allGuilds.length / 500)}
+				disabled={currentPage === totalPages && !hasMoreGuilds}
 			/>
 		</div>
 	</div>
 
 	<div class="flex flex-row justify-center items-center gap-2 w-full flex-wrap mt-5">
-		{#each query ? allGuilds.filter((g) => g.name
-						.toLowerCase()
-						.includes(query.toLowerCase())) : shownGuilds as guild}
+		{#each displayedGuilds as guild (guild.id)}
 			<a
 				class="w-10% flex flex-col justify-center items-center gap-2 relative of-hidden
     hover:scale-105 transition-all duration-100 ease-in-out"
@@ -149,7 +175,7 @@
 	{#if hasMoreGuilds && !query}
 		<div class="flex justify-center mt-5">
 			<Button
-				text={loadingMore ? "Loading..." : "Load More Guilds"}
+				text={loadingMore ? 'Loading...' : 'Load More Guilds'}
 				style="primary"
 				onclick={loadMoreGuilds}
 				disabled={loadingMore}
