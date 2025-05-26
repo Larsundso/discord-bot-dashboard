@@ -18,7 +18,7 @@ Jobs.scheduleJob('*/10 * * * *', async () => {
 subscriber.on('message', (channel, message) => {
  switch (channel) {
   case WebsiteEvents.LOGIN:
-   login();
+   login(message);
    break;
   case WebsiteEvents.FETCH_GUILD_MEMBERS:
    fetchMembers(message);
@@ -28,5 +28,3 @@ subscriber.on('message', (channel, message) => {
    break;
  }
 });
-
-login();

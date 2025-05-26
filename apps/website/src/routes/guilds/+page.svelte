@@ -81,23 +81,29 @@
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			if (!allGuilds.some((g) => g.id === parsed.id)) {
-				allGuilds = [...allGuilds, parsed];
-			}
+			$effect.root(() => {
+				if (!allGuilds.some((g) => g.id === parsed.id)) {
+					allGuilds = [...allGuilds, parsed];
+				}
+			});
 		});
 
 		const patchUnsub = patchChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			allGuilds = allGuilds.map((guild) => (guild.id === parsed.id ? parsed : guild));
+			$effect.root(() => {
+				allGuilds = allGuilds.map((guild) => (guild.id === parsed.id ? parsed : guild));
+			});
 		});
 
 		const deleteUnsub = deleteChannel.subscribe((run) => {
 			if (!run) return;
 
 			const parsed = JSON.parse(run) as RGuild;
-			allGuilds = allGuilds.filter((guild) => guild.id !== parsed.id);
+			$effect.root(() => {
+				allGuilds = allGuilds.filter((guild) => guild.id !== parsed.id);
+			});
 		});
 
 		return () => {
