@@ -21,8 +21,8 @@ export default async (guildId: string) => {
 		}
 
 		response.forEach((m) => {
-			cache.members.set(m, guildId);
-			cache.users.set(m.user);
+			cache.members.set(undefined, m, guildId);
+			cache.users.set(undefined, m.user);
 		});
 
 		members.push(...response.map((m) => cache.members.apiToR(m, guildId)));

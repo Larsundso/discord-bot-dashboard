@@ -1,21 +1,28 @@
 import type { RGuild } from '$lib/scripts/RTypes';
-import { api, cache, redis } from '$lib/server';
-import type { LayoutServerLoad } from './$types';
+import { api, cache, redis, savedToken } from '$lib/server';
 import type { APIUser } from 'discord-api-types/v10';
+import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async () => {
+	if (!savedToken) return { self: null, guilds: [] };
+
 	const self = await redis
 		.get('self')
 		.then((r) => (r ? (JSON.parse(r) as APIUser) : api.users.getCurrent().catch(() => null)));
-	if (!self) return { self: null, guilds: [] };
+	if (!self) {
+		console.log('No self found');
+		return { self: null, guilds: [] };
+	}
 
 	redis.set('self', JSON.stringify(self));
 
-	return { self: await cache.users.get(self.id), guilds: await getGuilds() };
+	return { self: await cache.users.get(undefined, self.id), guilds: await getGuilds() };
 };
 
 const getGuilds = async () => {
-	const guildKeys = await cache.guilds.getKeystore().then((r) => (r ? Object.keys(r) : null));
+	const guildKeys = await cache.guilds
+		.getKeystore(undefined)
+		.then((r) => (r ? Object.keys(r) : null));
 	if (!guildKeys) return [];
 
 	const limitedKeys = guildKeys.slice(0, 100);
@@ -35,7 +42,7 @@ const getGuilds = async () => {
 					);
 
 					const result = (await Promise.race([
-						cache.guilds.get(guildId),
+						cache.guilds.get(undefined, guildId),
 						timeoutPromise,
 					])) as RGuild | null;
 

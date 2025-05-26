@@ -6,7 +6,9 @@ export const GET: RequestHandler = async (event) => {
 	const offset = parseInt(event.url.searchParams.get('offset') || '0');
 	const limit = parseInt(event.url.searchParams.get('limit') || '50');
 
-	const guildKeys = await cache.guilds.getKeystore().then((r) => (r ? Object.keys(r) : null));
+	const guildKeys = await cache.guilds
+		.getKeystore(undefined)
+		.then((r) => (r ? Object.keys(r) : null));
 	if (!guildKeys) return json([]);
 
 	const batchKeys = guildKeys.slice(offset, offset + limit);
@@ -25,7 +27,7 @@ export const GET: RequestHandler = async (event) => {
 						setTimeout(() => reject(new Error('Timeout')), 2000),
 					);
 
-					const result = await Promise.race([cache.guilds.get(guildId), timeoutPromise]);
+					const result = await Promise.race([cache.guilds.get(undefined, guildId), timeoutPromise]);
 
 					return result;
 				} catch (error) {

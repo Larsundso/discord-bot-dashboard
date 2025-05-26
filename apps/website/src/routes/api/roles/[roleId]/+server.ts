@@ -6,7 +6,7 @@ import type { RRole } from '$lib/scripts/RTypes';
 export const GET: RequestHandler = async (event) => {
 	const roleId = event.params.roleId;
 
-	const role = await cache.roles.get(roleId);
+	const role = await cache.roles.get(undefined, roleId);
 	if (!role) return error(404);
 
 	return json(role as GETResponse);

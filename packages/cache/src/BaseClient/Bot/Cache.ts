@@ -76,24 +76,24 @@ const caches: Record<GatewayDispatchEvents, (data: never) => unknown> = {
 
  [GatewayDispatchEvents.ApplicationCommandPermissionsUpdate]: (
   data: GatewayApplicationCommandPermissionsUpdateDispatchData,
- ) => data.permissions.forEach((p) => redis.commandPermissions.set(p, data.guild_id)),
+ ) => data.permissions.forEach((p) => redis.commandPermissions.set(undefined, p, data.guild_id)),
 
  [GatewayDispatchEvents.SoundboardSounds]: (data: GatewayGuildSoundboardSoundsUpdateDispatchData) =>
   data.soundboard_sounds.forEach((sound) =>
-   redis.soundboards.set({ ...sound, guild_id: data.guild_id || sound.guild_id }),
+   redis.soundboards.set(undefined, { ...sound, guild_id: data.guild_id || sound.guild_id }),
   ),
 
  [GatewayDispatchEvents.InteractionCreate]: (data: GatewayInteractionCreateDispatchData) => {
-  if (data.user) redis.users.set(data.user);
+  if (data.user) redis.users.set(undefined, data.user);
 
   if (data.message && data.guild_id) {
-   redis.messages.set(data.message, (data.guild_id || data.guild?.id)!);
+   redis.messages.set(undefined, data.message, (data.guild_id || data.guild?.id)!);
   }
 
   if (!data.channel || !data.guild_id) return;
 
   if (AllThreadGuildChannelTypes.includes(data.channel.type)) {
-   redis.threads.set({
+   redis.threads.set(undefined, {
     ...(data.channel as APIThreadChannel),
     guild_id: (data.channel as APIThreadChannel).guild_id || data.guild_id,
    });
@@ -102,23 +102,25 @@ const caches: Record<GatewayDispatchEvents, (data: never) => unknown> = {
 
   if (!AllNonThreadGuildChannelTypes.includes(data.channel.type)) return;
 
-  redis.channels.set({
+  redis.channels.set(undefined, {
    ...(data.channel as APIGuildChannel<RChannelTypes>),
    guild_id: data.guild_id || (data.channel as APIGuildChannel<RChannelTypes>).guild_id,
   });
  },
 
- [GatewayDispatchEvents.UserUpdate]: (data: GatewayUserUpdateDispatchData) => redis.users.set(data),
+ [GatewayDispatchEvents.UserUpdate]: (data: GatewayUserUpdateDispatchData) =>
+  redis.users.set(undefined, data),
 
  [GatewayDispatchEvents.WebhooksUpdate]: (_: GatewayWebhooksUpdateDispatchData) => undefined,
 
  [GatewayDispatchEvents.TypingStart]: (data: GatewayTypingStartDispatchData) => {
   if (!data.member || !data.guild_id) return;
 
-  redis.members.set(data.member, data.guild_id);
+  redis.members.set(undefined, data.member, data.guild_id);
  },
 
- [GatewayDispatchEvents.Ready]: (data: GatewayReadyDispatchData) => redis.users.set(data.user),
+ [GatewayDispatchEvents.Ready]: (data: GatewayReadyDispatchData) =>
+  redis.users.set(undefined, data.user),
 
  [GatewayDispatchEvents.Resumed]: (_: GatewayResumedDispatch['d']) => undefined,
 

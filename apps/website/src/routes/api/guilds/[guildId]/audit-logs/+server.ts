@@ -23,10 +23,10 @@ export const GET: RequestHandler = async (event) => {
 		});
 	if (!res) return new Response(null, { status: 404 });
 
-	res.users.forEach((u) => cache.users.set(u));
-	res.integrations.forEach((i) => cache.integrations.set(i, event.params.guildId));
-	res.threads.forEach((t) => cache.threads.set(t as APIThreadChannel));
-	res.webhooks.forEach((w) => cache.webhooks.set(w));
+	res.users.forEach((u) => cache.users.set(undefined, u));
+	res.integrations.forEach((i) => cache.integrations.set(undefined, i, event.params.guildId));
+	res.threads.forEach((t) => cache.threads.set(undefined, t as APIThreadChannel));
+	res.webhooks.forEach((w) => cache.webhooks.set(undefined, w));
 
 	return json({
 		...res,

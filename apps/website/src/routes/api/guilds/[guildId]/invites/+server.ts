@@ -6,7 +6,7 @@ export const GET: RequestHandler = async (event) => {
 	const invites = await api.guilds.getInvites(event.params.guildId).catch((e) => null);
 	if (!invites) return json({ invites: [] });
 
-	invites.forEach((i) => cache.invites.set(i));
+	invites.forEach((i) => cache.invites.set(undefined, i));
 
 	return json({ invites: invites.map((i) => cache.invites.apiToR(i)).filter((i) => !!i) });
 };

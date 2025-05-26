@@ -11,12 +11,12 @@ export const load: PageServerLoad = async (event) => {
 	const mergedMessages = fetchedMessages.map((m) => cache.messages.apiToR(m, guildId));
 	const authorIds = mergedMessages.map((m) => m.author_id);
 
-	const authors = await Promise.all(authorIds.map((m) => cache.users.get(m))).then((r) =>
+	const authors = await Promise.all(authorIds.map((m) => cache.users.get(undefined, m))).then((r) =>
 		r.filter((m) => !!m),
 	);
-	const members = await Promise.all(authorIds.map((m) => cache.members.get(guildId, m))).then((r) =>
-		r.filter((m) => !!m),
-	);
+	const members = await Promise.all(
+		authorIds.map((m) => cache.members.get(undefined, guildId, m)),
+	).then((r) => r.filter((m) => !!m));
 
 	return {
 		messages: mergedMessages.map((m) => ({

@@ -8,16 +8,16 @@ export const load: PageServerLoad = async (event) => {
 	const memberIds = await redis.zrangebyscore(`lists:members:${guildId}`, 0, 250, 'LIMIT', 0, 1000);
 	const members =
 		memberIds.length !== 1
-			? await Promise.all(memberIds.map((id) => cache.members.get(guildId, id))).then((m) =>
+			? await Promise.all(memberIds.map((id) => cache.members.get(undefined, guildId, id))).then((m) =>
 					m.filter((r) => !!r),
 				)
 			: await getAllMembers(event.params.guildId);
 
-	const users = await Promise.all(memberIds.map((id) => cache.users.get(id)));
+	const users = await Promise.all(memberIds.map((id) => cache.users.get(undefined, id)));
 
-	const roleKeys = await cache.roles.getKeystore(guildId).then((r) => Object.keys(r));
+	const roleKeys = await cache.roles.getKeystore(undefined, guildId).then((r) => Object.keys(r));
 	const roles = await Promise.all(
-		roleKeys.map((key) => cache.roles.get(key.split(/:/g).at(-1) || '')),
+		roleKeys.map((key) => cache.roles.get(undefined, key.split(/:/g).at(-1) || '')),
 	).then((m) => m.filter((r) => !!r));
 
 	return {

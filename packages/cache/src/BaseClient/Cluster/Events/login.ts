@@ -4,11 +4,9 @@ import type { APIUser } from 'discord.js';
 
 export let loggedIn: ClusterManager | null = null;
 
-export default async () => {
+export default async (token: string) => {
  const selfS = await redis.get('self');
- const token = await redis.get('token');
  if (!selfS) return;
- if (!token) return;
 
  const self = JSON.parse(selfS) as APIUser;
  if (!self) return;
@@ -26,7 +24,7 @@ export default async () => {
   totalClusters: 'auto',
   shardsPerClusters: 10,
   token,
-  shardArgs: process.argv,
+  shardArgs: [...process.argv, '--token=' + token],
   execArgv: [
    '--experimental-json-modules',
    '--experimental-wasm-modules',

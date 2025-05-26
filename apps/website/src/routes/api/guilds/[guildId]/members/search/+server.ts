@@ -10,7 +10,7 @@ export const GET: RequestHandler = async (event) => {
 	if (!query) return json([]);
 
 	const memberKeys = await cache.members
-		.getKeystore(event.params.guildId)
+		.getKeystore(undefined, event.params.guildId)
 		.then((r) => Object.keys(r));
 
 	const memberChunks = getChunks(memberKeys, 1000);
@@ -19,11 +19,11 @@ export const GET: RequestHandler = async (event) => {
 
 	for (const chunk of memberChunks) {
 		const users = await Promise.all(
-			memberKeys.map((key) => cache.users.get(key.split(/:/g).at(-1)!)),
+			memberKeys.map((key) => cache.users.get(undefined, key.split(/:/g).at(-1)!)),
 		).then((r) => r.filter((m) => !!m));
 
 		const members = await Promise.all(
-			chunk.map((key) => cache.members.get(event.params.guildId, key.split(/:/g).at(-1)!)),
+			chunk.map((key) => cache.members.get(undefined, event.params.guildId, key.split(/:/g).at(-1)!)),
 		).then((r) =>
 			r.filter((m) => !!m).map((m) => ({ ...m, user: users.find((u) => u.id === m.user_id) })),
 		);

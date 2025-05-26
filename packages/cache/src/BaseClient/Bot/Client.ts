@@ -3,13 +3,18 @@ import { REST } from '@discordjs/rest';
 import { CompressionMethod, Encoding, WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } from 'discord-api-types/v10';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
-import redis, { cache as RedisCache } from './Redis.js';
+import { cache as RedisCache } from './Redis.js';
 import rawCache from './Cache.js';
 
-const token = await redis.get('token');
+const token = (
+ process.execArgv.find((v) => v.includes('--token')) ||
+ process.argv.find((v) => v.includes('--token='))
+)?.split('=')[1];
+
+if (!token) throw new Error('No token provided. Please provide a token using --token=<your_token>');
 
 const rest = new REST();
-rest.setToken(token!);
+rest.setToken(token);
 
 const gateway = new WebSocketManager({
  rest,
@@ -33,7 +38,7 @@ const gateway = new WebSocketManager({
   GatewayIntentBits.GuildMessageTyping,
  shardCount: getInfo().TOTAL_SHARDS,
  shardIds: getInfo().SHARD_LIST,
- token: token!,
+ token,
  compression: CompressionMethod.ZlibNative,
  encoding: Encoding.JSON,
  initialPresence: null,

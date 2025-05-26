@@ -6,7 +6,7 @@ import type { RUser } from '$lib/scripts/RTypes';
 export const GET: RequestHandler = async (event) => {
 	const userId = event.params.userId;
 
-	const user = await cache.users.get(userId);
+	const user = await cache.users.get(undefined, userId);
 	if (!user) return error(404);
 
 	return json(user as GETResponse);

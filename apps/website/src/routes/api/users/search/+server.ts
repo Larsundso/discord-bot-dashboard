@@ -9,13 +9,13 @@ export const GET: RequestHandler = async (event) => {
 	const query = event.url.searchParams.get('query');
 	if (!query) return json([]);
 
-	const userKeys = await cache.users.getKeystore().then((r) => Object.keys(r));
+	const userKeys = await cache.users.getKeystore(undefined).then((r) => Object.keys(r));
 	const userChunks = getChunks(userKeys, 100);
 	let filtered: RUser[] = [];
 
 	for (const chunk of userChunks) {
 		const users = await Promise.all(
-			chunk.map((key) => cache.users.get(key.split(/:/g).at(-1)!)),
+			chunk.map((key) => cache.users.get(undefined, key.split(/:/g).at(-1)!)),
 		).then((r) => r.filter((m) => !!m));
 
 		filtered = [

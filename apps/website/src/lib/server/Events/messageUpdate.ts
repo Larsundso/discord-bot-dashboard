@@ -13,13 +13,13 @@ export default async (cache: typeof Cache, message: string) => {
 
 	const payload = JSON.parse(message) as Message<typeof event>;
 
-	const messageData = await cache.messages.get(payload.channel_id, payload.id);
+	const messageData = await cache.messages.get(undefined, payload.channel_id, payload.id);
 	if (!messageData) return;
 
-	const author = await cache.users.get(messageData.author_id);
+	const author = await cache.users.get(undefined, messageData.author_id);
 	if (!author) return;
 
-	const member = await cache.members.get(messageData.guild_id, messageData.author_id);
+	const member = await cache.members.get(undefined, messageData.guild_id, messageData.author_id);
 	if (!member) return;
 
 	cache.listeners.forEach((emit) => emit(event, JSON.stringify({ ...messageData, author, member })));

@@ -1,10 +1,11 @@
 import validateToken from '$lib/scripts/util/validateToken';
 import { publisher, redis, setAPI } from '$lib/server';
+import { WebsiteEvents } from '@discord-bot-dashboard/cache/src/BaseClient/Cluster/Events';
 import { fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	redis.flushdb();
+	if (event.url.searchParams.get('logout')) redis.flushdb();
 };
 
 const tester = /[a-zA-Z0-9]{20,26}\..{6}\..{38}/gm;
@@ -20,9 +21,8 @@ export const actions = {
 		const self = await validateToken(token);
 		if (!self) return fail(400, { message: 'Invalid token (2)', incorrect: true });
 
-		publisher.set('token', token);
-		publisher.set('self', JSON.stringify(self));
-		publisher.publish('login', 'login');
+		redis.set('self', JSON.stringify(self));
+		publisher.publish(WebsiteEvents.LOGIN, token);
 		event.cookies.set('sessionStart', String(Date.now()), {
 			httpOnly: true,
 			sameSite: 'strict',

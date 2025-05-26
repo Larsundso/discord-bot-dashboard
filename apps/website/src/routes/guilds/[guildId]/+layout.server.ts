@@ -7,7 +7,7 @@ import type { RChannel } from '$lib/scripts/RTypes';
 export const load: LayoutServerLoad = async (event) => {
 	const guildId = event.params.guildId;
 
-	const guild = await cache.guilds.get(guildId);
+	const guild = await cache.guilds.get(undefined, guildId);
 	if (!guild) throw redirect(302, '/@me');
 
 	const fetched = await redis.hget('fetched', guildId);
@@ -18,17 +18,17 @@ export const load: LayoutServerLoad = async (event) => {
 	}
 
 	const self = (await await redis.get('self').then((r) => JSON.parse(r!))) as APIUser;
-	const me = await cache.members.get(guildId, self.id);
+	const me = await cache.members.get(undefined, guildId, self.id);
 
 	return { guild, channels: await getChannels(guildId), me };
 };
 
 const getChannels = async (guildId: string) => {
 	const channelKeys = await cache.channels
-		.getKeystore(guildId)
+		.getKeystore(undefined, guildId)
 		.then((r) => (r ? Object.keys(r) : []));
 	const channels = await Promise.all(
-		channelKeys.map((k) => cache.channels.get(k.split(/:/g).at(-1) || '')),
+		channelKeys.map((k) => cache.channels.get(undefined, k.split(/:/g).at(-1) || '')),
 	).then((r) => r.filter((c) => !!c));
 
 	const sortedChannels: { parent: RChannel; channels: RChannel[] }[] = [];

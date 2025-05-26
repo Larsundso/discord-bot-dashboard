@@ -11,7 +11,7 @@ export default async (cache: typeof Cache, message: string) => {
 
 	const payload = JSON.parse(message) as Message<typeof event>;
 
-	const guildData = await cache.guilds.get(payload.id);
+	const guildData = await cache.guilds.get(undefined, payload.id);
 	if (!guildData) return;
 
 	cache.listeners.forEach((emit) => emit(event, JSON.stringify(guildData)));

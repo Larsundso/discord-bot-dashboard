@@ -6,8 +6,7 @@ import type { RAutomod, RUser } from '$lib/scripts/RTypes';
 export const GET: RequestHandler = async (event) => {
 	const automodId = event.params.automodId;
 
-	const automod = await cache.automods.get(automodId);
-	console.log(automod, automodId);
+	const automod = await cache.automods.get(undefined, automodId);
 	if (!automod) return error(404);
 
 	return json(automod as GETResponse);

@@ -99,6 +99,9 @@ importers:
       '@types/node':
         specifier: ^22.15.21
         version: 22.15.21
+      '@types/string-similarity':
+        specifier: ^4.0.2
+        version: 4.0.2
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.32.1
         version: 8.32.1(@typescript-eslint/parser@8.32.1(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
@@ -1272,6 +1275,9 @@ packages:
 
   '@types/source-map-support@0.5.10':
     resolution: {integrity: sha512-tgVP2H469x9zq34Z0m/fgPewGhg/MLClalNOiPIzQlXrSS2YrKu/xCdSCKnEDwkFha51VKEKB6A9wW26/ZNwzA==}
+
+  '@types/string-similarity@4.0.2':
+    resolution: {integrity: sha512-LkJQ/jsXtCVMK+sKYAmX/8zEq+/46f1PTQw7YtmQwb74jemS1SlNLmARM2Zml9DgdDTWKAtc5L13WorpHPDjDA==}
 
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
@@ -4710,6 +4716,8 @@ snapshots:
   '@types/source-map-support@0.5.10':
     dependencies:
       source-map: 0.6.1
+
+  '@types/string-similarity@4.0.2': {}
 
   '@types/tough-cookie@4.0.5': {}
 

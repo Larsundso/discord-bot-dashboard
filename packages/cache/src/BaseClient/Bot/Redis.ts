@@ -24,7 +24,7 @@ import UserCache from './CacheManagers/user.js';
 import VoiceCache from './CacheManagers/voice.js';
 import WebhookCache from './CacheManagers/webhook.js';
 
-const redis = new Redis({ host: 'redis', db: 0 });
+const redis = new Redis({ host: '127.0.0.1', db: 0 });
 export default redis;
 
 export const cache = {

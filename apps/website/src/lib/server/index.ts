@@ -38,14 +38,14 @@ import messageUpdate from './Events/messageUpdate';
 export let api: typeof API.prototype;
 export const setAPI = (token: string) => {
 	api = new API(new REST({ version: '10' }).setToken(token));
+	savedToken = token;
 };
 
 export const publisher = new Redis({ host: '127.0.0.1', db: 0 });
 export const redis = publisher;
 export const subscriber = new Redis({ db: 0, host: '127.0.0.1' });
 
-const savedToken = await redis.get('token');
-if (savedToken) setAPI(savedToken);
+export let savedToken: null | string = null;
 
 subscriber.subscribe(...Object.values(CacheEvents), (err, count) => {
 	if (err) throw err;
