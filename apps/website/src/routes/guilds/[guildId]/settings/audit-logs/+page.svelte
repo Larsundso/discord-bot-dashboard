@@ -158,7 +158,7 @@
 				<span class="color-alt-text">Loading...</span>
 			</div>
 		{:else}
-			<Button text="Refresh" style="secondary" emoji={{ id: '勒' }} onclick={() => get()} />
+			<Button text="Refresh" style="secondary" onclick={() => get()} />
 
 			<div class="w-full flex flex-row justify-center items-center gap-5 mb-5">
 				<Button
