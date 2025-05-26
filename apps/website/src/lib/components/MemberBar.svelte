@@ -20,6 +20,7 @@
 	});
 
 	const getName = (m: ExtendedMember) => {
+  console.log(m.user);
 		const name = m.nick || m.user?.global_name || m.user?.username;
 		return name ? name : 'Unknown';
 	};

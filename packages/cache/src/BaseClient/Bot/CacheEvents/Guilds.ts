@@ -56,9 +56,6 @@ export default {
   if (data.unavailable) return;
   if ('geo_restricted' in data && data.geo_restricted) return;
 
-  console.log('guild create', data.id);
-  console.log(data.channels.length, 'channels');
-
   const pipeline = RedisClient.pipeline();
   redis.guilds.set(pipeline, data);
   await Promise.all(
@@ -253,7 +250,7 @@ export default {
     .flat(),
   );
 
-  pipeline.exec().then(console.log);
+  pipeline.exec();
  },
 
  [GatewayDispatchEvents.GuildMemberUpdate]: async (data: GatewayGuildMemberUpdateDispatchData) => {
