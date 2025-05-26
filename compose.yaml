@@ -33,17 +33,17 @@ services:
   depends_on:
    - redis
 
- # website:
- #  build:
- #   context: .
- #   dockerfile: website.Dockerfile
- #  restart: unless-stopped
- #  ports:
- #   - "0.0.0.0:5173:5173"
- #  networks:
- #   - default
- #  depends_on:
- #   - redis
+ website:
+  build:
+   context: .
+   dockerfile: website.Dockerfile
+  restart: unless-stopped
+  ports:
+   - "0.0.0.0:5173:5173"
+  networks:
+   - default
+  depends_on:
+   - redis
 
 networks:
  default:
