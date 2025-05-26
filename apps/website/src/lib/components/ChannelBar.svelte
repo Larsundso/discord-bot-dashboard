@@ -43,7 +43,7 @@
 			<ChannelBarButton
 				text="Audit-Log"
 				icon="audit-logs"
-				href={`/guilds/${guild.id}/settings/audit-log`}
+				href={`/guilds/${guild.id}/settings/audit-logs`}
 			/>
 			<ChannelBarButton text="Bans" icon="bans" href={`/guilds/${guild.id}/settings/bans`} />
 		</div>
